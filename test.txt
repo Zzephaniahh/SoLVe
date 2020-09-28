@@ -1,0 +1,8 @@
+1 to 2 on True
+2 to 3 on True
+3 to 4 on True
+4 to 2 on i < 7
+4 to 5 on !i < 7
+5 to 6 on True
+Data Transfers i <- 2 on PC = 1
+Data Transfers i <- i + 2 on PC = 3

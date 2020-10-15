@@ -580,18 +580,23 @@ int main(void)
   int i ;
 
   {
+  L1: 
 #line 3
   i = 2;
+  L2: 
 #line 4
   while (1) {
+    L3: 
 #line 5
     i += 2;
+    L4: ;
 #line 4
     if (! (i < 7)) {
 #line 4
       break;
     }
   }
+  L5: 
 #line 7
   return (0);
 }

@@ -1,8 +1,9 @@
-1 to 2 on True
-2 to 3 on True
-3 to 4 on True
-4 to 2 on i < 7
-4 to 5 on !i < 7
-5 to 6 on True
-Data Transfers i <- 2 on PC = 1
-Data Transfers i <- i + 2 on PC = 3
+(1, 2, True)
+(2, 3, True)
+(3, 4, True)
+(4, 5, True)
+(5, 2, i < 7)
+(5, 6, !i < 7)
+(6, 7, True)
+[i, 2, 1]
+[i, i + 2, 3]

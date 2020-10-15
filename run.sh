@@ -2,4 +2,4 @@ make
 
 ./cilcfgformula > test.txt
 
-python SoLVe.py
+python3 SoLVe.py

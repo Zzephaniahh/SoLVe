@@ -6,6 +6,19 @@ class edge():
         self.dest = dest
         self.condition = condition
 
+class data_transfer():
+    def __init__(self, variable, data, line_number):
+        self.variable = variable
+        self.data = data
+        self.line_number = line_number
+
+class DFG():
+    def __init__(self):
+        self.data_transfer_list = []
+
+    def add_data_transfer(self, variable, data, line_number):
+        temp_data_transfer = data_transfer(variable, data, line_number)
+        self.data_transfer_list.append(temp_data_transfer)
 
 class CFG():
     def __init__(self):
@@ -22,35 +35,35 @@ def get_CFG(file_name):
     file_id = open(file_name, "r")
     lines = file_id.readlines()
     for line in lines:
-        if "to" in line:
-            node_sub_str = re.search('.*on', line).group(0)[:-3] # somewhat hacky captures only the edge, need to fix on ocaml I think FIXME
-            temp_source_dest_set = re.search('.*(\d+).*(\d+)', node_sub_str) # get the integer line numbers for source/dest
-            source = temp_source_dest_set.group(1) # get the first item (source)
-            dest = temp_source_dest_set.group(2) # get the second item (dest)
-            m = re.search('on.*', line) # search the string for the condition
-            condition = m.group(0)[3:] #hacky [3:] to remove the "on ", will clean up later FIXME
+        if "(" in line:
+            # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
+            edge_data  = re.sub(r'\((.*?)\)', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+
+            source = edge_data[0].strip() # get the first item (source)
+            dest = edge_data[1].strip() # get the second item (dest)
+            condition = edge_data[2].strip()
             our_CFG.add_edge(source, dest, condition)
 
     return our_CFG
 
 def get_dataflow_graph(file_name):
-    our_CFG = CFG()
+    our_DFG = DFG()
     file_id = open(file_name, "r")
     lines = file_id.readlines()
     for line in lines:
-        if "Data Transfers" in line:
-            node_sub_str = re.search('.*on', line).group(0)[:-3] # somewhat hacky captures only the edge, need to fix on ocaml I think FIXME
-            print()
-            temp_source_dest_set = re.search('.*(\d+).*(\d+)', node_sub_str) # get the integer line numbers for source/dest
-            source = temp_source_dest_set.group(1) # get the first item (source)
-            dest = temp_source_dest_set.group(2) # get the second item (dest)
-            m = re.search('on.*', line) # search the string for the condition
-            condition = m.group(0)[3:] #hacky [3:] to remove the "on ", will clean up later FIXME
-            our_CFG.add_edge(source, dest, condition)
+        if "[" in line:
+            # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
+            data_transfer = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
 
-    return our_CFG
+            variable = data_transfer[0].strip() # get the first item (source)
+            data = data_transfer[1].strip() # get the second item (dest)
+            line_number = data_transfer[2].strip()
 
-def print_eqs(CFG):
+            our_DFG.add_data_transfer(variable, data, line_number)
+
+    return our_DFG
+
+def print_edge_eqs(CFG):
     equation_dict = {}
     for edge in CFG.edges:
         if edge.dest in equation_dict:
@@ -62,9 +75,48 @@ def print_eqs(CFG):
     for eq in equation_dict:
         print("L" + eq + "+" + " = " + equation_dict[eq])
 
+def print_data_eqs(DFG):
+    equation_dict = {}
+    location_var_dict = {}
+    for data_transfer in DFG.data_transfer_list:
+        var = data_transfer.variable
+        location = data_transfer.line_number
+        value = data_transfer.data
+
+        # L2 --> i+ = i + 2
+        # L3 --> i+ = i + 5
+        # !L2 & !L3 --> i+ = i
+        equation_dict[location] = "L" + location + " --> " + var + "+ = " +  value
+
+        if var in location_var_dict:
+            location_var_dict[var].append(location)
+        else:
+            location_var_dict[var] = [location]
+
+        # if var in equation_dict:
+        #     equation_dict[var] = equation_dict[var]+ " || "+ "L" + location + " & value = " +  value
+        # else:
+        #     equation_dict[var] = var + "+ = " + "L" + location + " & value = " +  value
+
+    for eq in equation_dict:
+        print(equation_dict[eq])
+    #print(location_var_dict)
+    for var in location_var_dict:
+                # !L2 & !L3 --> i+ = i
+        loc_str = ""
+        for location in location_var_dict[var]:
+            loc_str = loc_str + "!L" + location + " & "
+
+        loc_str = loc_str[:-3] + " --> " + var + "+ = " + var
+        print(loc_str)
+
+
+
 def main():
     our_CFG = get_CFG("test.txt") # parse the output from Ocaml and build a CFG object
-    print_eqs(our_CFG) # traverse the CFG and print the contents in eqaution form
+    print_edge_eqs(our_CFG) # traverse the CFG and print the contents in eqaution form
+    our_DFG = get_dataflow_graph("test.txt")
+    print_data_eqs(our_DFG)
 
 
 if __name__ == '__main__':

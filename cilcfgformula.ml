@@ -44,18 +44,18 @@ let main () = begin
     List.iter (fun stmt ->
       match stmt.skind with
       | If(predicate,then_block,else_block,_) ->
-        assert(List.length stmt.succs = 2); (* yeah, hacky *)
+        assert(List.length stmt.succs = 2);
         let then_stmt :: else_stmt :: [] = stmt.succs in
         let predicate_str = Pretty.sprint ~width:80 (dn_exp () predicate) in
-        Printf.printf "%d to %d on %s\n" stmt.sid
+        Printf.printf "(%d, %d, %s)\n" stmt.sid
           then_stmt.sid predicate_str ;
-        Printf.printf "%d to %d on !%s\n" stmt.sid
+        Printf.printf "(%d, %d, !%s)\n" stmt.sid
           else_stmt.sid predicate_str
 
 
       | _ ->
         List.iter (fun succ ->
-          Printf.printf "%d to %d on True\n" stmt.sid succ.sid
+          Printf.printf "(%d, %d, True)\n" stmt.sid succ.sid
         ) stmt.succs
 
     ) fundec.sallstmts ;
@@ -69,7 +69,7 @@ let main () = begin
           match lhs with
           | Var(v),NoOffset ->
             let rhs_str = Pretty.sprint ~width:80 (dn_exp () rhs) in
-            Printf.printf "Data Transfers %s <- %s on PC = %d\n"
+            Printf.printf "[%s, %s, %d]\n"
               v.vname rhs_str stmt.sid
           | _ -> () (* more complicated assignments not handled here *)
         end
@@ -84,11 +84,14 @@ let main () = begin
           match func_name with
           | Lval(Var(_), _) -> begin
           let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
-          Printf.printf "Our natural function call is %s\n" func_str
-        end
-          | Lval(Mem(_), _) -> begin
+          Printf.printf "Our natural function call is %s, at location: %d with args: not working \n" func_str stmt.sid (*arg_list*)
+          end
+          (* | FE(Var(_), _) -> begin
+          let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
+          Printf.printf "Our natural function call is %s, at location: %d \n" func_str stmt.sid
+        end *)
+          | Lval(Mem(_), _) -> begin (*not currently used*)
           let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in Printf.printf "This is a pointer call %s\n" func_str
-
         end
         end
 

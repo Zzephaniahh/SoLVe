@@ -84,8 +84,20 @@ let main () = begin
           match func_name with
           | Lval(Var(_), _) -> begin
           let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
-          Printf.printf "Our natural function call is %s, at location: %d with args: not working \n" func_str stmt.sid (*arg_list*)
+          Printf.printf "Our natural function call is %s, at location: %d with args: not working \n" func_str stmt.sid; (*arg_list*)
+          (* for i in range(0,10):
+            print(i) *)
+            Printf.printf " arglist [";  (*arg_list*)
+
+          let process_el(single_arg:Cil.exp) =
+            let el_str = Pretty.sprint ~width:80 (dn_exp () single_arg) in
+            Printf.printf "%s " el_str;  (*arg_list*)
+          in
+          List.iter
+          process_el
+          arg_list
           end
+
           (* | FE(Var(_), _) -> begin
           let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
           Printf.printf "Our natural function call is %s, at location: %d \n" func_str stmt.sid
@@ -104,6 +116,11 @@ let main () = begin
 
   List.iter (fun glob -> match glob with
   | GFun(fundec, loc) -> process fundec
+
+  | GVarDecl(varinfo, loc) -> begin
+  let type_str = Pretty.sprint ~width:80 (dn_type () varinfo.vtype) in
+  Printf.printf " our var %b name is %s and type is %s\n" (isFunctionType(varinfo.vtype))varinfo.vname type_str;  (*arg_list*)
+  end
   | _ -> ()
   ) ast.globals;
 
@@ -116,8 +133,6 @@ let main () = begin
 
 end ;;
 main () ;;
-
-
 
 
 

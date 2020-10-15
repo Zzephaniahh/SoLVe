@@ -83,11 +83,13 @@ let main () = begin
         | Call(lhs, func_name, arg_list, _ ) -> begin
           match func_name with
           | Lval(Var(_), _) -> begin
+
           let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
-          Printf.printf "Our natural function call is %s, at location: %d with args: not working \n" func_str stmt.sid; (*arg_list*)
+          (* let lhs_str = Pretty.sprint ~width:80 (d_lval () lhs) in *)
+          Printf.printf "Name: %s\nCall Line: %d\n" func_str stmt.sid; (*lhs_str;*)
           (* for i in range(0,10):
             print(i) *)
-            Printf.printf " arglist [";  (*arg_list*)
+            Printf.printf "Actual args:(";  (*arg_list*)
 
           let process_el(single_arg:Cil.exp) =
             let el_str = Pretty.sprint ~width:80 (dn_exp () single_arg) in
@@ -118,9 +120,11 @@ let main () = begin
   | GFun(fundec, loc) -> process fundec
 
   | GVarDecl(varinfo, loc) -> begin
-  let type_str = Pretty.sprint ~width:80 (dn_type () varinfo.vtype) in
-  Printf.printf " our var %b name is %s and type is %s\n" (isFunctionType(varinfo.vtype))varinfo.vname type_str;  (*arg_list*)
-  end
+    (* if loc > 0 then begin *)
+      let type_str = Pretty.sprint ~width:80 (dn_type () varinfo.vtype) in
+      Printf.printf "Function dec: %s\nType: %s\n" varinfo.vname type_str;  (*(isFunctionType(varinfo.vtype))*)
+      end
+    (* end *)
   | _ -> ()
   ) ast.globals;
 

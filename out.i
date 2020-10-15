@@ -575,24 +575,39 @@
 /* compiler builtin: 
    void *__builtin_frame_address(unsigned int  ) ;  */
 #line 1 "in.i"
+int func_F(int a , int b ) ;
+#line 3 "in.i"
 int main(void) 
 { 
-  int i ;
+  int y ;
+  int x ;
+  int z ;
 
   {
-#line 2
-  i = 2;
-#line 3
-  while (1) {
 #line 4
-    i += 2;
-#line 3
-    if (! (i < 7)) {
-#line 3
-      break;
-    }
-  }
-#line 6
+  y = 0;
+#line 5
+  x = 0;
+#line 7
+  z = func_F(x, y);
+#line 8
   return (0);
+}
+}
+#line 11 "in.i"
+int func_F(int a , int b ) 
+{ 
+
+
+  {
+#line 13
+  a ++;
+#line 14
+  if (a < b) {
+#line 15
+    a = 1;
+  }
+#line 16
+  return (a);
 }
 }

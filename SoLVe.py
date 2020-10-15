@@ -66,10 +66,14 @@ def get_dataflow_graph(file_name):
 def print_edge_eqs(CFG):
     equation_dict = {}
     for edge in CFG.edges:
-        if edge.dest in equation_dict:
-            equation_dict[edge.dest] = equation_dict[edge.dest] + " || L" + edge.source + " & (" +edge.condition +")"
+        if edge.condition == "True":
+            edge.condition = ""
         else:
-            equation_dict[edge.dest] = "L" + edge.source + " & (" +edge.condition +")"
+            edge.condition = " & (" +edge.condition +")"
+        if edge.dest in equation_dict:
+            equation_dict[edge.dest] = equation_dict[edge.dest] + " || L" + edge.source + edge.condition
+        else:
+            equation_dict[edge.dest] = "L" + edge.source + edge.condition
 
     print("L1+ = 0") # probably don't need this, but helps us read for now.
     for eq in equation_dict:

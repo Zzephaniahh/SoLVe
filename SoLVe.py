@@ -90,7 +90,7 @@ def print_data_eqs(DFG):
         # L2 --> i+ = i + 2
         # L3 --> i+ = i + 5
         # !L2 & !L3 --> i+ = i
-        equation_dict[location] = "L" + location + " --> " + var + "+ = " +  value
+        equation_dict[location] = "L" + location + "+ --> " + var + "+ = " +  value
 
         if var in location_var_dict:
             location_var_dict[var].append(location)
@@ -109,7 +109,7 @@ def print_data_eqs(DFG):
                 # !L2 & !L3 --> i+ = i
         loc_str = ""
         for location in location_var_dict[var]:
-            loc_str = loc_str + "!L" + location + " & "
+            loc_str = loc_str + "!L" + location + "+ & "
 
         loc_str = loc_str[:-3] + " --> " + var + "+ = " + var
         print(loc_str)

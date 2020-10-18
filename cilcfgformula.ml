@@ -5,6 +5,7 @@ module Edge_map = Map.Make(String);;
 let m = Edge_map.empty;;
 
 let main () = begin
+  let func_hash = Hashtbl.create 255 in
 
 
   Cil.initCIL () ;
@@ -49,7 +50,7 @@ let main () = begin
         let predicate_str = Pretty.sprint ~width:80 (dn_exp () predicate) in
         Printf.printf "(%d, %d, %s)\n" stmt.sid
           then_stmt.sid predicate_str ;
-        Printf.printf "(%d, %d, !%s)\n" stmt.sid
+        Printf.printf "(%d, %d, !(%s))\n" stmt.sid
           else_stmt.sid predicate_str
 
 
@@ -80,24 +81,51 @@ let main () = begin
               loc_str
           | _ -> () (* more complicated assignments not handled here *)
         end*)
-        | Call(lhs, func_name, arg_list, _ ) -> begin
-          match func_name with
-          | Lval(Var(_), _) -> begin
+        | Call(lhs, func_name, arg_list,  _ ) -> begin (*exp_list,*)
+        match func_name with
+          | Lval(Var(func_var_info), _) -> begin
 
           let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
-          (* let lhs_str = Pretty.sprint ~width:80 (d_lval () lhs) in *)
           Printf.printf "Name: %s\nCall Line: %d\n" func_str stmt.sid; (*lhs_str;*)
-          (* for i in range(0,10):
-            print(i) *)
-            Printf.printf "Actual args:(";  (*arg_list*)
+          begin match lhs with
+            | None -> ()
+            | Some(actual_lhs) -> let lhs_str = Pretty.sprint ~width:80 (dn_lval () actual_lhs) in
+          Printf.printf "LHS: %s \n" lhs_str;
+        end;
+
+          Printf.printf "Actual args:(";
 
           let process_el(single_arg:Cil.exp) =
             let el_str = Pretty.sprint ~width:80 (dn_exp () single_arg) in
-            Printf.printf "%s " el_str;  (*arg_list*)
+            Printf.printf "%s " el_str;
           in
           List.iter
           process_el
-          arg_list
+          arg_list;
+          Printf.printf ")\n";
+          if Hashtbl.mem func_hash func_var_info then
+            (* let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in *)
+            let func_obj:fundec = Hashtbl.find func_hash func_var_info in
+            let process_block statement = begin
+              let statement_str = Pretty.sprint ~width:80 (dn_stmt () statement) in
+              Printf.printf "id: %d: %s\n" statement.sid  statement_str; (*statement_str*)
+              (* Printf.printf "return statement id: %d \n" statement.sid; *)
+            end in
+            List.iter process_block func_obj.sbody.bstmts;
+
+            List.iter2 (fun actual_param formal_param ->
+              let actual_str = Pretty.sprint ~width:80 (dn_exp () actual_param) in
+
+            Printf.printf "Param_assign: (%s %s) \n" actual_str formal_param.vname;
+          ) arg_list func_obj.sformals;
+
+
+
+            (* let el_str = Pretty.sprint ~width:80 (dn_block () func_obj.sbody) in *)
+
+            (* Printf.printf "found %s in my hash " ; *)
+
+
           end
 
           (* | FE(Var(_), _) -> begin
@@ -115,16 +143,24 @@ let main () = begin
     ) fundec.sallstmts ;
 
   end in
+  List.iter (fun glob -> match glob with
+  | GFun(fundec, loc) ->
+    begin
+      Hashtbl.add func_hash fundec.svar fundec
+    end
+  | _ -> ()
+  ) ast.globals;
+
 
   List.iter (fun glob -> match glob with
   | GFun(fundec, loc) -> process fundec
 
   | GVarDecl(varinfo, loc) -> begin
-    (* if loc > 0 then begin *)
+    if loc.line > 0 then begin (* Does nothing, find a fix for garbage functions.*)
       let type_str = Pretty.sprint ~width:80 (dn_type () varinfo.vtype) in
       Printf.printf "Function dec: %s\nType: %s\n" varinfo.vname type_str;  (*(isFunctionType(varinfo.vtype))*)
       end
-    (* end *)
+    end
   | _ -> ()
   ) ast.globals;
 

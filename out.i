@@ -582,32 +582,39 @@ int main(void)
   int y ;
   int x ;
   int z ;
+  int h ;
 
   {
 #line 4
   y = 0;
 #line 5
   x = 0;
-#line 7
-  z = func_F(x, y);
+#line 6
+  z = 0;
 #line 8
+  z = func_F(x, y);
+#line 9
+  z = 7;
+#line 10
+  h = func_F(5, 7);
+#line 11
   return (0);
 }
 }
-#line 11 "in.i"
+#line 14 "in.i"
 int func_F(int a , int b ) 
 { 
 
 
   {
-#line 13
+#line 16
   a ++;
-#line 14
+#line 17
   if (a < b) {
-#line 15
+#line 18
     a = 1;
   }
-#line 16
+#line 19
   return (a);
 }
 }

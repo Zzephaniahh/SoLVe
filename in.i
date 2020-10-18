@@ -3,8 +3,11 @@ int func_F(int a, int b);
 int main () {
   int y=0;
   int x=0;
-  int z;
+  int z=0;
+  int h;
   z = func_F(x, y);
+  z = 7;
+  h = func_F(5, 7);
   return 0;
 }
 

@@ -11,4 +11,4 @@ sed -i '/Bool/d' test.txt
 sed -i '/unsigned/d' test.txt
 sed -i '/short/d' test.txt
 sed -i '/(int  )/d' test.txt # RM ME -- HACKY
-python3 SoLVe.py
+# python3 SoLVe.py #broken rn

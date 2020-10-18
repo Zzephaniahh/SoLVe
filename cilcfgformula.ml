@@ -52,8 +52,6 @@ let main () = begin
           then_stmt.sid predicate_str ;
         Printf.printf "(%d, %d, !(%s))\n" stmt.sid
           else_stmt.sid predicate_str
-
-
       | _ ->
         List.iter (fun succ ->
           Printf.printf "(%d, %d, True)\n" stmt.sid succ.sid
@@ -74,6 +72,8 @@ let main () = begin
               v.vname rhs_str stmt.sid
           | _ -> () (* more complicated assignments not handled here *)
         end
+
+
           (*match loc with
           | Var(v),NoOffset ->
             let loc_str = Pretty.sprint ~width:80 (dn_exp () loc) in
@@ -103,28 +103,61 @@ let main () = begin
           process_el
           arg_list;
           Printf.printf ")\n";
+
           if Hashtbl.mem func_hash func_var_info then
             (* let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in *)
             let func_obj:fundec = Hashtbl.find func_hash func_var_info in
-            let process_block statement = begin
-              let statement_str = Pretty.sprint ~width:80 (dn_stmt () statement) in
-              Printf.printf "id: %d: %s\n" statement.sid  statement_str; (*statement_str*)
+            (* let process_block statement = begin *)
+              List.iter (fun stmt ->
+                match stmt.skind with
+                | If(predicate,then_block,else_block,_) ->
+                  assert(List.length stmt.succs = 2);
+                  let then_stmt :: else_stmt :: [] = stmt.succs in
+                  let predicate_str = Pretty.sprint ~width:80 (dn_exp () predicate) in
+                  Printf.printf "(%d, %d, %s)\n" stmt.sid
+                    then_stmt.sid predicate_str ;
+                  Printf.printf "(%d, %d, !(%s))\n" stmt.sid
+                    else_stmt.sid predicate_str
+                | _ ->
+                  List.iter (fun succ ->
+                    Printf.printf "(%d, %d, True)\n" stmt.sid succ.sid
+                  ) stmt.succs
+
+                ) func_obj.sallstmts ;
+
+                List.iter (fun stmt ->
+                  match stmt.skind with
+                  | Instr(instr_list) ->
+                    List.iter (fun instr -> match instr with
+                    | Set(lhs, rhs, loc) -> begin
+                      match lhs with
+                      | Var(v),NoOffset ->
+                        let rhs_str = Pretty.sprint ~width:80 (dn_exp () rhs) in
+                        Printf.printf "[%s, %s, %d]\n"
+                          v.vname rhs_str stmt.sid
+                      | _ -> () (* more complicated assignments not handled here *)
+                    end
+
+                  (* | Asm _ -> () *)
+                  ) instr_list ;
+                | _ -> () (* only instructions have side effects in CIL *)
+              ) func_obj.sallstmts ;
+
+
+              (* let statement_str = Pretty.sprint ~width:80 (dn_stmt () statement) in *)
+            (* Printf.printf "FUNCTION END line %\n" statement.sid  statement_str; (*statement_str*) *)
+
               (* Printf.printf "return statement id: %d \n" statement.sid; *)
-            end in
-            List.iter process_block func_obj.sbody.bstmts;
+          (* end
+            in
+            List.iter process_block func_obj.sbody.bstmts; *)
 
             List.iter2 (fun actual_param formal_param ->
               let actual_str = Pretty.sprint ~width:80 (dn_exp () actual_param) in
 
             Printf.printf "Param_assign: (%s %s) \n" actual_str formal_param.vname;
           ) arg_list func_obj.sformals;
-
-
-
-            (* let el_str = Pretty.sprint ~width:80 (dn_block () func_obj.sbody) in *)
-
-            (* Printf.printf "found %s in my hash " ; *)
-
+          Printf.printf "FUNCTION CALL END\n"; (*statement_str*)
 
           end
 
@@ -139,6 +172,8 @@ let main () = begin
 
         | Asm _ -> ()
         ) instr_list ;
+        Printf.printf "FUNCTION CALL END\n"; (*statement_str*)
+
       | _ -> () (* only instructions have side effects in CIL *)
     ) fundec.sallstmts ;
 
@@ -151,7 +186,7 @@ let main () = begin
   | _ -> ()
   ) ast.globals;
 
-
+  (* let fun_head = List.hd ast.globals in *)
   List.iter (fun glob -> match glob with
   | GFun(fundec, loc) -> process fundec
 
@@ -173,19 +208,3 @@ let main () = begin
 
 end ;;
 main () ;;
-
-
-
-
-
-
-
-
-
-
-
-(*
-
-in.c --> cil: object(our_cfg) --> print_to_file: cil_out.txt --> SoLVe.py --> equations
-
-standardize and pick a langauge for graph description -- simple *)

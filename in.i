@@ -7,7 +7,8 @@ int main () {
   int h;
   z = func_F(x, y);
   z = 7;
-  h = func_F(5, 7);
+  z = func_F(5, 6);
+  z++;
   return 0;
 }
 

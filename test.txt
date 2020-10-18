@@ -8,28 +8,36 @@ Name: func_F
 Call Line: 1
 LHS: z 
 Actual args:(x y )
-id: 3: a ++;
-id: 4: if (a < b) {
-  a = 1;
-}
-id: 6: return (a);
-Param_assign: (x a) 
-Param_assign: (y b) 
-[z, 7, 1]
-Name: func_F
-Call Line: 1
-LHS: h 
-Actual args:(5 7 )
-id: 3: a ++;
-id: 4: if (a < b) {
-  a = 1;
-}
-id: 6: return (a);
-Param_assign: (5 a) 
-Param_assign: (7 b) 
 (3, 4, True)
 (4, 5, a < b)
 (4, 6, !(a < b))
 (5, 6, True)
 [a, a + 1, 3]
 [a, 1, 5]
+Param_assign: (x a) 
+Param_assign: (y b) 
+FUNCTION CALL END
+[z, 7, 1]
+Name: func_F
+Call Line: 1
+LHS: z 
+Actual args:(5 6 )
+(3, 4, True)
+(4, 5, a < b)
+(4, 6, !(a < b))
+(5, 6, True)
+[a, a + 1, 3]
+[a, 1, 5]
+Param_assign: (5 a) 
+Param_assign: (6 b) 
+FUNCTION CALL END
+[z, z + 1, 1]
+FUNCTION CALL END
+(3, 4, True)
+(4, 5, a < b)
+(4, 6, !(a < b))
+(5, 6, True)
+[a, a + 1, 3]
+FUNCTION CALL END
+[a, 1, 5]
+FUNCTION CALL END

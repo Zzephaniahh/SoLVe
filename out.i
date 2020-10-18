@@ -596,25 +596,27 @@ int main(void)
 #line 9
   z = 7;
 #line 10
-  h = func_F(5, 7);
+  z = func_F(5, 6);
 #line 11
+  z ++;
+#line 12
   return (0);
 }
 }
-#line 14 "in.i"
+#line 15 "in.i"
 int func_F(int a , int b ) 
 { 
 
 
   {
-#line 16
-  a ++;
 #line 17
-  if (a < b) {
+  a ++;
 #line 18
+  if (a < b) {
+#line 19
     a = 1;
   }
-#line 19
+#line 20
   return (a);
 }
 }

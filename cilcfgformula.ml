@@ -93,7 +93,7 @@ let main () = begin
           Printf.printf "LHS: %s \n" lhs_str;
         end;
 
-          Printf.printf "Actual args:(";
+          Printf.printf "Actual args: (";
 
           let process_el(single_arg:Cil.exp) =
             let el_str = Pretty.sprint ~width:80 (dn_exp () single_arg) in
@@ -108,6 +108,14 @@ let main () = begin
             (* let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in *)
             let func_obj:fundec = Hashtbl.find func_hash func_var_info in
             (* let process_block statement = begin *)
+            Printf.printf "Param_assign: ";
+            List.iter2 (fun actual_param formal_param ->
+              let actual_str = Pretty.sprint ~width:80 (dn_exp () actual_param) in
+
+            Printf.printf "(%s %s) " actual_str formal_param.vname;
+          ) arg_list func_obj.sformals;
+          Printf.printf "\n";
+
               List.iter (fun stmt ->
                 match stmt.skind with
                 | If(predicate,then_block,else_block,_) ->
@@ -152,11 +160,7 @@ let main () = begin
             in
             List.iter process_block func_obj.sbody.bstmts; *)
 
-            List.iter2 (fun actual_param formal_param ->
-              let actual_str = Pretty.sprint ~width:80 (dn_exp () actual_param) in
 
-            Printf.printf "Param_assign: (%s %s) \n" actual_str formal_param.vname;
-          ) arg_list func_obj.sformals;
           Printf.printf "FUNCTION CALL END\n"; (*statement_str*)
 
           end

@@ -576,7 +576,9 @@
    void *__builtin_frame_address(unsigned int  ) ;  */
 #line 1 "in.i"
 int func_F(int a , int b ) ;
-#line 3 "in.i"
+#line 2
+int func_G(int k ) ;
+#line 4 "in.i"
 int main(void) 
 { 
   int y ;
@@ -585,38 +587,48 @@ int main(void)
   int h ;
 
   {
-#line 4
-  y = 0;
 #line 5
-  x = 0;
+  y = 0;
 #line 6
+  x = 0;
+#line 7
   z = 0;
-#line 8
-  z = func_F(x, y);
 #line 9
-  z = 7;
+  z = func_F(x, y);
 #line 10
-  z = func_F(5, 6);
+  z = 7;
 #line 11
-  z ++;
-#line 12
   return (0);
 }
 }
-#line 15 "in.i"
+#line 14 "in.i"
 int func_F(int a , int b ) 
 { 
 
 
   {
-#line 17
+#line 16
   a ++;
-#line 18
+#line 17
   if (a < b) {
-#line 19
+#line 18
     a = 1;
   }
 #line 20
   return (a);
+}
+}
+#line 23 "in.i"
+int func_G(int k ) 
+{ 
+  int tmp ;
+
+  {
+#line 25
+  tmp = k;
+#line 25
+  k ++;
+#line 25
+  return (tmp);
 }
 }

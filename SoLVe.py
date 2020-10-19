@@ -12,6 +12,20 @@ class data_transfer():
         self.data = data
         self.line_number = line_number
 
+class fun_decl():
+    def __init__(self, func_name, func_type, formal_param_list):
+        self.func_name = func_name
+        self.func_type = func_type
+        self.formal_param_list = formal_param_list
+
+class fun_call():
+    def __init__(self, func_name, call_line, lhs, actual_args, param_assign):
+        self.func_name = func_name
+        self.line = call_line
+        self.lhs = lhs # the value assigned after the function, may be None
+        self.actual_args = actual_args
+        self.param_assign = param_assign
+
 class DFG():
     def __init__(self):
         self.data_transfer_list = []
@@ -26,42 +40,152 @@ class CFG():
         self.edges = []
 
     def add_edge(self, source, dest, condition):
-        temp_edge = edge(source, dest, condition)
-        self.edges.append(temp_edge)
+        self.edges.append(edge(source, dest, condition))
 
+current_line_numb = 0 # global for line numbs
+func_decl_list = [] # globals for c program parameters
+func_call_list = []
+our_CFG = CFG()
+our_DFG = DFG()
 
-def get_CFG(file_name):
-    our_CFG = CFG()
+def process_cil_output(file_name):
     file_id = open(file_name, "r")
     lines = file_id.readlines()
+    final_line_numb = len(lines)
+    global current_line_numb
+    global func_decl_list # globals for c program parameters
+    global func_call_list
+    global our_CFG
+    global our_DFG
+
+    while current_line_numb < final_line_numb: # globally set to 0 before this loop
+        line = lines[current_line_numb]
+
+        if line.startswith('Function dec: '):
+            func_decl = get_function_decls(lines[current_line_numb:])
+            func_decl_list.append(func_decl)
+
+        if line.startswith("FUNCTION CALL BEGIN"):
+            current_line_numb = current_line_numb + 1
+            func_call = get_call_CFG(lines[current_line_numb:], True)
+            func_call_list.append(func_call)
+
+        if line.startswith("("):# and line.endswith(")"):
+            get_edge(lines[current_line_numb])
+
+        if line.startswith("["):# and line.endswith("]"):
+            get_data_edge(lines[current_line_numb])
+        current_line_numb = current_line_numb + 1
+
+
+def get_function_decls(lines):
+    global current_line_numb
+
     for line in lines:
-        if "(" in line:
-            # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
-            edge_data  = re.sub(r'\((.*?)\)', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+        current_line_numb = current_line_numb + 1
+        if line.startswith('Function dec: '): # get names
+            func_decl = fun_decl(None, None, [])
+            func_decl.func_name = line[len("Function dec: "):].strip()
+        #CHECK ME WITH VOID/NO ARGS
+        if line.startswith('Type: '): # get formal args and type
+            args_type_str = line[len("Type: "):]
+            func_decl.func_type = re.search(r"(.*?)\(", args_type_str).group(0)[:-1].strip()
+            args_str = args_type_str[len(func_decl.func_type):].strip()
 
-            source = edge_data[0].strip() # get the first item (source)
-            dest = edge_data[1].strip() # get the second item (dest)
-            condition = edge_data[2].strip()
-            our_CFG.add_edge(source, dest, condition)
+            args  = re.sub(r'\((.*?)\)', lambda L: L.group(1).rsplit('|', 1)[-1], args_str).rstrip().split(",")
+            for index, arg in enumerate(args):
+                arg = arg.strip() #clears spaces
+                arg_and_type = arg.split(" ")
+                func_decl.formal_param_list.append(arg_and_type)
+            func_decl_list.append(func_decl)
 
-    return our_CFG
+            # if verbose == True:
 
-def get_dataflow_graph(file_name):
-    our_DFG = DFG()
-    file_id = open(file_name, "r")
-    lines = file_id.readlines()
-    for line in lines:
-        if "[" in line:
-            # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
-            data_transfer = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+            # print(func_decl.func_name)
+            # print(func_decl.func_type)
+            # print(func_decl.formal_param_list)
+            current_line_numb = current_line_numb - 1
+            return
 
-            variable = data_transfer[0].strip() # get the first item (source)
-            data = data_transfer[1].strip() # get the second item (dest)
-            line_number = data_transfer[2].strip()
 
-            our_DFG.add_data_transfer(variable, data, line_number)
+def get_call_CFG(lines, verbose):
 
-    return our_DFG
+    global current_line_numb
+    func_call_list = []
+    for line_numb, line in enumerate(lines):
+        current_line_numb = current_line_numb + 1
+        # print(line)
+        if "FUNCTION CALL BEGIN" in line: #TEST ME
+            get_call_CFG(lines[line_numb:], True)
+            continue
+
+        if "FUNCTION CALL END" in line:
+            return
+
+        if line.startswith('Name: '):
+            func_call = fun_call(None, None, None, [], [])
+            func_call.func_name = line[len("Name: "):].strip()
+            continue
+
+        if line.startswith('Call Line: '):
+            func_call.line = line[len("Call Line: "):].strip()
+            continue
+
+        if line.startswith('LHS: '):
+            func_call.lhs = line[len("LHS: "):].strip()
+            continue
+
+        if line.startswith('Actual args: '):
+            func_call.actual_args = line[len("Actual args: "):].strip().replace("(", '').replace(")", '').strip().split(" ") # use re.
+            continue
+
+        if line.startswith('Param_assign: '):
+            param_str = line[len("Param_assign: "):].strip()
+            # re.search(r'\((.*?)\)',param_str).group(1)
+            param_list = re.findall(r'\((.*?)\)',param_str)
+            for param_set in param_list:
+                param_pair = param_set.split(" ")
+                func_call.param_assign.append(param_pair)
+            func_call_list.append(func_call)
+            continue
+
+        if line.startswith("("):# and #line.endswith(")"):
+            get_edge(line)
+
+        if line.startswith("["):# and line.endswith("]"):
+            get_data_edge(line)
+
+
+    # for func_call in func_call_list:
+        # print(func_call.func_name)
+        # print(func_call.line)
+        # print(func_call.lhs)
+        # print(func_call.actual_args)
+        # print(func_call.param_assign)
+    return #func_call_list
+
+def get_edge(line):
+    global our_CFG
+    # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
+    edge_data  = re.sub(r'\((.*?)\)', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+    source = edge_data[0].strip() # get the first item (source)
+    dest =   edge_data[1].strip() # get the second item (dest)
+    condition = edge_data[2].strip()
+    our_CFG.add_edge(source, dest, condition)
+    return
+
+def get_data_edge(line):
+
+    global our_DFG
+    # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
+    data_transfer = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+
+    variable = data_transfer[0].strip() # get the first item (source)
+    data = data_transfer[1].strip() # get the second item (dest)
+    line_number = data_transfer[2].strip()
+
+    our_DFG.add_data_transfer(variable, data, line_number)
+    return
 
 def print_edge_eqs(CFG):
     equation_dict = {}
@@ -113,11 +237,11 @@ def print_data_eqs(DFG):
 
 
 def main():
-    our_CFG = get_CFG("test.txt") # parse the output from Ocaml and build a CFG object
+    global our_CFG
+    global our_DFG
+    process_cil_output("gold.txt")
     print_edge_eqs(our_CFG) # traverse the CFG and print the contents in eqaution form
-    our_DFG = get_dataflow_graph("test.txt")
     print_data_eqs(our_DFG)
-
 
 if __name__ == '__main__':
     main()

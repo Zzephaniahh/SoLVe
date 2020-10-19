@@ -1,4 +1,5 @@
 int func_F(int a, int b);
+int func_G(int k);
 
 int main () {
   int y=0;
@@ -7,8 +8,6 @@ int main () {
   int h;
   z = func_F(x, y);
   z = 7;
-  z = func_F(5, 6);
-  z++;
   return 0;
 }
 
@@ -17,5 +16,11 @@ int func_F(a, b)
   a++;
   if (a<b){
     a = 1;}
+  //a = func_G(a);
   return a;
+}
+
+int func_G(k)
+{
+  return k++;
 }

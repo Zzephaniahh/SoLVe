@@ -72,8 +72,14 @@ let main () = begin
               v.vname rhs_str stmt.sid
           | _ -> () (* more complicated assignments not handled here *)
         end
+        (* why does this error? "pattern matching failed?" *)
+        (* ) instr_list ;
+        ) fundec.sallstmts ;
 
-
+        List.iter (fun stmt ->
+          match stmt.skind with
+          | Instr(instr_list) ->
+            List.iter (fun instr -> match instr with *)
           (*match loc with
           | Var(v),NoOffset ->
             let loc_str = Pretty.sprint ~width:80 (dn_exp () loc) in

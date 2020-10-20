@@ -111,6 +111,7 @@ def get_function_decls(lines):
 def get_call_CFG(lines, verbose):
 
     global current_line_numb
+    global our_DFG
     func_call_list = []
     for line_numb, line in enumerate(lines):
         current_line_numb = current_line_numb + 1
@@ -147,6 +148,11 @@ def get_call_CFG(lines, verbose):
                 param_pair = param_set.split(" ")
                 func_call.param_assign.append(param_pair)
             func_call_list.append(func_call)
+            for para_assignment_pair in func_call.param_assign:
+                formal = para_assignment_pair[0]
+                actual = para_assignment_pair[1]
+                print(formal + " actual = "+ actual)
+                our_DFG.add_data_transfer(formal, actual, func_call.line)
             continue
 
         if line.startswith("("):# and #line.endswith(")"):

@@ -1,0 +1,23 @@
+// func_G
+digraph {
+	1 -> 2 [label=""]
+	1 [label="
+L1
+y=0
+x=0
+z=0
+"]
+	2 -> 3 [label=""]
+	2 [label="
+L2
+"]
+	3 [label="
+"]
+	9 -> 10 [label=""]
+	9 [label="
+L9
+"]
+	10 [label="
+z=7
+"]
+}

@@ -1,193 +1,191 @@
 open Cil
 
 
-module Edge_map = Map.Make(String);;
-let m = Edge_map.empty;;
+(*****************************************************************************
+ * A transformation to make every function call end its statement. So
+ * { x=1; Foo(); y=1; }
+ * becomes at least:
+ * { { x=1; Foo(); }
+ *   { y=1; } }
+ * But probably more like:
+ * { { x=1; } { Foo(); } { y=1; } }
+ ****************************************************************************)
+let rec contains_call il =
+  match il with
+      [] -> false
+    | Call _ :: tl -> true
+    | _ :: tl -> contains_call tl
+
+class callBBVisitor =
+object
+  inherit nopCilVisitor
+
+  method vstmt s =
+    match s.skind with
+        Instr il when contains_call il ->
+          begin
+            let list_of_stmts =
+              Util.list_map (fun one_inst -> mkStmtOneInstr one_inst) il in
+            let block = mkBlock list_of_stmts in
+              ChangeDoChildrenPost
+                (s, (fun _ -> s.skind <- Block block; s))
+          end
+      | _ -> DoChildren
+
+  method vvdec _ = SkipChildren
+  method vexpr _ = SkipChildren
+  method vlval _ = SkipChildren
+  method vtype _ = SkipChildren
+end
+
+let calls_end_basic_blocks f =
+  let thisVisitor = new callBBVisitor in
+    visitCilFileSameGlobals thisVisitor f
+
+
+let get_control_flow stmt = begin
+    match stmt.skind with
+    | If(predicate,then_block, else_block,_) ->
+      assert(List.length stmt.succs = 2);
+      let then_stmt :: else_stmt :: [] = stmt.succs in
+      let predicate_str = Pretty.sprint ~width:80 (dn_exp () predicate) in
+      Printf.printf "(%d, %d, %s)\n" stmt.sid
+        then_stmt.sid predicate_str ;
+      Printf.printf "(%d, %d, !(%s))\n" stmt.sid
+        else_stmt.sid predicate_str
+    | _ ->
+      List.iter (fun succ ->
+        Printf.printf "(%d, %d, True)\n" stmt.sid succ.sid
+      ) stmt.succs;
+    end
+
+let get_data_flow lhs rhs loc stmt = begin
+  match lhs with
+  | Var(v),NoOffset ->
+    let rhs_str = Pretty.sprint ~width:80 (dn_exp () rhs) in
+    Printf.printf "[%s, %s, %d]\n"
+      v.vname rhs_str stmt.sid
+  | _ -> () (* more complicated assignments not handled here *)
+end
+
+(*
+   This procedure returns the "Cil.fundec" associated with the callee
+   (i.e., the destination procedure) if possible, or None if the
+   callee cannot be resolved.
+
+   FIXME: add in alias analysis for function pointer resolution later, etc.
+ *)
+let process_function_call calling_context_fundec
+                          func_hash lhs func_name arg_list stmt
+                          : (Cil.fundec option) (* <- return type *)
+                          =
+  match func_name with
+  | Lval(Var(func_var_info), _) -> begin
+      let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
+      Printf.printf "FUNCTION CALL BEGIN\n";
+      Printf.printf "Name: %s\nCall Line: %d\n" func_str stmt.sid; (*lhs_str;*)
+      begin match lhs with
+        | None -> ()
+        | Some(actual_lhs) ->
+          let lhs_str = Pretty.sprint ~width:80 (dn_lval () actual_lhs) in
+          Printf.printf "LHS: %s \n" lhs_str;
+      end;
+      if Hashtbl.mem func_hash func_var_info then begin
+        (* let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in *)
+        let callee_func_obj:fundec = Hashtbl.find func_hash func_var_info in
+        (* Printf.printf "FUNCTION CALL: RESOLVED\n"; (*statement_str*) *)
+        (* let process_block statement = begin *)
+        Printf.printf "Param_assign: ";
+        List.iter2 (fun actual_param formal_param ->
+          let actual_str = Pretty.sprint ~width:80 (dn_exp () actual_param) in
+          Printf.printf "(%s %s) " actual_str formal_param.vname;
+        ) arg_list callee_func_obj.sformals;
+        Printf.printf "\n";
+        Some(callee_func_obj)
+      end else begin
+        Printf.printf "FUNCTION CALL: NOT RESOLVED: function not found\n" ;
+        None
+      end
+  end
+
+  | _ ->
+      Printf.printf "FUNCTION CALL: NOT RESOLVED: function call form not understood\n";
+      None
+
 
 let main () = begin
   let func_hash = Hashtbl.create 255 in
 
-
   Cil.initCIL () ;
 
   let input_filename = "in.i" in
+
   let (ast : Cil.file) = Frontc.parse input_filename () in
+  (* let (ast : Cil.file) = calls_end_basic_blocks ast_x in  *)
 
   (* Simplify memory operations *)
+  ignore (calls_end_basic_blocks ast) ;
   List.iter Simplify.doGlobal ast.globals;
   Cfg.computeFileCFG ast ;
 
-  (* Example function to process a function and print out some information
-   * that might be used to make predicates about data and control flow. *)
-  let process fundec = begin
 
-    (* General debugging for reader convenience *)
-    (* Printf.printf "Processing %s()\n" fundec.svar.vname ; *)
-    (* ( match fundec.smaxstmtid with
-    | Some(i) -> Printf.printf "max stmt id = %d\n" i
-    | None -> () ) ; *)
-    (* List.iter (fun stmt ->
-      let stmt_str = Pretty.sprint ~width:80 (dn_stmt () stmt) in
-      (* Printf.printf "\nstmt %d = %s\n" stmt.sid stmt_str ; *)
+  let rec process_stmt fundec stmt = begin
 
-      List.iter (fun succ ->
-        (* if stmt.sid = 1 then
-              print_endline "THEN"; *)
-        Printf.printf "  Edge: %d -> %d\n" stmt.sid succ.sid
-      ) stmt.succs ;
-      List.iter (fun pred ->
-        Printf.printf "  Edge: %d -> %d\n" pred.sid stmt.sid
-      ) stmt.preds ;
-    ) fundec.sallstmts ; *)
-    (* Printf.printf "\n\n" ; *)
+    (* given a single statement, extract the control flow *)
+    get_control_flow stmt;
 
-    (* A rough cut at control-flow predicates *)
-    List.iter (fun stmt ->
-      match stmt.skind with
-      | If(predicate,then_block,else_block,_) ->
-        assert(List.length stmt.succs = 2);
-        let then_stmt :: else_stmt :: [] = stmt.succs in
-        let predicate_str = Pretty.sprint ~width:80 (dn_exp () predicate) in
-        Printf.printf "(%d, %d, %s)\n" stmt.sid
-          then_stmt.sid predicate_str ;
-        Printf.printf "(%d, %d, !(%s))\n" stmt.sid
-          else_stmt.sid predicate_str
-      | _ ->
-        List.iter (fun succ ->
-          Printf.printf "(%d, %d, True)\n" stmt.sid succ.sid
-        ) stmt.succs
+    match stmt.skind with
+    | Return(None, loc) -> begin
+        Printf.printf "Return: [%s, None, %d] \n" fundec.vname stmt.sid;
+    end
+      (* Printf.printf "Return: [%s, None, %d] \n" fundec.vname, stmt.sid; *)
 
-    ) fundec.sallstmts ;
+    | Return(Some(exp), loc) -> begin
+      let exp_str = Pretty.sprint ~width:80 (dn_exp () exp) in
+      Printf.printf "Return: [%s, %s, %d] \n" fundec.vname exp_str stmt.sid;
+    end
+      (*dn exp*)
+    | Instr(instr_list) ->
+      List.iter (fun instr -> match instr with
+      | Set(lhs, rhs, loc) -> begin
+        (* for an instruction get the data flow *)
+        get_data_flow lhs rhs loc stmt;
+      end
 
-    (* A rough cut at data-flow predicates *)
-    List.iter (fun stmt ->
-      match stmt.skind with
-      | Instr(instr_list) ->
-        List.iter (fun instr -> match instr with
-        | Set(lhs, rhs, loc) -> begin
-          match lhs with
-          | Var(v),NoOffset ->
-            let rhs_str = Pretty.sprint ~width:80 (dn_exp () rhs) in
-            Printf.printf "[%s, %s, %d]\n"
-              v.vname rhs_str stmt.sid
-          | _ -> () (* more complicated assignments not handled here *)
-        end
-        (* why does this error? "pattern matching failed?" *)
-        (* ) instr_list ;
-        ) fundec.sallstmts ;
+      | Call(lhs, func_name, arg_list,  _ ) -> begin (*exp_list,*)
+        let func_name_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
 
-        List.iter (fun stmt ->
-          match stmt.skind with
-          | Instr(instr_list) ->
-            List.iter (fun instr -> match instr with *)
-          (*match loc with
-          | Var(v),NoOffset ->
-            let loc_str = Pretty.sprint ~width:80 (dn_exp () loc) in
-            Printf.printf "Data Transfers %s <- %s on PC = %d\n"
-              loc_str
-          | _ -> () (* more complicated assignments not handled here *)
-        end*)
-        | Call(lhs, func_name, arg_list,  _ ) -> begin (*exp_list,*)
-        match func_name with
-          | Lval(Var(func_var_info), _) -> begin
-
-          let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
-          Printf.printf "Name: %s\nCall Line: %d\n" func_str stmt.sid; (*lhs_str;*)
-          begin match lhs with
-            | None -> ()
-            | Some(actual_lhs) -> let lhs_str = Pretty.sprint ~width:80 (dn_lval () actual_lhs) in
-          Printf.printf "LHS: %s \n" lhs_str;
-        end;
-
-          Printf.printf "Actual args: (";
-
-          let process_el(single_arg:Cil.exp) =
-            let el_str = Pretty.sprint ~width:80 (dn_exp () single_arg) in
-            Printf.printf "%s " el_str;
-          in
-          List.iter
-          process_el
-          arg_list;
-          Printf.printf ")\n";
-
-          if Hashtbl.mem func_hash func_var_info then
-            (* let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in *)
-            let func_obj:fundec = Hashtbl.find func_hash func_var_info in
-            (* let process_block statement = begin *)
-            Printf.printf "Param_assign: ";
-            List.iter2 (fun actual_param formal_param ->
-              let actual_str = Pretty.sprint ~width:80 (dn_exp () actual_param) in
-
-            Printf.printf "(%s %s) " actual_str formal_param.vname;
-          ) arg_list func_obj.sformals;
-          Printf.printf "\n";
-
-              List.iter (fun stmt ->
-                match stmt.skind with
-                | If(predicate,then_block,else_block,_) ->
-                  assert(List.length stmt.succs = 2);
-                  let then_stmt :: else_stmt :: [] = stmt.succs in
-                  let predicate_str = Pretty.sprint ~width:80 (dn_exp () predicate) in
-                  Printf.printf "(%d, %d, %s)\n" stmt.sid
-                    then_stmt.sid predicate_str ;
-                  Printf.printf "(%d, %d, !(%s))\n" stmt.sid
-                    else_stmt.sid predicate_str
-                | _ ->
-                  List.iter (fun succ ->
-                    Printf.printf "(%d, %d, True)\n" stmt.sid succ.sid
-                  ) stmt.succs
-
-                ) func_obj.sallstmts ;
-
-                List.iter (fun stmt ->
-                  match stmt.skind with
-                  | Instr(instr_list) ->
-                    List.iter (fun instr -> match instr with
-                    | Set(lhs, rhs, loc) -> begin
-                      match lhs with
-                      | Var(v),NoOffset ->
-                        let rhs_str = Pretty.sprint ~width:80 (dn_exp () rhs) in
-                        Printf.printf "[%s, %s, %d]\n"
-                          v.vname rhs_str stmt.sid
-                      | _ -> () (* more complicated assignments not handled here *)
-                    end
-
-                  (* | Asm _ -> () *)
-                  ) instr_list ;
-                | _ -> () (* only instructions have side effects in CIL *)
-              ) func_obj.sallstmts ;
+        match process_function_call fundec func_hash lhs func_name arg_list stmt with
+        | Some(resolved_called_fundec) ->
+          (* Printf.printf "Recursively handling call: %s\n" func_name_str ; *)
+          process_fundec resolved_called_fundec;
+        Printf.printf "call ends: %s\n" func_name_str ;
 
 
-              (* let statement_str = Pretty.sprint ~width:80 (dn_stmt () statement) in *)
-            (* Printf.printf "FUNCTION END line %\n" statement.sid  statement_str; (*statement_str*) *)
 
-              (* Printf.printf "return statement id: %d \n" statement.sid; *)
-          (* end
-            in
-            List.iter process_block func_obj.sbody.bstmts; *)
+        | None ->
+          Printf.printf "Warning: could not resolve call: %s\n" func_name_str
 
+      end
 
-          Printf.printf "FUNCTION CALL END\n"; (*statement_str*)
+      | Asm _ -> ()
+      ) instr_list ;
 
-          end
+    | _ -> (); (* only instructions have side effects in CIL *)
 
-          (* | FE(Var(_), _) -> begin
-          let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
-          Printf.printf "Our natural function call is %s, at location: %d \n" func_str stmt.sid
-        end *)
-          | Lval(Mem(_), _) -> begin (*not currently used*)
-          let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in Printf.printf "This is a pointer call %s\n" func_str
-        end
-        end
+    (* Printf.printf "\n\nFirst Function Ends\n"; (*statement_str*) *)
 
-        | Asm _ -> ()
-        ) instr_list ;
-        Printf.printf "FUNCTION CALL END\n"; (*statement_str*)
+  end and process_fundec fundec = begin
+    (* not sure if this is correct, trying to pass in the function declaration fundec, and iterate over each statement*)
+    List.iter (fun stmt -> process_stmt fundec.svar stmt) fundec.sallstmts;
+  end
 
-      | _ -> () (* only instructions have side effects in CIL *)
-    ) fundec.sallstmts ;
+  (* and process_fundec fundec = begin (* don't need this as fundec needs to be passed*)
+    process_stmt_list fundec.sallstmts ;
+  end *)
+    in
 
-  end in
+  (* first pass to collect all functions *)
   List.iter (fun glob -> match glob with
   | GFun(fundec, loc) ->
     begin
@@ -196,16 +194,21 @@ let main () = begin
   | _ -> ()
   ) ast.globals;
 
-  (* let fun_head = List.hd ast.globals in *)
   List.iter (fun glob -> match glob with
-  | GFun(fundec, loc) -> process fundec
+  | GFun(fundec, loc) -> begin
+    if fundec.svar.vname = "main" then begin
+      Printf.printf "FUNCTION CALL BEGIN: main\n";
 
-  | GVarDecl(varinfo, loc) -> begin
+      (* let bbfun = calls_end_basic_blocks fundec in *)
+      process_fundec fundec(* only process main()*)
+  end end
+
+  (* | GVarDecl(varinfo, loc) -> begin (*prob don't need this*)
     if loc.line > 0 then begin (* Does nothing, find a fix for garbage functions.*)
       let type_str = Pretty.sprint ~width:80 (dn_type () varinfo.vtype) in
       Printf.printf "Function dec: %s\nType: %s\n" varinfo.vname type_str;  (*(isFunctionType(varinfo.vtype))*)
       end
-    end
+    end *)
   | _ -> ()
   ) ast.globals;
 
@@ -218,3 +221,12 @@ let main () = begin
 
 end ;;
 main () ;;
+
+(* let process_el(single_arg:Cil.exp) =
+  let el_str = Pretty.sprint ~width:80 (dn_exp () single_arg) in
+  Printf.printf "%s " el_str;
+in
+List.iter
+process_el
+arg_list;
+Printf.printf ")\n"; *)

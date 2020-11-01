@@ -584,8 +584,8 @@ int main(void)
   int y ;
   int x ;
   int z ;
-  int h ;
 
+  {
   {
 #line 5
   y = 0;
@@ -593,10 +593,13 @@ int main(void)
   x = 0;
 #line 7
   z = 0;
-#line 9
+#line 8
   z = func_F(x, y);
-#line 10
+#line 9
   z = 7;
+#line 10
+  z = func_F(x, y);
+  }
 #line 11
   return (0);
 }
@@ -614,21 +617,23 @@ int func_F(int a , int b )
 #line 18
     a = 1;
   }
+  {
+#line 19
+  a = func_G(a);
+  }
 #line 20
   return (a);
 }
 }
-#line 23 "in.i"
+#line 24 "in.i"
 int func_G(int k ) 
 { 
-  int tmp ;
+
 
   {
-#line 25
-  tmp = k;
-#line 25
+#line 26
   k ++;
-#line 25
-  return (tmp);
+#line 27
+  return (k);
 }
 }

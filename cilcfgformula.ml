@@ -82,13 +82,13 @@ let process_function_call calling_context_fundec
   match func_name with
   | Lval(Var(func_var_info), _) -> begin
       let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
-      Printf.printf "FUNCTION CALL BEGIN\n";
-      Printf.printf "Name: %s\nCall Line: %d\n" func_str stmt.sid; (*lhs_str;*)
+      Printf.printf "FUNCTION CALL BEGIN: ";
+      Printf.printf "[Name: %s] [Call Line: %d]" func_str stmt.sid; (*lhs_str;*)
       begin match lhs with
         | None -> ()
         | Some(actual_lhs) ->
           let lhs_str = Pretty.sprint ~width:80 (dn_lval () actual_lhs) in
-          Printf.printf "LHS: %s \n" lhs_str;
+          Printf.printf " [LHS: %s] \n" lhs_str;
       end;
       if Hashtbl.mem func_hash func_var_info then begin
         (* let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in *)
@@ -159,7 +159,7 @@ let main () = begin
         | Some(resolved_called_fundec) ->
           (* Printf.printf "Recursively handling call: %s\n" func_name_str ; *)
           process_fundec resolved_called_fundec;
-        Printf.printf "call ends: %s\n" func_name_str ;
+        Printf.printf "Call ends: %s\n" func_name_str ;
 
 
 
@@ -197,10 +197,11 @@ let main () = begin
   List.iter (fun glob -> match glob with
   | GFun(fundec, loc) -> begin
     if fundec.svar.vname = "main" then begin
-      Printf.printf "FUNCTION CALL BEGIN: main\n";
+      Printf.printf "FUNCTION CALL BEGIN: [Name: main] [Call Line: 1] \n";
 
       (* let bbfun = calls_end_basic_blocks fundec in *)
-      process_fundec fundec(* only process main()*)
+      process_fundec fundec;(* only process main()*)
+      Printf.printf "Call ends: main\n";
   end end
 
   (* | GVarDecl(varinfo, loc) -> begin (*prob don't need this*)

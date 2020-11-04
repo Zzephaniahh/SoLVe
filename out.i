@@ -597,43 +597,62 @@ int main(void)
   z = func_F(x, y);
 #line 9
   z = 7;
-#line 10
-  z = func_F(x, y);
   }
-#line 11
+#line 12
   return (0);
 }
 }
-#line 14 "in.i"
+#line 15 "in.i"
 int func_F(int a , int b ) 
 { 
 
 
   {
-#line 16
-  a ++;
 #line 17
-  if (a < b) {
+  a ++;
 #line 18
+  if (a < b) {
+#line 19
     a = 1;
   }
   {
-#line 19
+#line 20
   a = func_G(a);
   }
-#line 20
+#line 21
   return (a);
 }
 }
-#line 24 "in.i"
+#line 25 "in.i"
+int func_H(int a , int b ) 
+{ 
+
+
+  {
+#line 27
+  a ++;
+#line 28
+  if (a < b) {
+#line 29
+    a = 1;
+  }
+  {
+#line 30
+  a = func_G(a);
+  }
+#line 31
+  return (a);
+}
+}
+#line 36 "in.i"
 int func_G(int k ) 
 { 
 
 
   {
-#line 26
+#line 38
   k ++;
-#line 27
+#line 39
   return (k);
 }
 }

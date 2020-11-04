@@ -1,4 +1,4 @@
-FUNCTION CALL BEGIN: main
+FUNCTION CALL BEGIN: [Name: main] [Call Line: 1] 
 (1, 2, True)
 (2, 3, True)
 [y, 0, 2]
@@ -7,55 +7,25 @@ FUNCTION CALL BEGIN: main
 (4, 5, True)
 [z, 0, 4]
 (5, 6, True)
-FUNCTION CALL BEGIN
-Name: func_F
-Call Line: 5
-LHS: z 
+FUNCTION CALL BEGIN: [Name: func_F] [Call Line: 5] [LHS: z] 
 Param_assign: (x a) (y b) 
-(9, 10, True)
-[a, a + 1, 9]
-(10, 11, a < b)
-(10, 12, !(a < b))
+(8, 9, True)
+[a, a + 1, 8]
+(9, 10, a < b)
+(9, 11, !(a < b))
+(10, 11, True)
+[a, 1, 10]
 (11, 12, True)
-[a, 1, 11]
 (12, 13, True)
-(13, 14, True)
-FUNCTION CALL BEGIN
-Name: func_G
-Call Line: 13
-LHS: a 
+FUNCTION CALL BEGIN: [Name: func_G] [Call Line: 12] [LHS: a] 
 Param_assign: (a k) 
-(15, 16, True)
-[k, k + 1, 15]
-Return: [func_G, k, 16] 
-call ends: func_G
-Return: [func_F, a, 14] 
-call ends: func_F
+(20, 21, True)
+[k, k + 1, 20]
+Return: [func_G, k, 21] 
+Call ends: func_G
+Return: [func_F, a, 13] 
+Call ends: func_F
 (6, 7, True)
 [z, 7, 6]
-(7, 8, True)
-FUNCTION CALL BEGIN
-Name: func_F
-Call Line: 7
-LHS: z 
-Param_assign: (x a) (y b) 
-(9, 10, True)
-[a, a + 1, 9]
-(10, 11, a < b)
-(10, 12, !(a < b))
-(11, 12, True)
-[a, 1, 11]
-(12, 13, True)
-(13, 14, True)
-FUNCTION CALL BEGIN
-Name: func_G
-Call Line: 13
-LHS: a 
-Param_assign: (a k) 
-(15, 16, True)
-[k, k + 1, 15]
-Return: [func_G, k, 16] 
-call ends: func_G
-Return: [func_F, a, 14] 
-call ends: func_F
-Return: [main, 0, 8] 
+Return: [main, 0, 7] 
+Call ends: main

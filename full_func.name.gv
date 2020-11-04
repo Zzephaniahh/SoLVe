@@ -1,0 +1,90 @@
+// full_func.name
+digraph {
+	1 -> 2 [label=""]
+	1 [label="
+L1
+"]
+	2 -> 3 [label=""]
+	2 [label="
+L2
+y=0
+"]
+	3 -> 4 [label=""]
+	3 [label="
+L3
+x=0
+"]
+	4 -> 5 [label=""]
+	4 [label="
+L4
+z=0
+"]
+	5 -> W5 [label=""]
+	5 -> 8 [label=""]
+	5 [label="
+L5
+func_F=z
+x=a
+y=b
+"]
+	W5 -> R5 [label="(L13)"]
+	W5 -> W5 [label="!(L13)"]
+	W5 [label=W5
+]
+	R5 -> 6 [label=""]
+	R5 [label=R5
+]
+	6 -> 7 [label=""]
+	6 [label="
+L6
+z=7
+"]
+	8 -> 9 [label=""]
+	8 [label="
+L8
+a=a + 1
+"]
+	9 -> 10 [label="a < b"]
+	9 -> 11 [label="!(a < b)"]
+	9 [label="
+L9
+L9
+"]
+	10 -> 11 [label=""]
+	10 [label="
+L10
+a=1
+"]
+	11 -> 12 [label=""]
+	11 [label="
+L11
+"]
+	12 -> W12 [label=""]
+	12 -> 20 [label=""]
+	12 [label="
+L12
+func_G=a
+a=k
+"]
+	W12 -> R12 [label="(L21)"]
+	W12 -> W12 [label="!(L21)"]
+	W12 [label=W12
+]
+	R12 -> 13 [label=""]
+	R12 [label=R12
+]
+	13 [label="
+func_F=a
+"]
+	20 -> 21 [label=""]
+	20 [label="
+L20
+k=k + 1
+"]
+	21 [label="
+func_G=k
+"]
+	7 [label="
+main=0
+"]
+}

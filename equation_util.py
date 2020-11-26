@@ -1,4 +1,5 @@
 import cfg_util
+from cfg_util import expression
 
 class eqaulity_equation():
     def __init__(self, lhs):
@@ -58,7 +59,6 @@ def print_line_eq(eq):
     eq_str = eq.lhs.name + " = "
     for term in eq.terms:
         for literal in term:
-            # import pdb; pdb.set_trace()
             eq_str += literal + " & "
         eq_str = eq_str[:-3] + " || "
 
@@ -104,28 +104,6 @@ def intial_state(variable_dict):
     print("\n")
 
 
-def VMT_Or(line_name, terms): # Or two terms in VMT using ite FIXME HARDCODED UNTIL WE GET TYPE INFO
-    next_state_string = "(ite \n"
-    next_line_1 = terms[0][0]
-    condition_1 = terms[0][1]
-    next_line_2 = terms[1][0]
-    # condition_1 = terms[0][1] # FIXME
-    if condition_1[0] == "!": # negate
-
-        condition_1 = condition_1.split("<") #wont work for other conditions
-        cond_lhs = condition_1[0][condition_1[0].index("(")+1:]
-        cond_rhs = condition_1[1][condition_1[1].index(")")-1:-1]
-        if cond_rhs.isdigit():
-            next_state_string += "\t\t\t(and " + next_line_1 + " (not (bvgt " + cond_lhs + " (_ bv" + cond_rhs + " 32))))\n"
-            next_state_string += "\t\t\t" + next_line_1 + "\n"
-            next_state_string += "\t\t\t(ite \n\t\t\t" + next_line_2 + "\n\t\t\t" + next_line_2 + "\n"
-            next_state_string += "\t\t\t" + line_name[:-5] + ")))"
-        else:
-            next_state_string += "\t\t\t(and " + next_line_1 + " (not (bvgt " + cond_lhs + " " + cond_rhs + "))\n"
-            next_state_string += "\t\t\t(ite \n\t\t\t" + next_line_2 + "\n\t\t\t" + next_line_2 + "\n"
-            next_state_string += "\t\t\t" + line_name[:-5] + ")))"
-        return next_state_string
-
 def get_vmt_operator(operator):
     op_map = {
     ">" : "bvgt",
@@ -145,22 +123,40 @@ def get_vmt_data_type(variable):
     else:
         return variable
 
-def write_line_transition(name, terms, next_state_string):
+def VMT_And(literals):
+    and_str = "(and "
+    for literal in literals:
+        and_str += literal + " "
+    return and_str[:-1] + ")"
+
+def parse_data(data):
+    if "+" in data:
+        [lhs, rhs] = data.split("+")
+        return expression(lhs, rhs, "+", True)
+
+
+def write_line_transition(name, terms, next_state_string, depth):
     next_state_string = next_state_string
-    condition = terms[0][1]
+    term = terms[0]
+    condition = term[1]
     if condition.lhs == "":
-        next_state_string += terms[0][0]
+        next_state_string += "\t\t(ite\n"
+        next_state_string += "\t\t\t" + term[0] + "\n"
+        next_state_string += "\t\t\t" + term[0] + "\n"
+        return [next_state_string, depth+1]
+
+    next_line = term[0]
+    next_state_string += "\n\t\t(ite\n"
+    vmt_condition = VMT_And([next_line, "("+get_vmt_operator(condition.operator) + " " + condition.lhs + " " + get_vmt_data_type(condition.rhs) + ")"])
+    next_state_string += "\t\t\t" + vmt_condition + "\n"
+    next_state_string += "\t\t\t" + next_line + "\n"
+    if len(terms[1:]): # remove the processed term
+        [next_state_string, depth] = write_line_transition(name, terms[1:], next_state_string, depth)
+
+    next_state_string += "\t\t\t" + name[:-5]
+
+    for i in range(-2, depth): # close all ite calls -2 is to add the final closing bracket
         next_state_string += ")"
-        return next_state_string
-
-    next_line = terms[0][0]
-    next_state_string += "\n\t\t(ite \n\t\t\t" + next_line + "\n"
-    next_state_string += "\t\t\t(" + get_vmt_operator(condition.operator) + " " + condition.lhs + " " + get_vmt_data_type(condition.rhs) + ")"
-
-    if len(terms[1:]):
-        write_line_transition(name, terms[1:], next_state_string)
-
-    next_state_string += "\n\t\t\t" + name[:-5]
     return next_state_string
 
 
@@ -176,41 +172,14 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
         next_state_string = "\t\t(= " + eq.lhs.name +  " "
         condition = eq.terms[0][1]
         next_line = eq.terms[0][0]
-            # if condition.lhs == "":
-            #         next_state_string += eq.terms[0][0]
-            #         next_state_string += ")"
-            #         print(next_state_string)
-            #         continue
-            # else:
-        # import pdb; pdb.set_trace()
-        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string)
-        # print(next_state_string)
-            # next_state_string = "\t\t(ite \n\t\t\t" + next_line + "\n"
-            # next_state_string = "(" + condition.operator + " " + condition.lhs + " " + condition.rhs
+        if (condition.lhs == "") and (len(eq.terms) == 1):
+                next_state_string += eq.terms[0][0]
+                next_state_string += ")"
+                print(next_state_string)
+                continue
 
-
-        # if len(eq.terms) > 1:
-        #     import pdb; pdb.set_trace()
-        #     print(eq.terms)
-            # next_state_string  += VMT_Or(eq.lhs.name, eq.terms)
-        # else:
-        #     import pdb; pdb.set_trace()
-        #     if len(eq.terms[0]) > 1:
-        #         next_state_string += "(ite\n "
-        #         for term in eq.terms:
-        #             # import pdb; pdb.set_trace()
-        #             if len(term) == 1: # fixme when type info/scoping is considered
-        #                 continue
-        #                 print(term)
-        #             next_state_string += "\t\t\t(and " +term[0] + "" # add the next state
-        #
-        #             if term[1][0] == "!":
-        #                 next_state_string += " (not (bvgt " + term[1][2] + " " + term[1][4] + "))"
-        #                 # next_state_string += eq.lhs.name[:-5]
-        #             else:
-        #                 next_state_string += " (bvgt " + term[1][1]+ " " + term[1][3] + "))\n"
-        #                 next_state_string += "\t\t\t" + term[0] + "\n"
-        #                 next_state_string += "\t\t\t" + eq.lhs.name[:-5] + ")"
+        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string, 0)
+        print(next_state_string)
 
     ######## data VMT transitions####################
     for eq in implication_equation_dict.values():
@@ -220,20 +189,29 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
         ite_count = 0
         for line, data in eq.line_and_data_set:
             ite_count += 1
+            # if ite_count == 2:
+                # import pdb; pdb.set_trace()
             next_state_string += indent + "(ite\n"
             indent += "   "
             if data.isdigit(): # fixme when I have type info
                 next_state_string += indent + line +"\n"
                 next_state_string += indent + "(_ bv"+ data + " 32)\n"
+            else:
+                exp = parse_data(data)
+                next_state_string += indent + line +"\n"
+                if exp.rhs.isdigit():
+                    next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs +  " (bv" + exp.rhs + " 32))\n"
+                else:
+                    next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs + " " + exp.rhs + " )\n"
 
 
         closing_brackets = ")"
         for i in range(0, ite_count):
             closing_brackets += ")"
         next_state_string += "\t\t\t" + eq.variable + closing_brackets
-        # print(next_state_string)
+        print(next_state_string)
 
-
+############ CFG-driven One-Hot ####################
     for node in one_hot_cfg_driven_eq_dict:
         preds = one_hot_cfg_driven_eq_dict[node]
         next_state_string = "\t\t(= " + node + "\n"
@@ -253,7 +231,7 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
 
         else:
             next_state_string = "" # FIXME check final state, should loop I think.
-        # print(next_state_string)
+        print(next_state_string)
 
     print("\t) \n\t:trans true))")
     print("\n")
@@ -281,6 +259,7 @@ def get_readable_equations(CFG):
     implication_equation_dict = {}
     one_hot_cfg_driven_eq_dict = {}
     variable_update_loc_dict = {}
+    data_variable_dict = {}
     print_readable = False
 
     for node in CFG.node_dict.values():
@@ -293,7 +272,7 @@ def get_readable_equations(CFG):
 
         for expression in node.expressions:
             if expression.lhs.name not in implication_equation_dict:
-                # variable_dict[expression.lhs.name] = var(expression.lhs.name, expression.lhs.type)
+                data_variable_dict[expression.lhs.name] = var(expression.lhs.name, expression.lhs.type)
                 implication_equation_dict[expression.lhs.name] = implication_equation(expression.lhs.name)
 
                 variable_update_loc_dict[expression.lhs.name] = [node.node_numb] # track each update location
@@ -314,6 +293,8 @@ def get_readable_equations(CFG):
 
         for edge in node.edges:
             dest_node = CFG.node_dict[edge.dest] # get the destination of the edge
+            if dest_node.node_numb == node.node_numb:
+                continue # skip self loops?
             dest_next_state = dest_node.node_numb + "+"
             vmt_dest_next_state = dest_node.node_numb + "$next"
             if dest_next_state not in line_equation_dict:
@@ -351,14 +332,16 @@ def get_readable_equations(CFG):
 
 
 ################## VMT #############################
-    # for variable in variable_dict.values():
-    #     declare_variables(variable)
-    # intial_state(variable_dict)
+    for variable in variable_dict.values():
+        declare_variables(variable)
+    for variable in data_variable_dict.values():
+        declare_variables(variable)
+    intial_state(variable_dict)
 
     build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_dict, vmt_line_equation_dict)
     #
     #
-    # Hard_code_P(True)
+    Hard_code_P(True)
 
 
 

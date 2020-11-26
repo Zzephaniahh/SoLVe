@@ -261,7 +261,6 @@ def get_edge(line, current_full_func, entry=False):
             negate = False
         lhs = condition[0]
         compare_op = condition[1]
-        # import pdb; pdb.set_trace()
         rhs = condition[2]
         condition = expression(lhs, rhs, compare_op, negate)
 
@@ -286,6 +285,8 @@ def get_data_edge(line, current_full_func, return_bool=False):# optional return 
 
     # var = type_variable_str.split(" ")[1]
     data = data_transfer[1].strip() # get the second item
+    # import pdb; pdb.set_trace()
+
     line_number = "L"+data_transfer[2].strip()
 
     current_full_func.CFG.add_node(line_number, current_full_func.name, [var, "=", data])
@@ -364,7 +365,6 @@ def display_CFG(CFG_to_display_global, name):
             graph.edge(edge.source, edge.dest, label = label)
 
         for exp in node.expressions:
-            # import pdb; pdb.set_trace()
             lbl_str += exp.lhs.name + exp.operator + exp.rhs
             lbl_str += "\n"
 

@@ -21,7 +21,7 @@ z=0
 ]
 	L10 -> L11 [label=""]
 	L10 [label="L10
-z=1
+z=x+1
 "]
 	L11 -> L12 [label=""]
 	L11 [label="L11

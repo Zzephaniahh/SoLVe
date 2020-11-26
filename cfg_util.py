@@ -1,10 +1,25 @@
 import re #regex for parsing
 from graphviz import Digraph
+import copy # maybe fix this, used when graphing only.
+
+class variable():
+    def __init__(self, name, type, function):
+        self.type = type
+        self.name = name
+        self.function_scope = function
+
+
+class expression():
+    def __init__(self, lhs, rhs, operator, negate):
+        self.lhs = lhs
+        self.rhs = rhs
+        self.operator = operator # < > <= = etc.
+        self.negate = negate # this bool is True if the equation is negated (if ! in string)
 
 class node():
-    def __init__(self, node_numb, label_list, func):
+    def __init__(self, node_numb, func):
         self.node_numb = node_numb
-        self.label_list = label_list
+        self.expressions = []
         self.edges = []
         self.succs = []
         self.preds = []
@@ -42,9 +57,9 @@ class CFG():
 
     def add_edge(self, source, dest, condition):
         if source not in self.node_dict:
-            self.add_node(source, "", "")
+            self.add_node(source, "")
         if dest not in self.node_dict:
-            self.add_node(dest, "", "")
+            self.add_node(dest, "")
 
         self.node_dict[source].edges.append(edge(source, dest, condition))
         self.node_dict[source].succs.append(dest)
@@ -53,12 +68,14 @@ class CFG():
     def add_existing_node(self, existing_node):
         self.node_dict[existing_node.node_numb] = existing_node
 
-    def add_node(self, node_numb, lbl, func):
-        if node_numb in self.node_dict:
-            self.node_dict[node_numb].label_list.append(lbl)
-        else:
+    def add_node(self, node_numb, func, exp=None):
+        if node_numb not in self.node_dict:
             self.num_of_nodes += 1
-            self.node_dict[node_numb] = node(node_numb, [lbl], func)
+            self.node_dict[node_numb] = node(node_numb, func)
+
+        if exp != None:
+            data_exp = expression(exp[0], exp[2], exp[1], False )
+            self.node_dict[node_numb].expressions.append(data_exp)
 
     def get_node(self, this_node):
         self.node_dict[this_node]
@@ -88,6 +105,7 @@ class full_func():
         self.return_list = []
         self.signature = "" #default sig
         self.entry_node = ""
+        self.local_variable_dict = {}
 
 
 def get_sig(name, formal_param_list):
@@ -141,9 +159,14 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
                     func_call.line = data[len("[Call Line: "):-1].strip()
                     continue
 
+                if "Return Type: " in data:
+                    # find the type between "Return Type:" and "(int a , int b )" in "[Return Type: int (int a , int b )]"
+                    func_call.type = data[ data.find(":")+2 : data.find("(") ]
+
                 if "LHS: " in data:
                     func_call.lhs = data[len("[LHS: "):-1].strip()
-                    get_data_edge("[" + func_call.func_name + ", " + func_call.lhs + ", " + func_call.line + "]", current_full_func)
+                    get_data_edge("[" + func_call.type + "  " + func_call.lhs + ", " + func_call.func_name + ", " + func_call.line + "]", current_full_func)
+
             continue
 
         if "Call ends:" in line:
@@ -152,15 +175,18 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
 
 
         if line.startswith('Return: '):
+            line = line[ :line.find("(")-1 ] + line[line.find(")")+1: ] # super hacky, but removes formal params
             get_data_edge(line[len('Return: '):], current_full_func, True)
             continue
 
         if line.startswith('Param_assign: '):
+            func_call.param_assign = []
             param_str = line[len("Param_assign: "):].strip()
             param_list = re.findall(r'\((.*?)\)',param_str)
             for param_set in param_list:
                 param_pair = param_set.split(" ")
                 func_call.param_assign.append(param_pair)
+
             for para_assignment_pair in func_call.param_assign:
                 actual = para_assignment_pair[0]
                 # func_call.actual = actual
@@ -193,7 +219,7 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
         if line.startswith("["):# and line.endswith("]"):
             get_data_edge(line, current_full_func)
 
-    return #func_call_list
+    return
 
 
 
@@ -202,17 +228,17 @@ def add_func_call(current_full_func, func_signature, lhs, call_line, param_assig
     global our_CFG
 
     for param_pair in param_assign_list: # assign out the formals to the actuals
-        current_full_func.CFG.add_node(call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
-        our_CFG.add_node(call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
+        current_full_func.CFG.add_node("L"+call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
+        our_CFG.add_node("L"+call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
 
     # add the function = lhs assignment # done elsewhere maybe move here
     # current_full_func.CFG.add_node(call_line, [current_full_func.name, "=", lhs], current_full_func.name)
 
-    current_node = current_full_func.CFG.node_dict[call_line]
+    current_node = current_full_func.CFG.node_dict["L"+call_line]
 
     current_node.call_signature = func_signature
 
-    our_current_node = our_CFG.node_dict[call_line]
+    our_current_node = our_CFG.node_dict["L"+call_line]
 
     our_current_node.call_signature = func_signature
 
@@ -222,13 +248,25 @@ def get_edge(line, current_full_func, entry=False):
     global our_CFG
     # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
     edge_data  = re.sub(r'\((.*?)\)', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
-    source = edge_data[0].strip() # get the first item (source)
-    dest =   edge_data[1].strip() # get the second item (dest)
-    condition = edge_data[2].strip()
-    our_CFG.add_edge(source, dest, condition)
-    our_CFG.add_node(source, ["L" + source], current_full_func.name)
+    source = "L" + edge_data[0].strip() # get the first item (source)
+    dest =   "L" + edge_data[1].strip() # get the second item (dest)
+    condition =  edge_data[2].strip().split()
+    if condition == ["True"]:
+        condition = expression("","","",False) # unconditional edge
+    else:
+        if condition[0][0] == "!": # if the first char is ! its a negation
+            condition[0] = condition[0][1:] # remove the ! from the variable
+            negate = True
+        else:
+            negate = False
+        lhs = condition[0]
+        compare_op = condition[1]
+        # import pdb; pdb.set_trace()
+        rhs = condition[2]
+        condition = expression(lhs, rhs, compare_op, negate)
+
     current_full_func.CFG.add_edge(source, dest, condition)
-    current_full_func.CFG.add_node(source, ["L" + source], current_full_func.name)
+
     if entry:
         current_full_func.entry_node = source
     return
@@ -236,20 +274,24 @@ def get_edge(line, current_full_func, entry=False):
 
 #change me to add node
 def get_data_edge(line, current_full_func, return_bool=False):# optional return or call variable
-
     # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
     data_transfer = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
 
-    variable = data_transfer[0].strip() # get the first item (source)
-    data = data_transfer[1].strip() # get the second item (dest)
-    line_number = data_transfer[2].strip()
+    type_variable_str = data_transfer[0].strip().split() # get the first item (source)
+    # [name, type] = type_variable_str.split("  ")
 
-    our_CFG.add_node(line_number, [variable, "=", data], current_full_func.name)
+    type = type_variable_str[0]
+    name = type_variable_str[1]
+    var = variable(name, type, current_full_func.name)
 
-    current_full_func.CFG.add_node(line_number, [variable, "=", data], current_full_func.name)
+    # var = type_variable_str.split(" ")[1]
+    data = data_transfer[1].strip() # get the second item
+    line_number = "L"+data_transfer[2].strip()
+
+    current_full_func.CFG.add_node(line_number, current_full_func.name, [var, "=", data])
 
     if (return_bool):
-        current_full_func.return_list.append(our_CFG.node_dict[line_number])
+        current_full_func.return_list.append(current_full_func.CFG.node_dict[line_number])
 
     return
 
@@ -263,10 +305,10 @@ def insert_wait_node(call_node, entry_function, called_function):
     wait_node_name = "W" + call_node.node_numb
     return_node_name = "R" + call_node.node_numb
 
-    file_CFG.add_node(wait_node_name, [wait_node_name], entry_function.name) # add each node
-    file_CFG.add_node(return_node_name, [return_node_name], entry_function.name) # add each node
+    file_CFG.add_node(wait_node_name, entry_function.name) # add each node
+    file_CFG.add_node(return_node_name, entry_function.name) # add each node
 
-    self_edge_cond = "!(L"
+    self_edge_cond = "!("
     for return_node in called_function.return_list:
         self_edge_cond += return_node.node_numb + " & "
     self_edge_cond = self_edge_cond[:-3] +")"
@@ -284,7 +326,7 @@ def build_file_CFG(entry_function):
 
     for node in entry_function.CFG.node_dict.values():
         file_CFG.add_existing_node(node) # add each node
-
+        # file_CFG.node_dict[node.node_numb].label_list.append(node.node_numb)
         if node.call_signature != "": # if theres a function call
             called_function = full_func_dict[node.call_signature]
             entry_node = called_function.CFG.node_dict[called_function.entry_node]
@@ -304,22 +346,35 @@ def get_file_CFG(file_name):
 
     return build_file_CFG(entry_function)
 
-def display_CFG(CFG_to_display, name):
+def display_CFG(CFG_to_display_global, name):
+    CFG_to_display = copy.deepcopy(CFG_to_display_global)
     graph = Digraph(comment=name)
     global func_call_list
 
     for node_numb in CFG_to_display.node_dict:
-        lbl_str = ""
+        lbl_str = node_numb + "\n"
         node = CFG_to_display.node_dict[node_numb]
         for edge in node.edges:
             if edge.condition == "True":
                 edge.condition = ""
-            graph.edge(edge.source, edge.dest, label = edge.condition)
 
-        for lbl_set in node.label_list:
-            for lbl in lbl_set:
-                lbl_str += str(lbl)
+            label = edge.condition.lhs + edge.condition.operator + edge.condition.rhs
+            if edge.condition.negate == True:
+                label = "!(" + label + ")"
+            graph.edge(edge.source, edge.dest, label = label)
+
+        for exp in node.expressions:
+            # import pdb; pdb.set_trace()
+            lbl_str += exp.lhs.name + exp.operator + exp.rhs
             lbl_str += "\n"
+
+            # the [::-1] simply reverses the list so Lx is printed on top.
+            # for lbl in lbl_set:
+            #     if type(lbl) == type(variable("name", "type", "funct")):
+            #         lbl_str += str(lbl.type + " " + lbl.name)
+            #     else:
+            #         lbl_str += str(lbl)
+            # lbl_str += "\n"
 
         graph.node(node.node_numb, label=lbl_str)
 

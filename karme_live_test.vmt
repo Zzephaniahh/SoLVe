@@ -1,0 +1,76 @@
+(declare-fun L1 () Bool)
+(declare-fun L1$next () Bool)
+(declare-fun .L1 () Bool (! L1 :next L1$next))
+(declare-fun L2 () Bool)
+(declare-fun L2$next () Bool)
+(declare-fun .L2 () Bool (! L2 :next L2$next))
+(declare-fun y () (_ BitVec 32)
+(declare-fun y$next () (_ BitVec 32))
+(declare-fun .y () (_ BitVec 32) (! y :next y$next))
+(declare-fun L7 () Bool)
+(declare-fun L7$next () Bool)
+(declare-fun .L7 () Bool (! L7 :next L7$next))
+(declare-fun x () (_ BitVec 32)
+(declare-fun x$next () (_ BitVec 32))
+(declare-fun .x () (_ BitVec 32) (! x :next x$next))
+(declare-fun L8 () Bool)
+(declare-fun L8$next () Bool)
+(declare-fun .L8 () Bool (! L8 :next L8$next))
+(declare-fun z () (_ BitVec 32)
+(declare-fun z$next () (_ BitVec 32))
+(declare-fun .z () (_ BitVec 32) (! z :next z$next))
+(declare-fun L9 () Bool)
+(declare-fun L9$next () Bool)
+(declare-fun .L9 () Bool (! L9 :next L9$next))
+(declare-fun L10 () Bool)
+(declare-fun L10$next () Bool)
+(declare-fun .L10 () Bool (! L10 :next L10$next))
+(declare-fun L11 () Bool)
+(declare-fun L11$next () Bool)
+(declare-fun .L11 () Bool (! L11 :next L11$next))
+(declare-fun L12 () Bool)
+(declare-fun L12$next () Bool)
+(declare-fun .L12 () Bool (! L12 :next L12$next))
+(declare-fun main () (_ BitVec 32)
+(declare-fun main$next () (_ BitVec 32))
+(declare-fun .main () (_ BitVec 32) (! main :next main$next))
+
+
+(define-fun .init () Bool (! 
+ 	(and
+		L1
+		(not L2)
+		(= y (_ bv0 32))
+		(not L7)
+		(= x (_ bv0 32))
+		(not L8)
+		(= z (_ bv0 32))
+		(not L9)
+		(not L10)
+		(not L11)
+		(not L12)
+		(= main (_ bv0 32))
+	)
+	:init true))
+
+
+
+
+(define-fun .trans () Bool (!  
+ 	(and
+		(= L1$next false)
+		(= L2$next L1)
+		(= L7$next L2)
+		(= L8$next L7)
+		(= L9$next L8)
+		(= L10$next (ite
+ 			(and L9 (bvgt x 0))
+			L9
+			L10))
+		(= L11$next (ite 
+			(and L9 (not (bvgt x (_ bv0 32))))
+			L9
+			(ite 
+			L10
+			L10
+			L11)))

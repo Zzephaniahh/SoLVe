@@ -51,7 +51,7 @@ let get_control_flow stmt = begin
       let predicate_str = Pretty.sprint ~width:80 (dn_exp () predicate) in
       Printf.printf "(%d, %d, %s)\n" stmt.sid
         then_stmt.sid predicate_str ;
-      Printf.printf "(%d, %d, !(%s))\n" stmt.sid
+      Printf.printf "(%d, %d, !%s)\n" stmt.sid
         else_stmt.sid predicate_str
     | _ ->
       List.iter (fun succ ->
@@ -63,8 +63,9 @@ let get_data_flow lhs rhs loc stmt = begin
   match lhs with
   | Var(v),NoOffset ->
     let rhs_str = Pretty.sprint ~width:80 (dn_exp () rhs) in
-    Printf.printf "[%s, %s, %d]\n"
-      v.vname rhs_str stmt.sid
+    let type_str = Pretty.sprint ~width:80 (dn_type () v.vtype) in
+    Printf.printf "[%s %s, %s, %d]\n"
+    type_str v.vname rhs_str stmt.sid
   | _ -> () (* more complicated assignments not handled here *)
 end
 
@@ -83,7 +84,8 @@ let process_function_call calling_context_fundec
   | Lval(Var(func_var_info), _) -> begin
       let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
       Printf.printf "FUNCTION CALL BEGIN: ";
-      Printf.printf "[Name: %s] [Call Line: %d]" func_str stmt.sid; (*lhs_str;*)
+      let type_str = Pretty.sprint ~width:80 (dn_type () func_var_info.vtype) in
+      Printf.printf "[Name: %s] [Call Line: %d] [Return Type: %s]" func_str stmt.sid type_str; (*lhs_str;*)
       begin match lhs with
         | None -> ()
         | Some(actual_lhs) ->
@@ -103,13 +105,13 @@ let process_function_call calling_context_fundec
         Printf.printf "\n";
         Some(callee_func_obj)
       end else begin
-        Printf.printf "FUNCTION CALL: NOT RESOLVED: function not found\n" ;
+        (* Printf.printf "FUNCTION CALL: NOT RESOLVED: function not found\n" ; *)
         None
       end
   end
 
   | _ ->
-      Printf.printf "FUNCTION CALL: NOT RESOLVED: function call form not understood\n";
+      (* Printf.printf "FUNCTION CALL: NOT RESOLVED: function call form not understood\n"; *)
       None
 
 
@@ -136,13 +138,15 @@ let main () = begin
 
     match stmt.skind with
     | Return(None, loc) -> begin
-        Printf.printf "Return: [%s, None, %d] \n" fundec.vname stmt.sid;
+      let type_str = Pretty.sprint ~width:80 (dn_type () fundec.vtype) in
+      Printf.printf "Return: [%s %s, None, %d] \n" type_str fundec.vname stmt.sid ;
     end
       (* Printf.printf "Return: [%s, None, %d] \n" fundec.vname, stmt.sid; *)
 
     | Return(Some(exp), loc) -> begin
       let exp_str = Pretty.sprint ~width:80 (dn_exp () exp) in
-      Printf.printf "Return: [%s, %s, %d] \n" fundec.vname exp_str stmt.sid;
+      let type_str = Pretty.sprint ~width:80 (dn_type () fundec.vtype) in
+      Printf.printf "Return: [%s %s, %s, %d] \n" type_str fundec.vname exp_str stmt.sid;
     end
       (*dn exp*)
     | Instr(instr_list) ->
@@ -164,7 +168,8 @@ let main () = begin
 
 
         | None ->
-          Printf.printf "Warning: could not resolve call: %s\n" func_name_str
+          ()
+          (* Printf.printf "Warning: could not resolve call: %s\n" func_name_str *)
 
       end
 

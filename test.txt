@@ -1,31 +1,17 @@
-FUNCTION CALL BEGIN: [Name: main] [Call Line: 1] 
+FUNCTION CALL BEGIN: [Name: main] [Call Line: 1]
 (1, 2, True)
-(2, 3, True)
-[y, 0, 2]
-(3, 4, True)
-[x, 0, 3]
-(4, 5, True)
-[z, 0, 4]
-(5, 6, True)
-FUNCTION CALL BEGIN: [Name: func_F] [Call Line: 5] [LHS: z] 
-Param_assign: (x a) (y b) 
+(2, 7, True)
+(7, 8, True)
 (8, 9, True)
-[a, a + 1, 8]
-(9, 10, a < b)
-(9, 11, !(a < b))
 (10, 11, True)
-[a, 1, 10]
+(9, 10, x < 0)
+(9, 11, !x < 0)
 (11, 12, True)
-(12, 13, True)
-FUNCTION CALL BEGIN: [Name: func_G] [Call Line: 12] [LHS: a] 
-Param_assign: (a k) 
-(20, 21, True)
-[k, k + 1, 20]
-Return: [func_G, k, 21] 
-Call ends: func_G
-Return: [func_F, a, 13] 
-Call ends: func_F
-(6, 7, True)
-[z, 7, 6]
-Return: [main, 0, 7] 
+(12, 12, True)
+[int  y, 0, 2]
+[int  x, 0, 7]
+[int  z, 0, 8]
+[int  z, x+1, 10]
+[int  z, 7, 11]
+Return: [int (void) main, 0, 12]
 Call ends: main

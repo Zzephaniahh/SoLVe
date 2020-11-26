@@ -1,0 +1,23 @@
+
+
+(define-fun .trans () Bool (!  
+ 	(and
+		(= L2$next L1)
+		(= L7$next L2)
+		(= L8$next L7)
+		(= L9$next L8)
+		(= L10$next 
+		(ite 
+			L9
+			(bvlt x (_ bv0 32))
+			L10
+		(= L11$next 
+		(ite 
+			L9
+			(bvlt x (_ bv0 32))
+			L11
+		(= L12$next L11)
+	) 
+	:trans true))
+
+

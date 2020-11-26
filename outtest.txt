@@ -1,0 +1,69 @@
+
+
+(define-fun .trans () Bool (!  
+ 	(and
+		(= L1$next false)
+		(= L2$next L1)
+		(= L3$next (ite
+ 			(and L2 (bvgt x 0))
+			L2
+			L3))
+		(= L4$next (ite 
+			(and L2(not (bvgt x (_ bv0 32))))
+			L2
+			(ite 
+			L3
+			(L3)
+			L4)))
+		(= L5$next L4)
+		(= y$next
+		(ite
+		   L1
+		   (_ bv0 32)
+			y))
+		(= x$next
+		(ite
+		   L1
+		   (_ bv0 32)
+			x))
+		(= z$next
+		(ite
+		   L1
+		   (_ bv0 32)
+		   (ite
+		      L3
+		      (_ bv1 32)
+		      (ite
+		         L4
+		         (_ bv7 32)
+			z))))
+		(= main$next
+		(ite
+		   L5
+		   (_ bv0 32)
+			main))
+		(= L1
+			(ite
+			L2
+			false
+			L1))
+		(= L2
+			(ite
+			(or L3 L4)
+			false
+			L2))
+		(= L3
+			(ite
+			L4
+			false
+			L3))
+		(= L4
+			(ite
+			L5
+			false
+			L4))
+
+	) 
+	:trans true))
+
+

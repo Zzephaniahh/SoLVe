@@ -1,8 +1,9 @@
 make
 
-./cilcfgformula > test.txt
 
-python3 SoLVe.py test.txt #broken rn
+./cilcfgformula > assert_test.txt
+
+# python3 SoLVe.py #test.txt
 
 
 # sed -i '/__/d' test.txt

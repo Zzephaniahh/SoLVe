@@ -1,27 +1,14 @@
-int func_F(int a, int b);
-int func_G(int k);
-
 int main () {
-  int y=0;
-  int x=0;
-  int z=0;
-  z = func_F(x, y);
+  int y = 0;
+  /* this is a comment */
+
+
+
+  int x = 0;
+  int z = 0;
+  if (x<0){
+  assert(x >= 10);
+    z = x+1;}
   z = 7;
   return 0;
-}
-
-int func_F(a, b)
-{
-  a++;
-  if (a<b){
-    a = 1;}
-  a = func_G(a);
-  return a;
-
-}
-
-int func_G(k)
-{
-  k++;
-  return k;
 }

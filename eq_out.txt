@@ -1,0 +1,16 @@
+L1$next = false
+L2$next = L1
+L3$next = L2 & (x<y)
+L4$next = L2 & !(x<y) || L3
+L5$next = L4
+L1 --> y+ = 0
+!L1 --> y+ = y
+L1 --> x+ = 0
+!L1 --> x+ = x
+L1 --> z+ = 0
+L3 --> z+ = 1
+L4 --> z+ = 7
+L4 --> z+ = z + 1
+!L1 & !L3 & !L4 & !L4 --> z+ = z
+L5 --> main+ = 0
+!L5 --> main+ = main

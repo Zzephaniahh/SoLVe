@@ -574,85 +574,37 @@
    void __attribute__((__overloaded__))  __atomic_add_fetch_4(...) ;  */
 /* compiler builtin: 
    void *__builtin_frame_address(unsigned int  ) ;  */
+#line 10 "in.i"
+extern int ( /* missing proto */  assert)() ;
 #line 1 "in.i"
-int func_F(int a , int b ) ;
-#line 2
-int func_G(int k ) ;
-#line 4 "in.i"
 int main(void) 
 { 
   int y ;
   int x ;
   int z ;
+  int __cil_tmp4 ;
 
   {
-  {
-#line 5
+#line 2
   y = 0;
-#line 6
-  x = 0;
 #line 7
-  z = 0;
+  x = 0;
 #line 8
-  z = func_F(x, y);
+  z = 0;
 #line 9
-  z = 7;
+  if (x < 0) {
+    {
+#line 10
+    __cil_tmp4 = x >= 10;
+#line 10
+    assert(__cil_tmp4);
+#line 11
+    z = x + 1;
+    }
   }
 #line 12
+  z = 7;
+#line 13
   return (0);
-}
-}
-#line 15 "in.i"
-int func_F(int a , int b ) 
-{ 
-
-
-  {
-#line 17
-  a ++;
-#line 18
-  if (a < b) {
-#line 19
-    a = 1;
-  }
-  {
-#line 20
-  a = func_G(a);
-  }
-#line 21
-  return (a);
-}
-}
-#line 25 "in.i"
-int func_H(int a , int b ) 
-{ 
-
-
-  {
-#line 27
-  a ++;
-#line 28
-  if (a < b) {
-#line 29
-    a = 1;
-  }
-  {
-#line 30
-  a = func_G(a);
-  }
-#line 31
-  return (a);
-}
-}
-#line 36 "in.i"
-int func_G(int k ) 
-{ 
-
-
-  {
-#line 38
-  k ++;
-#line 39
-  return (k);
 }
 }

@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
 """
 TODO:
-1. Compute equations from graph
-2. Get SMT-lib/VMT either from graph or from equations -- probably graph for efficiency.
+1. Compute equations from graph -- Done!
+2. Get SMT-lib/VMT -- partially complete, need to handle more cases
 3. Test more complex source code
 4. Handle functions -- DONE!
 """

@@ -1,21 +1,37 @@
-L1+ = false
+L2 --> !L1
+L2+ --> !L1+
+L2+ --> y+ = 0
+L7 --> !L2
+L7+ --> !L2+
+L7+ --> x+ = 0
+L8 --> !L7
+L8+ --> !L7+
+L8+ --> z+ = 0
+L9 --> !L8
+L9+ --> !L8+
+L10 || L11 --> !L9
+L10+ || L11+ --> !L9+
+L10+ --> z+ = x+1
+L11 --> !L10
+L11+ --> !L10+
+L11+ --> z+ = 7
+L12 --> !L11
+L12+ --> !L11+
+L12+ --> main+ = 0
+L12 --> !L12
+L12+ --> !L12+
+
+# Line Next State
 L2+ = L1
-L3+ = L2 & (x<0)
-L4+ = L2 & !(x<0) || L3
-L5+ = L4
-L1 --> y+ = 0
-!L1 --> y+ = y
-L1 --> x+ = 0
-!L1 --> x+ = x
-L1 --> z+ = 0
-L3 --> z+ = 1
-L4 --> z+ = 7
-!L1 & !L3 & !L4 --> z+ = z
-L5 --> main+ = 0
-!L5 --> main+ = main
-L2 --> L1 = False
-L3 & L4 --> L2 = False
-L4 --> L3 = False
-L5 --> L4 = False
-L5 --> L5 = True?
-# should be L5 --> L5+ = true?
+L7+ = L2
+L8+ = L7
+L9+ = L8
+L10+ = L9 & (x<0)
+L11+ = L9 & !(x<0) || L10
+L12+ = L11 || L12
+
+# Data Preservation
+!L2+ --> y+ = y
+!L7+ --> x+ = x
+!L8+ & !L10+ & !L11+ --> z+ = z
+!L12+ --> main+ = main

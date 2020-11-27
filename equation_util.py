@@ -47,12 +47,12 @@ class var():
         self.type = type
 
 def print_data_assignment(line, variable, data):
-    print(line + " --> " + variable + "+ = " + data)
+    print(line + "+ --> " + variable + "+ = " + data)
 
 def print_data_preservation(variable, update_loc_list):
     no_update_str = ""
     for line in update_loc_list:
-        no_update_str += "!" + line + " & "
+        no_update_str += "!" + line + "+ & "
     print(no_update_str[:-3] + " --> " + variable + "+ = " + variable)
 
 def print_line_eq(eq):
@@ -81,13 +81,13 @@ def print_cfg_driven_encoding(node, succs):
 
 def declare_variables(variable):
     if variable.type == "int": #this is a hack which will be removed once CIL produces full variable info.
-        print("(declare-fun " + variable.name + " () " + "(_ BitVec 32)") # current state declaration
+        print("(declare-fun " + variable.name + " () " + "(_ BitVec 32))") # current state declaration
         print("(declare-fun " + variable.name + "$next () " + "(_ BitVec 32))") # next state declaration
-        print("(declare-fun ." + variable.name + " () " + "(_ BitVec 32)" + " (! " + variable.name + " :next " + variable.name + "$next))") # next state link
+        print("(define-fun ." + variable.name + " () " + "(_ BitVec 32)" + " (! " + variable.name + " :next " + variable.name + "$next))") # next state link
     else:
         print("(declare-fun " + variable.name + " () " + variable.type + ")") # current state declaration
         print("(declare-fun " + variable.name + "$next () " + variable.type + ")") # next state declaration
-        print("(declare-fun ." + variable.name + " () " + variable.type + " (! " + variable.name + " :next " + variable.name + "$next))") # next state link
+        print("(define-fun ." + variable.name + " () " + variable.type + " (! " + variable.name + " :next " + variable.name + "$next))") # next state link
 
 
 def intial_state(variable_dict):
@@ -107,7 +107,7 @@ def intial_state(variable_dict):
 def get_vmt_operator(operator):
     op_map = {
     ">" : "bvgt",
-    "<" : "bvlt",
+    "<" : "bvult",
     "+" : "bvadd",
     "-" : "bvsub",
     }
@@ -135,7 +135,7 @@ def parse_data(data):
         return expression(lhs, rhs, "+", True)
 
 
-def write_line_transition(name, terms, next_state_string, depth):
+def write_line_transition(name, terms, next_state_string):
     next_state_string = next_state_string
     term = terms[0]
     condition = term[1]
@@ -143,19 +143,21 @@ def write_line_transition(name, terms, next_state_string, depth):
         next_state_string += "\t\t(ite\n"
         next_state_string += "\t\t\t" + term[0] + "\n"
         next_state_string += "\t\t\t" + term[0] + "\n"
-        return [next_state_string, depth+1]
-
-    next_line = term[0]
-    next_state_string += "\n\t\t(ite\n"
-    vmt_condition = VMT_And([next_line, "("+get_vmt_operator(condition.operator) + " " + condition.lhs + " " + get_vmt_data_type(condition.rhs) + ")"])
-    next_state_string += "\t\t\t" + vmt_condition + "\n"
-    next_state_string += "\t\t\t" + next_line + "\n"
-    if len(terms[1:]): # remove the processed term
-        [next_state_string, depth] = write_line_transition(name, terms[1:], next_state_string, depth)
-
+        if len(terms[1:]): # remove the processed term
+            next_state_string = write_line_transition(name, terms[1:], next_state_string)
+            return next_state_string
+    else:
+        next_line = term[0]
+        next_state_string += "\n\t\t(ite\n"
+        vmt_condition = VMT_And([next_line, "("+get_vmt_operator(condition.operator) + " " + condition.lhs + " " + get_vmt_data_type(condition.rhs) + ")"])
+        next_state_string += "\t\t\t" + vmt_condition + "\n"
+        next_state_string += "\t\t\t" + next_line + "\n"
+        if len(terms[1:]): # remove the processed term
+            next_state_string = write_line_transition(name, terms[1:], next_state_string)
+            return next_state_string
     next_state_string += "\t\t\t" + name[:-5]
 
-    for i in range(-2, depth): # close all ite calls -2 is to add the final closing bracket
+    for i in range(-1, next_state_string.count("(ite")): # close all ite calls -1 is to add the final closing bracket
         next_state_string += ")"
     return next_state_string
 
@@ -177,8 +179,7 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
                 next_state_string += ")"
                 print(next_state_string)
                 continue
-
-        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string, 0)
+        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string)
         print(next_state_string)
 
     ######## data VMT transitions####################
@@ -200,8 +201,9 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
                 exp = parse_data(data)
                 next_state_string += indent + line +"\n"
                 if exp.rhs.isdigit():
-                    next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs +  " (bv" + exp.rhs + " 32))\n"
+                    next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs +  " (_ bv" + exp.rhs + " 32))\n"
                 else:
+
                     next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs + " " + exp.rhs + " )\n"
 
 
@@ -266,9 +268,9 @@ def get_readable_equations(CFG):
         one_hot_cfg_driven_eq_dict[node.node_numb] = [] # empty list to be populated by each pred
         next_state = node.node_numb + "$next"
         variable_dict[node.node_numb] = var(node.node_numb, "Bool")
-        if node.preds == []:
-            line_equation_dict[next_state] = eqaulity_equation(var(next_state, "Bool")) # define an eq and set the lhs to Ln+
-            line_equation_dict[next_state].terms.append(["false"]) # next state = false, if no preds, this node never occurs again.
+        # if node.preds == []:
+        #     line_equation_dict[next_state] = eqaulity_equation(var(next_state, "Bool")) # define an eq and set the lhs to Ln+
+        #     line_equation_dict[next_state].terms.append(["false"]) # next state = false, if no preds, this node never occurs again.
 
         for expression in node.expressions:
             if expression.lhs.name not in implication_equation_dict:
@@ -293,8 +295,8 @@ def get_readable_equations(CFG):
 
         for edge in node.edges:
             dest_node = CFG.node_dict[edge.dest] # get the destination of the edge
-            if dest_node.node_numb == node.node_numb:
-                continue # skip self loops?
+            # if dest_node.node_numb == node.node_numb:
+            #     continue # skip self loops?
             dest_next_state = dest_node.node_numb + "+"
             vmt_dest_next_state = dest_node.node_numb + "$next"
             if dest_next_state not in line_equation_dict:
@@ -312,8 +314,9 @@ def get_readable_equations(CFG):
                 else:
                     line_equation_dict[dest_next_state].terms.append([node.node_numb, "("+exp.lhs + exp.operator + exp.rhs+ ")"])
 
-        if print_readable:
-            print_line_eq(line_equation_dict[dest_next_state])
+        # if print_readable:
+        #     print(node.node_numb)
+        #     print_line_eq(line_equation_dict[dest_next_state])
 
 
 #################### READABLE EQS #####################
@@ -326,7 +329,13 @@ def get_readable_equations(CFG):
     # for node in one_hot_cfg_driven_eq_dict:
     #     pred_nodes = one_hot_cfg_driven_eq_dict[node]
     #     print_cfg_driven_encoding(node, pred_nodes)
+    # print(line_equation_dict)
+
     if print_readable:
+        print("\n# Line Next State")
+        for eq in line_equation_dict.values():
+            print_line_eq(eq)
+        print("\n# Data Preservation")
         for variable in variable_update_loc_dict:
             print_data_preservation(variable, variable_update_loc_dict[variable])
 

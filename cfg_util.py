@@ -7,6 +7,7 @@ class variable():
         self.type = type
         self.name = name
         self.function_scope = function
+        # self.size = bitwidth
 
 
 class expression():
@@ -51,9 +52,9 @@ class fun_call():
 
 class CFG():
     def __init__(self):
-        self.edges = []
         self.num_of_nodes = 0
         self.node_dict = {}
+        self.property_locations = []
 
     def add_edge(self, source, dest, condition):
         if source not in self.node_dict:
@@ -173,6 +174,9 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
             full_func_dict[get_sig(current_full_func.name, current_full_func.formal_param_list)] = current_full_func
             return
 
+        if line.startswith('Property: '):
+            property = line.split('[', 1)[1].split(']')[0] # find the !XX in the brackets for Property: [!XX]
+            file_CFG.property_locations.append("L" + property[1:]) # format as LXX and remove the !
 
         if line.startswith('Return: '):
             line = line[ :line.find("(")-1 ] + line[line.find(")")+1: ] # super hacky, but removes formal params
@@ -248,23 +252,31 @@ def get_edge(line, current_full_func, entry=False):
     global our_CFG
     # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
     edge_data  = re.sub(r'\((.*?)\)', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
-    source = "L" + edge_data[0].strip() # get the first item (source)
-    dest =   "L" + edge_data[1].strip() # get the second item (dest)
-    condition =  edge_data[2].strip().split()
-    if condition == ["True"]:
-        condition = expression("","","",False) # unconditional edge
+    # import pdb; pdb.set_trace()
+    if edge_data[-1].strip() == "True": # if the edge(s) are unconditional
+        for i, data in enumerate(edge_data):
+            if edge_data[i+1].strip() == "True":
+                break # this is the end of the list
+            source = "L" + edge_data[i].strip()
+            dest = "L" + edge_data[i+1].strip()
+            condition = expression("","","",False)
+            current_full_func.CFG.add_edge(source, dest, condition)
     else:
+        source = "L" + edge_data[0].strip() # get the first item (source)
+        dest =   "L" + edge_data[1].strip() # get the second item (dest)
+        condition =  edge_data[2].strip().split()
+
         if condition[0][0] == "!": # if the first char is ! its a negation
             condition[0] = condition[0][1:] # remove the ! from the variable
             negate = True
         else:
             negate = False
+
         lhs = condition[0]
         compare_op = condition[1]
         rhs = condition[2]
         condition = expression(lhs, rhs, compare_op, negate)
-
-    current_full_func.CFG.add_edge(source, dest, condition)
+        current_full_func.CFG.add_edge(source, dest, condition)
 
     if entry:
         current_full_func.entry_node = source
@@ -375,7 +387,11 @@ def display_CFG(CFG_to_display_global, name):
             #     else:
             #         lbl_str += str(lbl)
             # lbl_str += "\n"
+        if node.node_numb in file_CFG.property_locations:
 
+            graph.node(node.node_numb, label=lbl_str, color="red", style='filled')
+            # graph.attr(node.node_numb, style='filled')
+        # import pdb; pdb.set_trace()
         graph.node(node.node_numb, label=lbl_str)
 
     file_name =  name+".gv"

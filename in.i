@@ -1,14 +1,24 @@
+
+
+
+
+
+
 int main () {
-  int y = 0;
+  int i = 0;
   /* this is a comment */
 
+  //if (i > 7)
+  do
+  {
+  if (i > 7) goto ERROR; // assertion failure
+  i = i + 3;
+  }
+  while (i < 5);
+  if (i > 7) goto ERROR; // assertion failure
 
 
-  int x = 0;
-  int z = 0;
-  if (x<0){
-  assert(x >= 10);
-    z = x+1;}
-  z = 7;
+  return 0;
+  ERROR: __VERIFIER_error();
   return 0;
 }

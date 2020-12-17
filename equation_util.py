@@ -110,6 +110,9 @@ def get_vmt_operator(operator):
     "<" : "bvult",
     "+" : "bvadd",
     "-" : "bvsub",
+    "<=" : "bvule",
+    ">=" : "bvuge",
+    "==" : "=",
     }
     try:
         return op_map[operator]
@@ -142,14 +145,18 @@ def write_line_transition(name, terms, next_state_string):
     if condition.lhs == "":
         next_state_string += "\t\t(ite\n"
         next_state_string += "\t\t\t" + term[0] + "\n"
-        next_state_string += "\t\t\t" + term[0] + "\n"
+        next_state_string += "\t\t\t" + term[0]  + "\n"
         if len(terms[1:]): # remove the processed term
             next_state_string = write_line_transition(name, terms[1:], next_state_string)
             return next_state_string
     else:
         next_line = term[0]
-        next_state_string += "\n\t\t(ite\n"
-        vmt_condition = VMT_And([next_line, "("+get_vmt_operator(condition.operator) + " " + condition.lhs + " " + get_vmt_data_type(condition.rhs) + ")"])
+        next_state_string += "\t\t(ite\n"
+        condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs + " " + get_vmt_data_type(condition.rhs) + ")"
+        if condition.negate:
+            condition_str = "(not " + condition_str + ")"
+
+        vmt_condition = VMT_And([next_line, condition_str])
         next_state_string += "\t\t\t" + vmt_condition + "\n"
         next_state_string += "\t\t\t" + next_line + "\n"
         if len(terms[1:]): # remove the processed term
@@ -161,9 +168,26 @@ def write_line_transition(name, terms, next_state_string):
         next_state_string += ")"
     return next_state_string
 
+def print_one_hot_vmt(node, preds):
+    next_state_string = "\t\t(= " + node + "\n"
+    next_state_string += "\t\t\t(ite\n"
+    if len(preds) > 1:
+        next_state_string += "\t\t\t(or "
+        for pred in preds:
+            next_state_string += pred + " "
+        next_state_string = next_state_string[:-1] + ")\n\t\t\tfalse\n"
+        next_state_string += "\t\t\t" + node + "))"
 
+    elif preds:
+            pred = preds[0]
+            next_state_string += "\t\t\t" + pred + " "
+            next_state_string = next_state_string[:-1] + "\n\t\t\tfalse\n"
+            next_state_string += "\t\t\t" + node + "))"
 
+    else:
+        next_state_string = "" # FIXME check final state, should loop I think.
 
+    return next_state_string
 
 def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_dict, vmt_line_equation_dict):
 
@@ -172,6 +196,12 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
     print("(define-fun .trans () Bool (!  \n \t(and") # define the initial state function
     for eq in vmt_line_equation_dict.values():
         next_state_string = "\t\t(= " + eq.lhs.name +  " "
+        if eq.terms[0][0] == "false":
+            next_state_string += eq.terms[0][0]
+            next_state_string += ")"
+            print(next_state_string)
+            continue
+
         condition = eq.terms[0][1]
         next_line = eq.terms[0][0]
         if (condition.lhs == "") and (len(eq.terms) == 1):
@@ -179,7 +209,7 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
                 next_state_string += ")"
                 print(next_state_string)
                 continue
-        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string)
+        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string + "\n")
         print(next_state_string)
 
     ######## data VMT transitions####################
@@ -190,8 +220,6 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
         ite_count = 0
         for line, data in eq.line_and_data_set:
             ite_count += 1
-            # if ite_count == 2:
-                # import pdb; pdb.set_trace()
             next_state_string += indent + "(ite\n"
             indent += "   "
             if data.isdigit(): # fixme when I have type info
@@ -216,42 +244,24 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
 ############ CFG-driven One-Hot ####################
     for node in one_hot_cfg_driven_eq_dict:
         preds = one_hot_cfg_driven_eq_dict[node]
-        next_state_string = "\t\t(= " + node + "\n"
-        next_state_string += "\t\t\t(ite\n"
-        if len(preds) > 1:
-            next_state_string += "\t\t\t(or "
-            for pred in preds:
-                next_state_string += pred + " "
-            next_state_string = next_state_string[:-1] + ")\n\t\t\tfalse\n"
-            next_state_string += "\t\t\t" + node + "))"
-
-        elif preds:
-                pred = preds[0]
-                next_state_string += "\t\t\t" + pred + " "
-                next_state_string = next_state_string[:-1] + "\n\t\t\tfalse\n"
-                next_state_string += "\t\t\t" + node + "))"
-
-        else:
-            next_state_string = "" # FIXME check final state, should loop I think.
+        next_state_string = print_one_hot_vmt(node, preds)
+        print(next_state_string)
+        next_preds = [pred + "$next" for pred in preds]
+        next_node = node + "$next"
+        next_state_string = print_one_hot_vmt(next_node, next_preds)
         print(next_state_string)
 
     print("\t) \n\t:trans true))")
     print("\n")
 
 
-def Hard_code_P(P_bool):
-    if P_bool:
-        print("\n(define-fun .property () Bool (!")
-        print("\t(and")
-        print("\t\t(not (= z (_ bv9 32)))")
-        print(")")
-        print(":invar-property 0))")
-    else:
-        print("\n(define-fun .property () Bool (!")
-        print("\t(and")
-        print("\t\t(not (= z (_ bv7 32)))")
-        print("\t)")
-        print("\t:invar-property 0))")
+def build_property (property_locations):
+    print("\n(define-fun .property () Bool (!")
+    print("\t(and")
+    for location in property_locations:
+        print("\t " + location + "\n")
+    print(")")
+    print(":invar-property 0))")
 
 
 def get_readable_equations(CFG):
@@ -263,14 +273,15 @@ def get_readable_equations(CFG):
     variable_update_loc_dict = {}
     data_variable_dict = {}
     print_readable = False
+    print_vmt = True
 
     for node in CFG.node_dict.values():
         one_hot_cfg_driven_eq_dict[node.node_numb] = [] # empty list to be populated by each pred
         next_state = node.node_numb + "$next"
         variable_dict[node.node_numb] = var(node.node_numb, "Bool")
-        # if node.preds == []:
-        #     line_equation_dict[next_state] = eqaulity_equation(var(next_state, "Bool")) # define an eq and set the lhs to Ln+
-        #     line_equation_dict[next_state].terms.append(["false"]) # next state = false, if no preds, this node never occurs again.
+        if node.preds == []:
+            vmt_line_equation_dict[next_state] = eqaulity_equation(var(next_state, "Bool")) # define an eq and set the lhs to Ln+
+            vmt_line_equation_dict[next_state].terms.append(["false"]) # next state = false, if no preds, this node never occurs again.
 
         for expression in node.expressions:
             if expression.lhs.name not in implication_equation_dict:
@@ -341,17 +352,19 @@ def get_readable_equations(CFG):
 
 
 ################## VMT #############################
-    for variable in variable_dict.values():
-        declare_variables(variable)
-    for variable in data_variable_dict.values():
-        declare_variables(variable)
-    intial_state(variable_dict)
+    if print_vmt:
+        for variable in variable_dict.values():
+            declare_variables(variable)
+        for variable in data_variable_dict.values():
+            declare_variables(variable)
+        intial_state(variable_dict)
 
-    build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_dict, vmt_line_equation_dict)
-    #
-    #
-    Hard_code_P(True)
+        build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_dict, vmt_line_equation_dict)
+        #
+        #
+        # import pdb; pdb.set_trace()
 
+        build_property(CFG.property_locations)
 
 
         #         edge.condition = " & (" + edge.condition + ")"

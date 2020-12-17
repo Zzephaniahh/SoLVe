@@ -1,0 +1,11 @@
+FUNCTION CALL BEGIN: [Name: main] [Call Line: 1]
+(1, 2, True)
+(2, 3, i <= 7)
+(2, 6, !i <= 7)
+(3, 4, True)
+(4, 2, i < 5)
+(4, 7, !i < 5)
+(7, 7, True)
+[int  i, 0, 1]
+[int  i, i+2, 3]
+Call ends: main

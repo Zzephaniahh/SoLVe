@@ -1,0 +1,119 @@
+(declare-fun L1 () Bool)
+(declare-fun L1$next () Bool)
+(declare-fun .L1 () Bool (! L1 :next L1$next))
+(declare-fun y () (_ BitVec 32)
+(declare-fun y$next () (_ BitVec 32))
+(declare-fun .y () (_ BitVec 32) (! y :next y$next))
+(declare-fun x () (_ BitVec 32)
+(declare-fun x$next () (_ BitVec 32))
+(declare-fun .x () (_ BitVec 32) (! x :next x$next))
+(declare-fun z () (_ BitVec 32)
+(declare-fun z$next () (_ BitVec 32))
+(declare-fun .z () (_ BitVec 32) (! z :next z$next))
+(declare-fun L2 () Bool)
+(declare-fun L2$next () Bool)
+(declare-fun .L2 () Bool (! L2 :next L2$next))
+(declare-fun L3 () Bool)
+(declare-fun L3$next () Bool)
+(declare-fun .L3 () Bool (! L3 :next L3$next))
+(declare-fun L4 () Bool)
+(declare-fun L4$next () Bool)
+(declare-fun .L4 () Bool (! L4 :next L4$next))
+(declare-fun L5 () Bool)
+(declare-fun L5$next () Bool)
+(declare-fun .L5 () Bool (! L5 :next L5$next))
+(declare-fun main () (_ BitVec 32)
+(declare-fun main$next () (_ BitVec 32))
+(declare-fun .main () (_ BitVec 32) (! main :next main$next))
+
+
+(define-fun .init () Bool (! 
+ 	(and
+		L1
+		(= y (_ bv0 32))
+		(= x (_ bv0 32))
+		(= z (_ bv0 32))
+		(not L2)
+		(not L3)
+		(not L4)
+		(not L5)
+		(= main (_ bv0 32))
+	)
+	:init true))
+
+
+
+
+(define-fun .trans () Bool (!  
+ 	(and
+		(= L1$next false)
+		(= L2$next L1)
+		(= L3$next (ite
+ 			(and L2 (bvgt x 0))
+			L2
+			L3))
+		(= L4$next (ite 
+			(and L2 (not (bvgt x (_ bv0 32))))
+			L2
+			(ite 
+			L3
+			L3
+			L4)))
+		(= L5$next L4)
+		(= y$next
+		(ite
+		   L1
+		   (_ bv0 32)
+			y))
+		(= x$next
+		(ite
+		   L1
+		   (_ bv0 32)
+			x))
+		(= z$next
+		(ite
+		   L1
+		   (_ bv0 32)
+		   (ite
+		      L3
+		      (_ bv1 32)
+		      (ite
+		         L4
+		         (_ bv7 32)
+			z))))
+		(= main$next
+		(ite
+		   L5
+		   (_ bv0 32)
+			main))
+		(= L1
+			(ite
+			L2
+			false
+			L1))
+		(= L2
+			(ite
+			(or L3 L4)
+			false
+			L2))
+		(= L3
+			(ite
+			L4
+			false
+			L3))
+		(= L4
+			(ite
+			L5
+			false
+			L4))
+
+	) 
+	:trans true))
+
+
+
+(define-fun .property () Bool (!
+	(and
+		(not (= z (_ bv9 32)))
+)
+:invar-property 0))

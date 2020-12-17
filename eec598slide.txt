@@ -1,8 +1,0 @@
-FUNCTION CALL BEGIN: [Name: main] [Call Line: 1]
-[int* x, int*malloc, 1]
-[int* y, int*malloc, 1]
-(1, 2, h < g)
-[int** a, &x, 2]
-(1, 3, !(g < h))
-[int** b, &y, 3]
-call ends: main

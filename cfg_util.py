@@ -2,14 +2,44 @@ import re #regex for parsing
 from graphviz import Digraph
 import copy # maybe fix this, used when graphing only.
 
+### VARIABLES ###
+# A variable has a name, type, bitwidth, size, and function which it is scoped to
+
+class data_assignment():
+    def __init__(self, line_numb, lhs, exp):
+        self.line_numb = line_numb
+        self.lhs = lhs
+        self.exp = exp
+
 class variable():
-    def __init__(self, name, type, function):
+    def __init__(self, name, type, bitwidth, function):
         self.type = type
         self.name = name
         self.function_scope = function
-        # self.size = bitwidth
+        self.size = bitwidth
 
+class input_variable(): # A primary input shown by: __VERIFIER_nondet_XXX() where 'XXX' is the type
+    def __init__(self, name, type, bitwidth, function, location):
+        self.type = type
+        self.name = name
+        self.function_scope = function
+        self.size = bitwidth
+        self.location = location
 
+class expr(): # Old deprecate ASAP
+    def __init__(self, exp_str, rhs, operator, lhs, negate):
+        self.exp_str = exp_str # for an exp: (i > 7) --> 'int 32 i > 7'
+        self.rhs = rhs # type: variable with size and type information
+        self.rhs = lhs # type: variable with size and type information
+        self.operator = operator # < > <= = etc.
+        self.negate = negate # this bool is True if the equation is negated (if ! in string)
+
+### EXPRESSIONS ###
+# An expression str has three elements and usually looks like:
+# {int 32 i > 7, int 32 i, int 32 7}
+# for the exp: i > 7
+# where i and 7 are 32 bit integers
+# the type and size is stored in the var.type/var.size fields
 class expression():
     def __init__(self, lhs, rhs, operator, negate):
         self.lhs = lhs
@@ -17,6 +47,11 @@ class expression():
         self.operator = operator # < > <= = etc.
         self.negate = negate # this bool is True if the equation is negated (if ! in string)
 
+
+### NODES ###
+# Each node is a single statement from CIL and represents a node in the CFG
+# It may contain some expressions, and it has an edge set represeting all edges
+# coming in or leaving the node. The pred and succ lists are built from the edge list
 class node():
     def __init__(self, node_numb, func):
         self.node_numb = node_numb
@@ -27,12 +62,20 @@ class node():
         self.func = func
         self.call_signature = ""
 
+### EDGES ###
+# Each edge has a source and destination of type 'node',
+# and a condition of type 'expression'
 class edge():
     def __init__(self, source, dest, condition):
         self.source = source
         self.dest = dest
         self.condition = condition
 
+### DATA_TRANSFER ###
+# This is an assignment ex: S1L1: i = k + 7; becomes:
+# (variable = i), (data = k + 7), (line_number = S1L1)
+# where i is of type 'variable'
+# and data is type 'expression'
 class data_transfer():
     def __init__(self, variable, data, line_number):
         self.variable = variable
@@ -54,7 +97,9 @@ class CFG():
     def __init__(self):
         self.num_of_nodes = 0
         self.node_dict = {}
-        self.property_locations = []
+        self.property_locations = [] # defines the locations which lead to a violation
+        self.file_entry_node = "" # identifies the location of 'main'
+        self.input_variables = {}
 
     def add_edge(self, source, dest, condition):
         if source not in self.node_dict:
@@ -75,8 +120,7 @@ class CFG():
             self.node_dict[node_numb] = node(node_numb, func)
 
         if exp != None:
-            data_exp = expression(exp[0], exp[2], exp[1], False )
-            self.node_dict[node_numb].expressions.append(data_exp)
+            self.node_dict[node_numb].expressions.append(exp)
 
     def get_node(self, this_node):
         self.node_dict[this_node]
@@ -108,7 +152,7 @@ class full_func():
         self.entry_node = ""
         self.local_variable_dict = {}
 
-
+# Just a way to uniquely identify each function with a hashable string
 def get_sig(name, formal_param_list):
     signature = name + " "
     for formal in formal_param_list:
@@ -125,13 +169,6 @@ full_func_dict = {}
 def process_cil_output(file_name):
     file_id = open(file_name, "r")
     lines = file_id.readlines()
-    final_line_numb = len(lines)
-    global full_func_dict
-    global current_line_numb
-    global func_call_list
-    global our_CFG
-
-    first_line = lines[0]
     get_call_CFG(lines, "Main")
 
 
@@ -168,18 +205,33 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
                     func_call.lhs = data[len("[LHS: "):-1].strip()
                     get_data_edge("[" + func_call.type + "  " + func_call.lhs + ", " + func_call.func_name + ", " + func_call.line + "]", current_full_func)
 
+                if "[(" in data:
+                    initial_edge = data[1:-1]
+                    get_edge(initial_edge, current_full_func, False, True)
+
+
             continue
 
         if "Call ends:" in line:
             full_func_dict[get_sig(current_full_func.name, current_full_func.formal_param_list)] = current_full_func
             return
 
-        if line.startswith('Property: '):
+        if line.startswith('Input: '):
+
+            get_input_var(line, current_full_func)
+            #
+            # property = line.split('[', 1)[1].split(']')[0] # find the !XX in the brackets for Property: [!XX]
+            # file_CFG.property_locations.append("L" + property[1:]) # format as LXX and remove the !
+            continue
+
+        if line.startswith('Property: '): # collect each line with an error state (usually only one line exists)
             property = line.split('[', 1)[1].split(']')[0] # find the !XX in the brackets for Property: [!XX]
-            file_CFG.property_locations.append("L" + property[1:]) # format as LXX and remove the !
+            file_CFG.property_locations.append(property[1:]) # format as LXX and remove the !
 
         if line.startswith('Return: '):
-            line = line[ :line.find("(")-1 ] + line[line.find(")")+1: ] # super hacky, but removes formal params
+            # import pdb; pdb.set_trace()
+            if "(" and ")" in line:
+                line = line[ :line.find("(")-1 ] + line[line.find(")")+1: ] # super hacky, but removes formal params
             get_data_edge(line[len('Return: '):], current_full_func, True)
             continue
 
@@ -231,81 +283,117 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
 def add_func_call(current_full_func, func_signature, lhs, call_line, param_assign_list):
     global our_CFG
 
-    for param_pair in param_assign_list: # assign out the formals to the actuals
-        current_full_func.CFG.add_node("L"+call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
-        our_CFG.add_node("L"+call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
+    for param_pair in param_assign_list: # assign out the formals to the actuals #FIXME
+        current_full_func.CFG.add_node(call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
+        our_CFG.add_node(call_line, [param_pair[1], "=", param_pair[0]], current_full_func.name)
 
     # add the function = lhs assignment # done elsewhere maybe move here
     # current_full_func.CFG.add_node(call_line, [current_full_func.name, "=", lhs], current_full_func.name)
 
-    current_node = current_full_func.CFG.node_dict["L"+call_line]
+    current_node = current_full_func.CFG.node_dict[call_line]
 
     current_node.call_signature = func_signature
 
-    our_current_node = our_CFG.node_dict["L"+call_line]
+    our_current_node = our_CFG.node_dict[call_line]
 
     our_current_node.call_signature = func_signature
 
 
 
-def get_edge(line, current_full_func, entry=False):
-    global our_CFG
+def get_edge(line, current_full_func, entry=False, file_entry=False):
+
     # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
     edge_data  = re.sub(r'\((.*?)\)', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
-    # import pdb; pdb.set_trace()
     if edge_data[-1].strip() == "True": # if the edge(s) are unconditional
         for i, data in enumerate(edge_data):
             if edge_data[i+1].strip() == "True":
                 break # this is the end of the list
-            source = "L" + edge_data[i].strip()
-            dest = "L" + edge_data[i+1].strip()
+            source =  edge_data[i].strip()
+            dest = edge_data[i+1].strip()
             condition = expression("","","",False)
+
             current_full_func.CFG.add_edge(source, dest, condition)
     else:
-        source = "L" + edge_data[0].strip() # get the first item (source)
-        dest =   "L" + edge_data[1].strip() # get the second item (dest)
-        condition =  edge_data[2].strip().split()
+        source =  edge_data[0].strip() # get the first item (source)
+        dest =   edge_data[1].strip() # get the second item (dest)
+        condition =  edge_data[2].strip().split(",")
 
-        if condition[0][0] == "!": # if the first char is ! its a negation
-            condition[0] = condition[0][1:] # remove the ! from the variable
-            negate = True
-        else:
-            negate = False
+        condition_expr_str = re.search(r"\{.*?}", line).group(0)
+        if '!' in line: # preserve the negation
+            condition_expr_str = '!' + condition_expr_str
 
-        lhs = condition[0]
-        compare_op = condition[1]
-        rhs = condition[2]
-        condition = expression(lhs, rhs, compare_op, negate)
+        exp = build_expression(condition_expr_str, current_full_func.name)
+
+        condition = exp
         current_full_func.CFG.add_edge(source, dest, condition)
 
     if entry:
         current_full_func.entry_node = source
+
+    if file_entry:
+        current_full_func.CFG.file_entry_node = source
+
     return
 
+def get_input_var(input_str, current_full_func): # input_str looks like 'Input: [L13S3] [LHS: int 32 v_in]
+    [line, var_str] = re.findall(r"\[(.*?)\]", input_str) # split into three strings
+    var_str = var_str[len('LHS: '):] # for LHS: int 32 v_in  rm LHS:  and return 'int 32 v_in'
+    [type, size, name] = var_str.split() # changes [int 32] to: type = 'int' and size = '32'
+    input_var = input_variable(name, type, size, current_full_func.name, line)
+
+    if name in current_full_func.CFG.input_variables:
+        current_full_func.CFG.input_variables[line].append(input_var)
+    else:
+        current_full_func.CFG.input_variables[line] = [input_var]
+
+
+def build_variable(var_str, func_name): # var string looks something like: int 32 i
+    [type, size, name] = var_str.split() # split on spaces
+    var = variable(name, type, size, func_name)
+    return var
+
+def build_expression(exp_str, func_name, lhs=None):
+    negate = True if '!' in exp_str else False # check if it needs to be negated
+    if exp_str.endswith(', }'): # this is because I cannot currently print exps cleanly from Cil
+        exp_str = exp_str[:-3] + '}' # changes {int 32 i > 7, int 32 i, int 32 7, } to: {int 32 i > 7, int 32 i, int 32 7}
+    exp_str = exp_str[1:-1] # remove the '{ }'
+    exp_set = exp_str.split(',') # split into one or three elements
+    if len(exp_set) == 3:
+        lhs = build_variable(exp_set[1].strip(), func_name) # int 32 i
+        rhs = build_variable(exp_set[2].strip(), func_name) # int 32 7
+        operator = exp_set[0].split()[3].strip() # hardcoded to find '>' may not always be the 4th element, check this!
+        exp = expression(lhs, rhs, operator, negate)
+    else: # an assignment such as: [int 32 i, {int 32 0}, L8S1]
+        rhs = build_variable(exp_str.strip(), func_name)
+        operator = "=" # assignment operator
+        exp = expression(lhs, rhs, operator, negate)
+
+
+    return exp
 
 #change me to add node
 def get_data_edge(line, current_full_func, return_bool=False):# optional return or call variable
+    if "{" and "}" in line: # this line has a conditional edge
+        condition_expr_str = re.search(r"\{.*?}", line).group(0)
+        line = line.replace(condition_expr_str + ',', '') # remove the expression
     # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
-    data_transfer = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
 
-    type_variable_str = data_transfer[0].strip().split() # get the first item (source)
-    # [name, type] = type_variable_str.split("  ")
+    [lhs_str, stmt_line_number] = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+    # exp_lhs = build_variable(lhs_str.strip(), current_full_func.name) # add a variable
 
-    type = type_variable_str[0]
-    name = type_variable_str[1]
-    var = variable(name, type, current_full_func.name)
-
-    # var = type_variable_str.split(" ")[1]
-    data = data_transfer[1].strip() # get the second item
-    # import pdb; pdb.set_trace()
-
-    line_number = "L"+data_transfer[2].strip()
-
-    current_full_func.CFG.add_node(line_number, current_full_func.name, [var, "=", data])
+    # if data_transfer[1].strip() == "__VERIFIER_nondet_int":
+    #     pass ADD INPUT HANDLING
+        # if len(exp_str.strip()) == 2:
+        #     import pdb; pdb.set_trace()
+        # var = build_variable(var_name, var_type, var_size, current_full_func.name) # add a variable
+    lhs = build_variable(lhs_str.strip(), current_full_func.name) # add a variable
+    exp = build_expression(condition_expr_str.strip(), current_full_func.name)
+    line_number = stmt_line_number.strip() # statement number
+    data_assign = data_assignment(line_number, lhs, exp)
+    current_full_func.CFG.add_node(line_number, current_full_func.name, data_assign)
 
     if (return_bool):
         current_full_func.return_list.append(current_full_func.CFG.node_dict[line_number])
-
     return
 
 
@@ -313,11 +401,10 @@ def get_data_edge(line, current_full_func, return_bool=False):# optional return 
 file_CFG = CFG()
 
 def insert_wait_node(call_node, entry_function, called_function):
-    global our_CFG
     entry_node = called_function.CFG.node_dict[called_function.entry_node]
     wait_node_name = "W" + call_node.node_numb
     return_node_name = "R" + call_node.node_numb
-
+    #FIXME
     file_CFG.add_node(wait_node_name, entry_function.name) # add each node
     file_CFG.add_node(return_node_name, entry_function.name) # add each node
 
@@ -336,6 +423,8 @@ def insert_wait_node(call_node, entry_function, called_function):
 
 def build_file_CFG(entry_function):
     global file_CFG
+    file_CFG.file_entry_node = entry_function.CFG.file_entry_node
+    file_CFG.input_variables = entry_function.CFG.input_variables
 
     for node in entry_function.CFG.node_dict.values():
         file_CFG.add_existing_node(node) # add each node
@@ -367,17 +456,28 @@ def display_CFG(CFG_to_display_global, name):
     for node_numb in CFG_to_display.node_dict:
         lbl_str = node_numb + "\n"
         node = CFG_to_display.node_dict[node_numb]
-        for edge in node.edges:
-            if edge.condition == "True":
-                edge.condition = ""
 
-            label = edge.condition.lhs + edge.condition.operator + edge.condition.rhs
+        for edge in node.edges:
+            if edge.condition.lhs == "": # if any of the fields are missing its an 'always' edge
+                label = ""
+            else:
+                label = edge.condition.lhs.name + edge.condition.operator + edge.condition.rhs.name
             if edge.condition.negate == True:
                 label = "!(" + label + ")"
             graph.edge(edge.source, edge.dest, label = label)
 
-        for exp in node.expressions:
-            lbl_str += exp.lhs.name + exp.operator + exp.rhs
+        if node_numb in CFG_to_display.input_variables:
+            for input_variable in CFG_to_display.input_variables[node_numb]:
+                lbl_str += "Unconstrained input: " + input_variable.name + "\n"
+
+        for data_assignment in node.expressions:
+            # import pdb; pdb.set_trace()
+            exp = data_assignment.exp
+            lhs = data_assignment.lhs
+            if exp.lhs == None:
+                lbl_str += lhs.name + ' = ' + exp.rhs.name
+            else:
+                lbl_str += lhs.name + ' = ' + exp.lhs.name + exp.operator + exp.rhs.name
             lbl_str += "\n"
 
             # the [::-1] simply reverses the list so Lx is printed on top.
@@ -388,10 +488,11 @@ def display_CFG(CFG_to_display_global, name):
             #         lbl_str += str(lbl)
             # lbl_str += "\n"
         if node.node_numb in file_CFG.property_locations:
-
             graph.node(node.node_numb, label=lbl_str, color="red", style='filled')
-            # graph.attr(node.node_numb, style='filled')
-        # import pdb; pdb.set_trace()
+
+        if node.node_numb == CFG_to_display.file_entry_node:
+            graph.node(node.node_numb, label=lbl_str, color="green", style='filled')
+
         graph.node(node.node_numb, label=lbl_str)
 
     file_name =  name+".gv"

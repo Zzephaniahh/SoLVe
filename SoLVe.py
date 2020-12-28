@@ -6,7 +6,7 @@ def main():
     # 'cfg_opt.txt'
     our_CFG = c_ut.get_file_CFG('assert_test.txt')
     c_ut.display_CFG(our_CFG, "test_file") # maybe fixme cause I change the CFG (elim true)
-    # e_ut.get_readable_equations(our_CFG)
+    e_ut.get_equations(our_CFG)
     # merge.process_CFG(our_CFG)
     # get_vmt(our_CFG)
 

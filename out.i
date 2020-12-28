@@ -574,255 +574,60 @@
    void __attribute__((__overloaded__))  __atomic_add_fetch_4(...) ;  */
 /* compiler builtin: 
    void *__builtin_frame_address(unsigned int  ) ;  */
-#line 1 "test_locks_9_true-unreach-call_true-valid-memsafety_false-termination.i"
+#line 5 "in.i"
 extern  __attribute__((__noreturn__)) void __VERIFIER_error() ;
-#line 3
+#line 7
 extern int __VERIFIER_nondet_int() ;
-#line 4 "test_locks_9_true-unreach-call_true-valid-memsafety_false-termination.i"
+#line 9 "in.i"
 int main(void) 
 { 
-  int p1 ;
-  int tmp ;
-  int lk1 ;
-  int p2 ;
-  int tmp___0 ;
-  int lk2 ;
-  int p3 ;
-  int tmp___1 ;
-  int lk3 ;
-  int p4 ;
-  int tmp___2 ;
-  int lk4 ;
-  int p5 ;
-  int tmp___3 ;
-  int lk5 ;
-  int p6 ;
-  int tmp___4 ;
-  int lk6 ;
-  int p7 ;
-  int tmp___5 ;
-  int lk7 ;
-  int p8 ;
-  int tmp___6 ;
-  int lk8 ;
-  int p9 ;
-  int tmp___7 ;
-  int lk9 ;
-  int cond ;
+  int i ;
+  int v_in ;
+  int __cil_tmp3 ;
+  int __cil_tmp4 ;
+  int __cil_tmp5 ;
 
   {
   {
-#line 6
-  tmp = __VERIFIER_nondet_int();
-#line 6
-  p1 = tmp;
-#line 9
-  tmp___0 = __VERIFIER_nondet_int();
-#line 9
-  p2 = tmp___0;
-#line 12
-  tmp___1 = __VERIFIER_nondet_int();
-#line 12
-  p3 = tmp___1;
-#line 15
-  tmp___2 = __VERIFIER_nondet_int();
-#line 15
-  p4 = tmp___2;
-#line 18
-  tmp___3 = __VERIFIER_nondet_int();
-#line 18
-  p5 = tmp___3;
-#line 21
-  tmp___4 = __VERIFIER_nondet_int();
-#line 21
-  p6 = tmp___4;
-#line 24
-  tmp___5 = __VERIFIER_nondet_int();
-#line 24
-  p7 = tmp___5;
-#line 27
-  tmp___6 = __VERIFIER_nondet_int();
-#line 27
-  p8 = tmp___6;
-#line 30
-  tmp___7 = __VERIFIER_nondet_int();
-#line 30
-  p9 = tmp___7;
+#line 10
+  i = 0;
+#line 13
+  v_in = __VERIFIER_nondet_int();
   }
-#line 36
+#line 15
   while (1) {
-    {
-#line 37
-    cond = __VERIFIER_nondet_int();
+#line 17
+    if (i > 7) {
+#line 17
+      goto ERROR;
     }
-#line 38
-    if (cond == 0) {
-#line 39
-      goto out;
-    }
-#line 41
-    lk1 = 0;
-#line 43
-    lk2 = 0;
-#line 45
-    lk3 = 0;
-#line 47
-    lk4 = 0;
-#line 49
-    lk5 = 0;
-#line 51
-    lk6 = 0;
-#line 53
-    lk7 = 0;
-#line 55
-    lk8 = 0;
-#line 57
-    lk9 = 0;
-#line 61
-    if (p1 != 0) {
-#line 62
-      lk1 = 1;
-    }
-#line 65
-    if (p2 != 0) {
-#line 66
-      lk2 = 1;
-    }
-#line 69
-    if (p3 != 0) {
-#line 70
-      lk3 = 1;
-    }
-#line 73
-    if (p4 != 0) {
-#line 74
-      lk4 = 1;
-    }
-#line 77
-    if (p5 != 0) {
-#line 78
-      lk5 = 1;
-    }
-#line 81
-    if (p6 != 0) {
-#line 82
-      lk6 = 1;
-    }
-#line 85
-    if (p7 != 0) {
-#line 86
-      lk7 = 1;
-    }
-#line 89
-    if (p8 != 0) {
-#line 90
-      lk8 = 1;
-    }
-#line 93
-    if (p9 != 0) {
-#line 94
-      lk9 = 1;
-    }
-#line 99
-    if (p1 != 0) {
-#line 100
-      if (lk1 != 1) {
-#line 100
-        goto ERROR;
-      }
-#line 101
-      lk1 = 0;
-    }
-#line 104
-    if (p2 != 0) {
-#line 105
-      if (lk2 != 1) {
-#line 105
-        goto ERROR;
-      }
-#line 106
-      lk2 = 0;
-    }
-#line 109
-    if (p3 != 0) {
-#line 110
-      if (lk3 != 1) {
-#line 110
-        goto ERROR;
-      }
-#line 111
-      lk3 = 0;
-    }
-#line 114
-    if (p4 != 0) {
-#line 115
-      if (lk4 != 1) {
-#line 115
-        goto ERROR;
-      }
-#line 116
-      lk4 = 0;
-    }
-#line 119
-    if (p5 != 0) {
-#line 120
-      if (lk5 != 1) {
-#line 120
-        goto ERROR;
-      }
-#line 121
-      lk5 = 0;
-    }
-#line 124
-    if (p6 != 0) {
-#line 125
-      if (lk6 != 1) {
-#line 125
-        goto ERROR;
-      }
-#line 126
-      lk6 = 0;
-    }
-#line 129
-    if (p7 != 0) {
-#line 130
-      if (lk7 != 1) {
-#line 130
-        goto ERROR;
-      }
-#line 131
-      lk7 = 0;
-    }
-#line 134
-    if (p8 != 0) {
-#line 135
-      if (lk8 != 1) {
-#line 135
-        goto ERROR;
-      }
-#line 136
-      lk8 = 0;
-    }
-#line 139
-    if (p9 != 0) {
-#line 140
-      if (lk9 != 1) {
-#line 140
-        goto ERROR;
-      }
-#line 141
-      lk9 = 0;
+#line 18
+    __cil_tmp3 = i + 11;
+#line 18
+    __cil_tmp4 = i + 4;
+#line 18
+    __cil_tmp5 = __cil_tmp4 + 7;
+#line 18
+    i = __cil_tmp5 + __cil_tmp3;
+#line 15
+    if (! (i < 5)) {
+#line 15
+      break;
     }
   }
-  out: 
-#line 146
+#line 21
+  if (i > 7) {
+#line 21
+    goto ERROR;
+  }
+#line 24
   return (0);
   ERROR: 
   {
-#line 147
+#line 25
   __VERIFIER_error();
   }
-#line 148
+#line 26
   return (0);
 }
 }

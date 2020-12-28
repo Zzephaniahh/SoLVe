@@ -1,0 +1,57 @@
+# Initial state, assume all other locations are False. 
+L1S0 = True 
+
+# CFG driven Encoding:
+L2S1 --> !L1S0
+L2S1+ --> !L1S0+
+L3S2 --> !L2S1
+L3S2+ --> !L2S1+
+L5S3 --> !L3S2
+L5S3+ --> !L3S2+
+L7S4 || L9S5 --> !L5S3
+L7S4+ || L9S5+ --> !L5S3+
+L20S11 --> !L7S4
+L20S11+ --> !L7S4+
+L3S6 --> !L9S5
+L3S6+ --> !L9S5+
+L20S12 --> !L20S11
+L20S12+ --> !L20S11+
+L3S2 || L3S7 --> !L3S6
+L3S2+ || L3S7+ --> !L3S6+
+L12S8 --> !L3S7
+L12S8+ --> !L3S7+
+L14S9 || L17S10 --> !L12S8
+L14S9+ || L17S10+ --> !L12S8+
+L20S11 --> !L14S9
+L20S11+ --> !L14S9+
+L17S10 --> !L17S10
+L17S10+ --> !L17S10+
+L22S13 --> !L20S12
+L22S13+ --> !L20S12+
+L22S13 --> !L22S13
+L22S13+ --> !L22S13+
+
+# Data Assignments
+L2S1+ --> i+ = 0
+L9S5+ --> i+ = i + 3
+L17S10+ --> main+ = 0
+L22S13+ --> main+ = 0
+
+# Line Next State
+L2S1+ = L1S0
+L3S2+ = L2S1 || L3S6 & (i<5)
+L5S3+ = L3S2
+L7S4+ = L5S3 & (i>7)
+L9S5+ = L5S3 & !(i>7)
+L20S11+ = L7S4 || L14S9
+L3S6+ = L9S5
+L20S12+ = L20S11
+L3S7+ = L3S6 & !(i<5)
+L12S8+ = L3S7
+L14S9+ = L12S8 & (i>7)
+L17S10+ = L12S8 & !(i>7) || L17S10
+L22S13+ = L20S12 || L22S13
+
+# Data Preservation
+!L2S1+ & !L9S5+ --> i+ = i
+!L17S10+ & !L22S13+ --> main+ = main

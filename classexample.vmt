@@ -1,0 +1,258 @@
+(declare-fun L1 () Bool)
+(declare-fun L1$next () Bool)
+(define-fun .L1 () Bool (! L1 :next L1$next))
+(declare-fun L2 () Bool)
+(declare-fun L2$next () Bool)
+(define-fun .L2 () Bool (! L2 :next L2$next))
+(declare-fun L3 () Bool)
+(declare-fun L3$next () Bool)
+(define-fun .L3 () Bool (! L3 :next L3$next))
+(declare-fun L4 () Bool)
+(declare-fun L4$next () Bool)
+(define-fun .L4 () Bool (! L4 :next L4$next))
+(declare-fun L5 () Bool)
+(declare-fun L5$next () Bool)
+(define-fun .L5 () Bool (! L5 :next L5$next))
+(declare-fun L11 () Bool)
+(declare-fun L11$next () Bool)
+(define-fun .L11 () Bool (! L11 :next L11$next))
+(declare-fun L6 () Bool)
+(declare-fun L6$next () Bool)
+(define-fun .L6 () Bool (! L6 :next L6$next))
+(declare-fun L7 () Bool)
+(declare-fun L7$next () Bool)
+(define-fun .L7 () Bool (! L7 :next L7$next))
+(declare-fun L8 () Bool)
+(declare-fun L8$next () Bool)
+(define-fun .L8 () Bool (! L8 :next L8$next))
+(declare-fun L9 () Bool)
+(declare-fun L9$next () Bool)
+(define-fun .L9 () Bool (! L9 :next L9$next))
+(declare-fun L10 () Bool)
+(declare-fun L10$next () Bool)
+(define-fun .L10 () Bool (! L10 :next L10$next))
+(declare-fun L12 () Bool)
+(declare-fun L12$next () Bool)
+(define-fun .L12 () Bool (! L12 :next L12$next))
+(declare-fun L13 () Bool)
+(declare-fun L13$next () Bool)
+(define-fun .L13 () Bool (! L13 :next L13$next))
+(declare-fun i () (_ BitVec 32))
+(declare-fun i$next () (_ BitVec 32))
+(define-fun .i () (_ BitVec 32) (! i :next i$next))
+(declare-fun main () (_ BitVec 8))
+(declare-fun main$next () (_ BitVec 8))
+(define-fun .main () (_ BitVec 8) (! main :next main$next))
+
+
+(define-fun .init () Bool (! 
+ 	(and
+		L1
+		(not L2)
+		(not L3)
+		(not L4)
+		(not L5)
+		(not L11)
+		(not L6)
+		(not L7)
+		(not L8)
+		(not L9)
+		(not L10)
+		(not L12)
+		(not L13)
+	)
+	:init true))
+
+
+
+
+(define-fun .trans () Bool (!  
+ 	(and
+		(= L1$next false)
+		(= L2$next 
+		(ite
+			L1
+			L1
+		(ite
+			(and L6 (bvult i (_ bv5 32)))
+			L6
+			L2)))
+		(= L3$next L2)
+		(= L4$next 
+		(ite
+			(and L3 (bvugt i (_ bv7 32)))
+			L3
+			L4))
+		(= L5$next 
+		(ite
+			(and L3 (not (bvugt i (_ bv7 32))))
+			L3
+			L5))
+		(= L11$next 
+		(ite
+			L4
+			L4
+		(ite
+			L9
+			L9
+			L11)))
+		(= L6$next L5)
+		(= L12$next L11)
+		(= L7$next 
+		(ite
+			(and L6 (not (bvult i (_ bv5 32))))
+			L6
+			L7))
+		(= L8$next L7)
+		(= L9$next 
+		(ite
+			(and L8 (bvugt i (_ bv7 32)))
+			L8
+			L9))
+		(= L10$next 
+		(ite
+			(and L8 (not (bvugt i (_ bv7 32))))
+			L8
+			L10))
+		(= L13$next L12)
+		(= i$next
+		(ite
+		   L1
+		   (_ bv0 32)
+		   (ite
+		      L5
+		      (bvadd i   3 )
+			i)))
+		(= main$next
+		(ite
+		   L10
+		   (_ bv0 32)
+		   (ite
+		      L13
+		      (_ bv0 32)
+			main)))
+		(= L1
+			(ite
+			L2
+			false
+			L1))
+		(= L1$next
+			(ite
+			L2$next
+			false
+			L1$next))
+		(= L2
+			(ite
+			L3
+			false
+			L2))
+		(= L2$next
+			(ite
+			L3$next
+			false
+			L2$next))
+		(= L3
+			(ite
+			(or L4 L5)
+			false
+			L3))
+		(= L3$next
+			(ite
+			(or L4$next L5$next)
+			false
+			L3$next))
+		(= L4
+			(ite
+			L11
+			false
+			L4))
+		(= L4$next
+			(ite
+			L11$next
+			false
+			L4$next))
+		(= L5
+			(ite
+			L6
+			false
+			L5))
+		(= L5$next
+			(ite
+			L6$next
+			false
+			L5$next))
+		(= L11
+			(ite
+			L12
+			false
+			L11))
+		(= L11$next
+			(ite
+			L12$next
+			false
+			L11$next))
+		(= L6
+			(ite
+			(or L2 L7)
+			false
+			L6))
+		(= L6$next
+			(ite
+			(or L2$next L7$next)
+			false
+			L6$next))
+		(= L7
+			(ite
+			L8
+			false
+			L7))
+		(= L7$next
+			(ite
+			L8$next
+			false
+			L7$next))
+		(= L8
+			(ite
+			(or L9 L10)
+			false
+			L8))
+		(= L8$next
+			(ite
+			(or L9$next L10$next)
+			false
+			L8$next))
+		(= L9
+			(ite
+			L11
+			false
+			L9))
+		(= L9$next
+			(ite
+			L11$next
+			false
+			L9$next))
+
+
+		(= L12
+			(ite
+			L13
+			false
+			L12))
+		(= L12$next
+			(ite
+			L13$next
+			false
+			L12$next))
+
+
+	) 
+	:trans true))
+
+
+
+(define-fun .property () Bool (!
+	(and
+	 L12
+
+)
+:invar-property 0))

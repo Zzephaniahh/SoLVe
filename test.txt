@@ -1,17 +1,53 @@
-FUNCTION CALL BEGIN: [Name: main] [Call Line: 1]
-(1, 2, True)
-(2, 7, True)
-(7, 8, True)
-(8, 9, True)
-(10, 11, True)
-(9, 10, x < 0)
-(9, 11, !x < 0)
-(11, 12, True)
-(12, 12, True)
-[int  y, 0, 2]
-[int  x, 0, 7]
-[int  z, 0, 8]
-[int  z, x+1, 10]
-[int  z, 7, 11]
-Return: [int (void) main, 0, 12]
-Call ends: main
+# Initial state, assume all other locations are False. 
+L1S0 = True 
+
+# Line Next State
+L2S1+ = L1S0
+L3S2+ = L2S1 || L3S6 & (i<5)
+L5S3+ = L3S2
+L7S4+ = L5S3 & (i>7)
+L9S5+ = L5S3 & !(i>7)
+L20S11+ = L7S4 || L14S9
+L3S6+ = L9S5
+L20S12+ = L20S11
+L3S7+ = L3S6 & !(i<5)
+L12S8+ = L3S7
+L14S9+ = L12S8 & (i>7)
+L17S10+ = L12S8 & !(i>7) || L17S10
+L22S13+ = L20S12 || L22S13
+
+# CFG-Driven One-Hot Encoding
+L2S1 --> !L1S0
+L2S1+ --> !L1S0+
+L3S2 --> !L2S1
+L3S2+ --> !L2S1+
+L5S3 --> !L3S2
+L5S3+ --> !L3S2+
+L7S4 || L9S5 --> !L5S3
+L7S4+ || L9S5+ --> !L5S3+
+L20S11 --> !L7S4
+L20S11+ --> !L7S4+
+L3S6 --> !L9S5
+L3S6+ --> !L9S5+
+L20S12 --> !L20S11
+L20S12+ --> !L20S11+
+L3S2 || L3S7 --> !L3S6
+L3S2+ || L3S7+ --> !L3S6+
+L12S8 --> !L3S7
+L12S8+ --> !L3S7+
+L14S9 || L17S10 --> !L12S8
+L14S9+ || L17S10+ --> !L12S8+
+L20S11 --> !L14S9
+L20S11+ --> !L14S9+
+L22S13 --> !L20S12
+L22S13+ --> !L20S12+
+
+# Data Assignments
+L2S1+ --> i+ = 0
+L9S5+ --> i+ = i + 3
+L17S10+ --> main+ = 0
+L22S13+ --> main+ = 0
+
+# Data Preservation
+!L2S1+ & !L9S5+ --> i+ = i
+!L17S10+ & !L22S13+ --> main+ = main

@@ -4,11 +4,12 @@ import equation_util as e_ut
 # import merge as merge
 def main():
     # 'cfg_opt.txt'
-    our_CFG = c_ut.get_file_CFG('assert_test.txt')
-    c_ut.display_CFG(our_CFG, "test_file") # maybe fixme cause I change the CFG (elim true)
+    file_name = sys.argv[1]
+    our_CFG = c_ut.get_file_CFG(file_name)
+    c_ut.display_CFG(our_CFG, "test_file")
     e_ut.get_equations(our_CFG)
-    # merge.process_CFG(our_CFG)
-    # get_vmt(our_CFG)
+    # merge.process_CFG(our_CFG) # MAKEME
+
 
 
 if __name__ == '__main__':
@@ -16,13 +17,9 @@ if __name__ == '__main__':
 
 """
 TODO:
-1. Test more complex source code
-2. Get SMT-lib/VMT -- partially complete, need to handle more cases
-3. Get full type info from CIL
-4. Fix Orphaned nodes in CIL
-
-Handle functions -- DONE!
-Compute equations from graph -- Done!
+1. Test more benchmarks
+2. Develop optimizations on the CFG for verification
+    2.1 Make a DFG --- unsure if global or local DFG is wise?
 """
 
 

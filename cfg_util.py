@@ -319,7 +319,7 @@ def get_edge(line, current_full_func, entry=False, file_entry=False):
         condition =  edge_data[2].strip().split(",")
 
         condition_expr_str = re.search(r"\{.*?}", line).group(0)
-        if '!' in line: # preserve the negation
+        if '!{' in line: # preserve the negation
             condition_expr_str = '!' + condition_expr_str
 
         exp = build_expression(condition_expr_str, current_full_func.name)
@@ -353,7 +353,8 @@ def build_variable(var_str, func_name): # var string looks something like: int 3
     return var
 
 def build_expression(exp_str, func_name, lhs=None):
-    negate = True if '!' in exp_str else False # check if it needs to be negated
+    # import pdb; pdb.set_trace()
+    negate = True if '!{' in exp_str else False # check if it needs to be negated
     if exp_str.endswith(', }'): # this is because I cannot currently print exps cleanly from Cil
         exp_str = exp_str[:-3] + '}' # changes {int 32 i > 7, int 32 i, int 32 7, } to: {int 32 i > 7, int 32 i, int 32 7}
     exp_str = exp_str[1:-1] # remove the '{ }'

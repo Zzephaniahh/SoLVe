@@ -1,66 +1,335 @@
 // test_file
 digraph {
-	L9S0 -> L10S1 [label=""]
-	L9S0 [label=L9S0
+	L4S0 -> L6S1 [label=""]
+	L4S0 [label=L4S0
  color=green style=filled]
-	L9S0 [label=L9S0
+	L4S0 [label=L4S0
 ]
-	L10S1 -> L10S2 [label=""]
-	L10S1 [label=L10S1
+	L6S1 -> L6S2 [label=""]
+	L6S1 [label=L6S1
 ]
-	L10S2 -> L13S3 [label=""]
-	L10S2 [label="L10S2
-i = 0
+	L6S2 -> L6S3 [label=""]
+	L6S2 [label="L6S2
+Unconstrained input: tmp
 "]
-	L13S3 -> L15S4 [label=""]
-	L13S3 [label="L13S3
-Unconstrained input: v_in
+	L6S3 -> L9S4 [label=""]
+	L6S3 [label="L6S3
+p1 = tmp
 "]
-	L15S4 -> L17S5 [label=""]
-	L15S4 [label=L15S4
-]
-	L17S5 -> L17S6 [label="i>7"]
-	L17S5 -> L18S7 [label="!(i>7)"]
-	L17S5 [label=L17S5
-]
-	L17S6 -> L25S13 [label=""]
-	L17S6 [label=L17S6
-]
-	L18S7 -> L15S8 [label=""]
-	L18S7 [label="L18S7
-__cil_tmp3 = i+11
-__cil_tmp4 = i+4
-__cil_tmp5 = __cil_tmp4+7
-i = __cil_tmp5+__cil_tmp3
+	L9S4 -> L9S5 [label=""]
+	L9S4 [label="L9S4
+Unconstrained input: tmp___0
 "]
-	L25S13 -> L25S14 [label=""]
-	L25S13 [label=L25S13
+	L9S5 -> L12S6 [label=""]
+	L9S5 [label="L9S5
+p2 = tmp___0
+"]
+	L12S6 -> L12S7 [label=""]
+	L12S6 [label="L12S6
+Unconstrained input: tmp___1
+"]
+	L12S7 -> L15S8 [label=""]
+	L12S7 [label="L12S7
+p3 = tmp___1
+"]
+	L15S8 -> L15S9 [label=""]
+	L15S8 [label="L15S8
+Unconstrained input: tmp___2
+"]
+	L15S9 -> L18S10 [label=""]
+	L15S9 [label="L15S9
+p4 = tmp___2
+"]
+	L18S10 -> L18S11 [label=""]
+	L18S10 [label="L18S10
+Unconstrained input: tmp___3
+"]
+	L18S11 -> L21S12 [label=""]
+	L18S11 [label="L18S11
+p5 = tmp___3
+"]
+	L21S12 -> L21S13 [label=""]
+	L21S12 [label="L21S12
+Unconstrained input: tmp___4
+"]
+	L21S13 -> L24S14 [label=""]
+	L21S13 [label="L21S13
+p6 = tmp___4
+"]
+	L24S14 -> L24S15 [label=""]
+	L24S14 [label="L24S14
+Unconstrained input: tmp___5
+"]
+	L24S15 -> L27S16 [label=""]
+	L24S15 [label="L24S15
+p7 = tmp___5
+"]
+	L27S16 -> L27S17 [label=""]
+	L27S16 [label="L27S16
+Unconstrained input: tmp___6
+"]
+	L27S17 -> L30S18 [label=""]
+	L27S17 [label="L27S17
+p8 = tmp___6
+"]
+	L30S18 -> L30S19 [label=""]
+	L30S18 [label="L30S18
+Unconstrained input: tmp___7
+"]
+	L30S19 -> L36S20 [label=""]
+	L30S19 [label="L30S19
+p9 = tmp___7
+"]
+	L36S20 -> L37S21 [label=""]
+	L36S20 [label=L36S20
 ]
-	L15S8 -> L15S4 [label="i<5"]
-	L15S8 -> L15S9 [label="!(i<5)"]
-	L15S8 [label=L15S8
+	L37S21 -> L37S22 [label=""]
+	L37S21 [label=L37S21
 ]
-	L15S9 -> L21S10 [label=""]
-	L15S9 [label=L15S9
+	L37S22 -> L38S23 [label=""]
+	L37S22 [label="L37S22
+Unconstrained input: cond
+"]
+	L38S23 -> L39S24 [label="cond==0"]
+	L38S23 -> L41S25 [label="!(cond==0)"]
+	L38S23 [label=L38S23
 ]
-	L21S10 -> L21S11 [label="i>7"]
-	L21S10 -> L24S12 [label="!(i>7)"]
-	L21S10 [label=L21S10
+	L39S24 -> L146S80 [label=""]
+	L39S24 [label=L39S24
 ]
-	L21S11 -> L25S13 [label=""]
-	L21S11 [label=L21S11
-]
-	L24S12 -> L24S12 [label=""]
-	L24S12 [label="L24S12
+	L41S25 -> L61S26 [label=""]
+	L41S25 [label="L41S25
+lk1 = 0
+lk2 = 0
+lk3 = 0
+lk4 = 0
+lk5 = 0
+lk6 = 0
+lk7 = 0
+lk8 = 0
+lk9 = 0
+"]
+	L146S80 -> L146S80 [label=""]
+	L146S80 [label="L146S80
 main = 0
 "]
-	L25S14 -> L25S14 [label=""]
-	L25S14 [label=L25S14
- color=red style=filled]
-	L25S14 [label=L25S14
+	L61S26 -> L62S27 [label="p1!=0"]
+	L61S26 -> L65S28 [label="!(p1!=0)"]
+	L61S26 [label=L61S26
 ]
-	L26S15 -> L26S15 [label=""]
-	L26S15 [label="L26S15
+	L62S27 -> L65S28 [label=""]
+	L62S27 [label="L62S27
+lk1 = 1
+"]
+	L65S28 -> L66S29 [label="p2!=0"]
+	L65S28 -> L69S30 [label="!(p2!=0)"]
+	L65S28 [label=L65S28
+]
+	L66S29 -> L69S30 [label=""]
+	L66S29 [label="L66S29
+lk2 = 1
+"]
+	L69S30 -> L70S31 [label="p3!=0"]
+	L69S30 -> L73S32 [label="!(p3!=0)"]
+	L69S30 [label=L69S30
+]
+	L70S31 -> L73S32 [label=""]
+	L70S31 [label="L70S31
+lk3 = 1
+"]
+	L73S32 -> L74S33 [label="p4!=0"]
+	L73S32 -> L77S34 [label="!(p4!=0)"]
+	L73S32 [label=L73S32
+]
+	L74S33 -> L77S34 [label=""]
+	L74S33 [label="L74S33
+lk4 = 1
+"]
+	L77S34 -> L78S35 [label="p5!=0"]
+	L77S34 -> L81S36 [label="!(p5!=0)"]
+	L77S34 [label=L77S34
+]
+	L78S35 -> L81S36 [label=""]
+	L78S35 [label="L78S35
+lk5 = 1
+"]
+	L81S36 -> L82S37 [label="p6!=0"]
+	L81S36 -> L85S38 [label="!(p6!=0)"]
+	L81S36 [label=L81S36
+]
+	L82S37 -> L85S38 [label=""]
+	L82S37 [label="L82S37
+lk6 = 1
+"]
+	L85S38 -> L86S39 [label="p7!=0"]
+	L85S38 -> L89S40 [label="!(p7!=0)"]
+	L85S38 [label=L85S38
+]
+	L86S39 -> L89S40 [label=""]
+	L86S39 [label="L86S39
+lk7 = 1
+"]
+	L89S40 -> L90S41 [label="p8!=0"]
+	L89S40 -> L93S42 [label="!(p8!=0)"]
+	L89S40 [label=L89S40
+]
+	L90S41 -> L93S42 [label=""]
+	L90S41 [label="L90S41
+lk8 = 1
+"]
+	L93S42 -> L94S43 [label="p9!=0"]
+	L93S42 -> L99S44 [label="!(p9!=0)"]
+	L93S42 [label=L93S42
+]
+	L94S43 -> L99S44 [label=""]
+	L94S43 [label="L94S43
+lk9 = 1
+"]
+	L99S44 -> L100S45 [label="p1!=0"]
+	L99S44 -> L104S48 [label="!(p1!=0)"]
+	L99S44 [label=L99S44
+]
+	L100S45 -> L100S46 [label="lk1!=1"]
+	L100S45 -> L101S47 [label="!(lk1!=1)"]
+	L100S45 [label=L100S45
+]
+	L104S48 -> L105S49 [label="p2!=0"]
+	L104S48 -> L109S52 [label="!(p2!=0)"]
+	L104S48 [label=L104S48
+]
+	L100S46 -> L147S81 [label=""]
+	L100S46 [label=L100S46
+]
+	L101S47 -> L104S48 [label=""]
+	L101S47 [label="L101S47
+lk1 = 0
+"]
+	L147S81 -> L147S82 [label=""]
+	L147S81 [label=L147S81
+]
+	L105S49 -> L105S50 [label="lk2!=1"]
+	L105S49 -> L106S51 [label="!(lk2!=1)"]
+	L105S49 [label=L105S49
+]
+	L109S52 -> L110S53 [label="p3!=0"]
+	L109S52 -> L114S56 [label="!(p3!=0)"]
+	L109S52 [label=L109S52
+]
+	L105S50 -> L147S81 [label=""]
+	L105S50 [label=L105S50
+]
+	L106S51 -> L109S52 [label=""]
+	L106S51 [label="L106S51
+lk2 = 0
+"]
+	L110S53 -> L110S54 [label="lk3!=1"]
+	L110S53 -> L111S55 [label="!(lk3!=1)"]
+	L110S53 [label=L110S53
+]
+	L114S56 -> L115S57 [label="p4!=0"]
+	L114S56 -> L119S60 [label="!(p4!=0)"]
+	L114S56 [label=L114S56
+]
+	L110S54 -> L147S81 [label=""]
+	L110S54 [label=L110S54
+]
+	L111S55 -> L114S56 [label=""]
+	L111S55 [label="L111S55
+lk3 = 0
+"]
+	L115S57 -> L115S58 [label="lk4!=1"]
+	L115S57 -> L116S59 [label="!(lk4!=1)"]
+	L115S57 [label=L115S57
+]
+	L119S60 -> L120S61 [label="p5!=0"]
+	L119S60 -> L124S64 [label="!(p5!=0)"]
+	L119S60 [label=L119S60
+]
+	L115S58 -> L147S81 [label=""]
+	L115S58 [label=L115S58
+]
+	L116S59 -> L119S60 [label=""]
+	L116S59 [label="L116S59
+lk4 = 0
+"]
+	L120S61 -> L120S62 [label="lk5!=1"]
+	L120S61 -> L121S63 [label="!(lk5!=1)"]
+	L120S61 [label=L120S61
+]
+	L124S64 -> L125S65 [label="p6!=0"]
+	L124S64 -> L129S68 [label="!(p6!=0)"]
+	L124S64 [label=L124S64
+]
+	L120S62 -> L147S81 [label=""]
+	L120S62 [label=L120S62
+]
+	L121S63 -> L124S64 [label=""]
+	L121S63 [label="L121S63
+lk5 = 0
+"]
+	L125S65 -> L125S66 [label="lk6!=1"]
+	L125S65 -> L126S67 [label="!(lk6!=1)"]
+	L125S65 [label=L125S65
+]
+	L129S68 -> L130S69 [label="p7!=0"]
+	L129S68 -> L134S72 [label="!(p7!=0)"]
+	L129S68 [label=L129S68
+]
+	L125S66 -> L147S81 [label=""]
+	L125S66 [label=L125S66
+]
+	L126S67 -> L129S68 [label=""]
+	L126S67 [label="L126S67
+lk6 = 0
+"]
+	L130S69 -> L130S70 [label="lk7!=1"]
+	L130S69 -> L131S71 [label="!(lk7!=1)"]
+	L130S69 [label=L130S69
+]
+	L134S72 -> L135S73 [label="p8!=0"]
+	L134S72 -> L139S76 [label="!(p8!=0)"]
+	L134S72 [label=L134S72
+]
+	L130S70 -> L147S81 [label=""]
+	L130S70 [label=L130S70
+]
+	L131S71 -> L134S72 [label=""]
+	L131S71 [label="L131S71
+lk7 = 0
+"]
+	L135S73 -> L135S74 [label="lk8!=1"]
+	L135S73 -> L136S75 [label="!(lk8!=1)"]
+	L135S73 [label=L135S73
+]
+	L139S76 -> L140S77 [label="p9!=0"]
+	L139S76 -> L36S20 [label="!(p9!=0)"]
+	L139S76 [label=L139S76
+]
+	L135S74 -> L147S81 [label=""]
+	L135S74 [label=L135S74
+]
+	L136S75 -> L139S76 [label=""]
+	L136S75 [label="L136S75
+lk8 = 0
+"]
+	L140S77 -> L140S78 [label="lk9!=1"]
+	L140S77 -> L141S79 [label="!(lk9!=1)"]
+	L140S77 [label=L140S77
+]
+	L140S78 -> L147S81 [label=""]
+	L140S78 [label=L140S78
+]
+	L141S79 -> L36S20 [label=""]
+	L141S79 [label="L141S79
+lk9 = 0
+"]
+	L147S82 -> L147S82 [label=""]
+	L147S82 [label=L147S82
+ color=red style=filled]
+	L147S82 [label=L147S82
+]
+	L148S83 -> L148S83 [label=""]
+	L148S83 [label="L148S83
 main = 0
 "]
 }

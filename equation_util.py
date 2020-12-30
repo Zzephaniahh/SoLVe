@@ -73,7 +73,6 @@ def print_line_eq(eq):
 
 def print_cfg_driven_encoding(node, succs):
     if node in succs:
-        # import pdb; pdb.set_trace()
         succs.remove(node)
     current_eq_str = ""
     next_eq_str = ""
@@ -89,6 +88,11 @@ def print_cfg_driven_encoding(node, succs):
     #     current_eq_str = node + " --> " + node
     #     next_eq_str = node + "+ --> " + node + "+"
 
+def declare_input_variables(input_variable):
+    if input_variable.type == "int":
+        print("(declare-fun " + input_variable.name + " () " + "(_ BitVec " + input_variable.size + "))") # current state declaration
+    else:
+        print("Variable: " + input_variable.name +  " of type: " + input_variable.type + ' is not currently supported')
 
 def declare_variables(variable):
     if variable.type == "int": #this is a hack which will be removed once CIL produces full variable info.
@@ -121,7 +125,9 @@ def get_vmt_operator(operator):
     "-" : "bvsub",
     "<=" : "bvule",
     ">=" : "bvuge",
+    "!=" : "=",
     "==" : "=",
+    "=" : "=",
     }
     try:
         return op_map[operator]
@@ -158,8 +164,10 @@ def write_line_transition(name, terms, next_state_string):
         next_line = term[0]
         next_state_string += "\t\t(ite\n"
 
-        condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
 
+        condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
+        if condition.operator == '!=':
+            condition_str = "(not " + condition_str + ")"
         if condition.negate:
             condition_str = "(not " + condition_str + ")"
 
@@ -176,20 +184,20 @@ def write_line_transition(name, terms, next_state_string):
     return next_state_string
 
 def print_one_hot_vmt(node, preds):
-    next_state_string = "\t\t(= " + node + "\n"
-    next_state_string += "\t\t\t(ite\n"
+    # next_state_string = "\t\t(= " + node + "\n"
+    next_state_string = "\n\t\t(ite\n"
     if len(preds) > 1:
         next_state_string += "\t\t\t(or "
         for pred in preds:
             next_state_string += pred + " "
         next_state_string = next_state_string[:-1] + ")\n\t\t\tfalse\n"
-        next_state_string += "\t\t\t" + node + "))"
+        # next_state_string += "\t\t\t" + node + "))"
 
     elif preds:
             pred = preds[0]
             next_state_string += "\t\t\t" + pred + " "
             next_state_string = next_state_string[:-1] + "\n\t\t\tfalse\n"
-            next_state_string += "\t\t\t" + node + "))"
+            # next_state_string += "\t\t\t" + node + "))"
 
     else:
         next_state_string = "" # FIXME check final state, should loop I think.
@@ -200,23 +208,54 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
 
     print("\n")
     ######## line VMT transitions####################
+    # for node in one_hot_cfg_driven_eq_dict:
+    #     preds = one_hot_cfg_driven_eq_dict[node]
+    #     next_state_string = print_one_hot_vmt(node, preds)
+    #     print(next_state_string)
+    #     next_preds = [pred + "$next" for pred in preds]
+    #     next_node = node + "$next"
+    #     next_state_string = print_one_hot_vmt(next_node, next_preds)
+    #     print(next_state_string)
+
     print("(define-fun .trans () Bool (!  \n \t(and") # define the initial state function
     for eq in vmt_line_equation_dict.values():
-        next_state_string = "\t\t(= " + eq.lhs.name +  " "
+        indent = '\t\t\t'
+        # import pdb; pdb.set_trace()
+        next_node = eq.lhs.name
+        next_state_string = "\t(= " + next_node +  " "
+        node = next_node[:-len('$next')]
+        preds = one_hot_cfg_driven_eq_dict[node]
+        # next_state_string = print_one_hot_vmt(node, preds)
+        # print(next_state_string)
+        next_preds = [pred + "$next" for pred in preds]
+        next_node = node + "$next"
+        next_state_string += print_one_hot_vmt(next_node, next_preds)
+        # print(next_state_string)
+
         if eq.terms[0][0] == "false":
-            next_state_string += eq.terms[0][0]
-            next_state_string += ")"
+            next_state_string += indent + eq.terms[0][0]
+            open_bracket_numb = next_state_string.count('(')
+            closing_bracket_numb = next_state_string.count(')')
+            for i in range(closing_bracket_numb, open_bracket_numb):
+                next_state_string += ")"
             print(next_state_string)
             continue
 
         condition = eq.terms[0][1]
         next_line = eq.terms[0][0]
         if (condition.lhs == "") and (len(eq.terms) == 1):
-                next_state_string += eq.terms[0][0]
-                next_state_string += ")"
+                next_state_string +=  indent + eq.terms[0][0]
+                open_bracket_numb = next_state_string.count('(')
+                closing_bracket_numb = next_state_string.count(')')
+                for i in range(closing_bracket_numb, open_bracket_numb):
+                    next_state_string += ")"
+
                 print(next_state_string)
                 continue
-        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string + "\n")
+        next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string)
+        # open_bracket_numb = next_state_string.count('(')
+        # closing_bracket_numb = next_state_string.count(')')
+        # for i in range(closing_bracket_numb, open_bracket_numb):
         print(next_state_string)
 
     ######## data VMT transitions####################
@@ -230,16 +269,32 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
             next_state_string += indent + "(ite\n"
             indent += "   "
             exp = data_assignment.exp
-            if exp.rhs.name.isdigit(): # some digit ex: x = 9;
-                next_state_string += indent + line +"\n"
-                next_state_string += indent + "(_ bv"+ exp.rhs.name + " " + exp.rhs.size + ")\n"
+            # if exp.rhs.name.isdigit(): # some digit ex: x = 9;
+            #     import pdb; pdb.set_trace()
+            #     next_state_string += indent + line + "\n"
+            #     next_state_string += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")\n"
 
-            else:
+            # else:
                 # type(data) == type(variable("","","","")): # some variable ex: x = y;
                 # next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name +  " (_ bv" + exp.rhs.name.strip() + + " " + exp.rhs.size + "))\n"
-                next_state_string += indent + line +"\n"
-                next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + " )\n"
 
+            next_state_string += indent + line +"\n"
+
+            if exp.lhs == None: # this is an expression with a single term from something like: x = y;
+                if exp.rhs.name.isdigit(): # some digit ex: x = 9;
+                    next_state_string += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")\n"
+                else: # this some variable like: x = y;
+                # lhs = data_assignment.lhs # this would be x and exp.rhs is y
+                    next_state_string += indent + exp.rhs.name + "\n"
+
+            else:
+                if exp.rhs.name.isdigit(): # some digit ex: x = x + 9;
+                    exp.rhs.name = "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
+
+                if exp.lhs.name.isdigit(): # some digit ex: x = 9 + x;
+                    exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
+
+                next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ")\n"
 
 
             #     if exp.rhs.strip().isdigit():
@@ -255,28 +310,28 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
         next_state_string += "\t\t\t" + eq.variable + closing_brackets
         print(next_state_string)
 
-############ CFG-driven One-Hot ####################
-    for node in one_hot_cfg_driven_eq_dict:
-        preds = one_hot_cfg_driven_eq_dict[node]
-        next_state_string = print_one_hot_vmt(node, preds)
-        print(next_state_string)
-        next_preds = [pred + "$next" for pred in preds]
-        next_node = node + "$next"
-        next_state_string = print_one_hot_vmt(next_node, next_preds)
-        print(next_state_string)
+########### CFG-driven One-Hot ####################
+    # for node in one_hot_cfg_driven_eq_dict:
+    #     preds = one_hot_cfg_driven_eq_dict[node]
+    #     next_state_string = print_one_hot_vmt(node, preds)
+    #     print(next_state_string)
+    #     next_preds = [pred + "$next" for pred in preds]
+    #     next_node = node + "$next"
+    #     next_state_string = print_one_hot_vmt(next_node, next_preds)
+    #     print(next_state_string)
 
     print("\t) \n\t:trans true))")
     print("\n")
 
 
 def build_property (property_locations):
-    print("\n(define-fun .property () Bool (!")
-    print("\t(and")
+    output_str = "\n(define-fun .property () Bool (!\n"
+    output_str += "\t(and\n"
+    output_str += "\t(not\n" #FIXME MAYBE NOT CORRECT?
     for location in property_locations:
-        print("\t " + location + "\n")
-    print(")")
-    print(":invar-property 0))")
-
+        output_str += "\t " + location + "\n"
+    output_str += "\t)) \n:invar-property 0))"
+    print(output_str)
 
 def get_equations(CFG):
     line_equation_dict = {} # lhs_var_name, class equation
@@ -375,6 +430,9 @@ def get_equations(CFG):
 
 ################## VMT #############################
     if print_vmt:
+        for input_variable_set in CFG.input_variables.values():
+            for input_variable in input_variable_set:
+                declare_input_variables(input_variable)
         for variable in line_variable_dict.values():
             declare_variables(variable)
         for variable in data_variable_dict.values():

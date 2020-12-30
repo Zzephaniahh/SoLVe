@@ -289,7 +289,9 @@ let main () = begin
   Cil.initCIL () ;
 
   (* let input_filename = "test_locks_9_true-unreach-call_true-valid-memsafety_false-termination.i" in *)
-  let input_filename = "in.i" in
+  (* let input_filename = "in.i" in *)
+  let input_filename = Sys.argv.(1) in
+
 
   (* let input_filename = "all_lines_separate.c" in *)
   (* let input_filename = "one_line.c" in *)

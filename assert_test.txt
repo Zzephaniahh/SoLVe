@@ -1,29 +1,12 @@
 FUNCTION CALL BEGIN: [Name: main] [(L9S0, L10S1, True)] 
-(L10S1, L10S2, True)
-(L10S2, L13S3, True)
-[int 32 i, {int 32 0, }, L10S2]
-(L13S3, L15S4, True)
-Input: [L13S3] [LHS: int 32 v_in] 
-(L15S4, L17S5, True)
-(L17S5, L17S6, {int 32 i > 7, int 32 i, int 32 7, })
-(L17S5, L18S7, !{int 32 i > 7, int 32 i, int 32 7, })
-(L17S6, L25S13, True)
-(L18S7, L15S8, True)
-[int 32 __cil_tmp3, {int 32 i + 11, int 32 i, int 32 11, }, L18S7]
-[int 32 __cil_tmp4, {int 32 i + 4, int 32 i, int 32 4, }, L18S7]
-[int 32 __cil_tmp5, {int 32 __cil_tmp4 + 7, int 32 __cil_tmp4, int 32 7, }, L18S7]
-[int 32 i, {int 32 __cil_tmp5 + __cil_tmp3, int 32 __cil_tmp5, int 32 __cil_tmp3, }, L18S7]
-(L15S8, L15S4, {int 32 i < 5, int 32 i, int 32 5, })
-(L15S8, L15S9, !{int 32 i < 5, int 32 i, int 32 5, })
-(L15S9, L21S10, True)
-(L21S10, L21S11, {int 32 i > 7, int 32 i, int 32 7, })
-(L21S10, L24S12, !{int 32 i > 7, int 32 i, int 32 7, })
-(L21S11, L25S13, True)
-(L24S12, L24S12, True)
-Return: [int  32 main, {int 32 0, }, L24S12]
-(L25S13, L25S14, True)
-(L25S14, L25S14, True)
-Property: [!L25S14] 
-(L26S15, L26S15, True)
-Return: [int  32 main, {int 32 0, }, L26S15]
+(L10S1, L11S2, True)
+[int 32 i, {int 32 20, }, L10S1]
+(L11S2, L11S3, {int 32 i > 0, int 32 i, int 32 0, })
+(L11S2, L12S4, !{int 32 i > 0, int 32 i, int 32 0, })
+(L11S3, L13S5, True)
+(L12S4, L12S4, True)
+Return: [int  32 main, {int 32 0, }, L12S4]
+(L13S5, L13S6, True)
+(L13S6, L13S6, True)
+Property: [!L13S6] 
 Call ends: main

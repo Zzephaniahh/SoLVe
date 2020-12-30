@@ -1,7 +1,7 @@
 make
 
 
-./cilcfgformula > assert_test.txt
+./cilcfgformula in.i > assert_test.txt
 
 # python3 SoLVe.py #test.txt
 

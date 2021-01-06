@@ -1,3 +1,0 @@
-> /home/zephaniah/Documents/Zephaniahs_Research/SoLVe/cfg_util.py(294)get_data_edge()
--> var = variable(var_name, var_type, var_size, current_full_func.name) # add a variable
-(Pdb) 

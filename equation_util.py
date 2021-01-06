@@ -370,7 +370,10 @@ def get_equations(CFG):
             implication_equation_dict[expression.lhs.name].line_and_data_set.append([node.node_numb, expression])
 
         for succ in node.succs:
-            succ_node = CFG.node_dict[succ]
+            try:
+                succ_node = CFG.node_dict[succ]
+            except:
+                import pdb; pdb.set_trace()
             if succ_node == node: #if self loop
                 continue
             one_hot_cfg_driven_eq_dict[node.node_numb].append(succ_node.node_numb) # empty list to be populated by each pred

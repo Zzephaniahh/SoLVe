@@ -135,49 +135,19 @@ let rec get_control_flow stmt = begin
     | Goto(stmt_ref, source) ->
       let dest = get_loc !stmt_ref in
       let source = get_loc stmt in
-      (* Printf.printf "(%d%d, %d%d, True)\n" source stmt.sid dest !stmt_ref.sid *)
       Printf.printf "(L%dS%d, L%dS%d, True)\n" source stmt.sid dest !stmt_ref.sid
 
-      (* | ComputedGoto(exp, source) ->
-        (* let dest = get_loc stmt_ref in
-        let source = get_loc stmt in *)
-        Printf.printf "(never occurs?)\n"
-(*  *)
-      | Switch(exp, source, _, _) ->
-          (* let dest = get_loc stmt_ref in
-          let source = get_loc stmt in *)
-          Printf.printf "(never occurs?)\n" *)
 
-          (* | Block(block) ->
-            List.iter (fun stmt ->
-              List.iter (fun pred ->
-                let stmt_location = get_loc stmt in
-                let pred_location = get_loc pred in
-                Printf.printf "(%d%d, %d%d, True)\n" pred_location pred.sid stmt_location stmt.sid) stmt.preds;
-          ) block.bstmts; *)
-              (* let dest = get_loc stmt_ref in
-              let source = get_loc stmt in *)
-              (* Printf.printf "(never occurs?)\n" *)
 
     | _ ->
-      (* if stmt.sid = 83 then begin
-        let succsize = List.length stmt.preds in
-        Printf.printf "(%d, HHHHHHHH)\n" succsize
-      end; *)
 
-        (* List.iter (fun succ ->
-          let stmt_location = get_loc stmt in
-          let pred_location = get_loc succ in
-          Printf.printf "(%d, %d, HHHHHHHH)\n" stmt.sid succ.sid
-        ) stmt.succs; *)
       let stmt_location = get_loc stmt in
       if List.length stmt.succs = 0 then Printf.printf "(L%dS%d, L%dS%d, True)\n" stmt_location stmt.sid stmt_location stmt.sid;
       List.iter (fun succ ->
         let pred_location = get_loc succ in
         Printf.printf "(L%dS%d, L%dS%d, True)\n" stmt_location stmt.sid pred_location succ.sid
       ) stmt.succs;
-      (* Printf.printf "(%d, %d, True)\n" pred_location pred.sid stmt_location stmt.sid
-    ) stmt.preds; *)
+
     end
 
 let get_data_flow lhs rhs_exp loc stmt = begin
@@ -190,26 +160,7 @@ let get_data_flow lhs rhs_exp loc stmt = begin
     Printf.printf "[%s%d %s, " type_str bitsize v.vname;
     print_expression_info rhs_exp; (* prints each expression in a nested format *)
 
-    Printf.printf ", L%dS%d]\n" stmt_loc stmt.sid; (*stmt.sid*)
-
-
-
-    (* match v.vtype with
-    | TInt(ikind, attributes) ->
-
-      (* List.iter( fun attribute ->
-        let attr_str = Pretty.sprint ~width:80 (dn_attr () attribute ) in
-
-      Printf.printf "[heeloo %s\n" attr_str ; (*stmt.sid*)
-    ) attributes; *)
-      match ikind with
-      | IInt ->
-        Printf.printf "[%s %s, %s, %d]\n" type_str v.vname rhs_str loc.line (*stmt.sid*)
-      (* Printf.printf "[%s %s, %s, %d]\n" type_str v.vname rhs_str loc.line (*stmt.sid*) *)
-
-    | _ ->
-      (* FIXME: Add all variable types, how can we find the size?*)
-      Printf.printf "Type: %s of variable: %s on line: %d not supported \n" type_str v.vname loc.line; *)
+    Printf.printf ", L%dS%d]\n" stmt_loc stmt.sid;
 
   | _ -> () (* more complicated assignments not handled here *)
 end
@@ -243,6 +194,10 @@ let process_function_call calling_context_fundec
         Printf.printf "FUNCTION CALL BEGIN: ";
         let type_str = Pretty.sprint ~width:80 (dn_type () func_var_info.vtype) in
         let stmt_loc = get_loc stmt in
+        (* let callee_func_obj:fundec = Hashtbl.find func_hash func_var_info in *)
+        (* let bitsize = bitsSizeOf callee_func_obj.svar.vtype in *)
+        (* Printf.printf "HHHHHHHHHHHHHHH %s %d \n" type_str  bitsize ; (*lhs_str;*) *)
+        (* FIXME why am I getting 8 as the size for a function of type int? *)
         Printf.printf "[Name: %s] [Call Line: L%dS%d] [Return Type: %s]" func_str stmt_loc stmt.sid type_str; (*lhs_str;*)
       end;
 

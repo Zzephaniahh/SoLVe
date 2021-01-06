@@ -12,9 +12,10 @@ int main () {
   i = i + 2;
   if (i > 7) goto ERROR; // assertion failure
   }
-  while(i<8);
+  while(i<5);
   if (i > 7) goto ERROR; // assertion failure
   return 0;
   ERROR: __VERIFIER_error();
+  return 0;
 
 }

@@ -26,13 +26,13 @@ class input_variable(): # A primary input shown by: __VERIFIER_nondet_XXX() wher
         self.size = bitwidth
         self.location = location
 
-class expr(): # Old deprecate ASAP
-    def __init__(self, exp_str, rhs, operator, lhs, negate):
-        self.exp_str = exp_str # for an exp: (i > 7) --> 'int 32 i > 7'
-        self.rhs = rhs # type: variable with size and type information
-        self.rhs = lhs # type: variable with size and type information
-        self.operator = operator # < > <= = etc.
-        self.negate = negate # this bool is True if the equation is negated (if ! in string)
+# class expr(): # Old deprecate ASAP
+#     def __init__(self, exp_str, rhs, operator, lhs, negate):
+#         self.exp_str = exp_str # for an exp: (i > 7) --> 'int 32 i > 7'
+#         self.rhs = rhs # type: variable with size and type information
+#         self.rhs = lhs # type: variable with size and type information
+#         self.operator = operator # < > <= = etc.
+#         self.negate = negate # this bool is True if the equation is negated (if ! in string)
 
 ### EXPRESSIONS ###
 # An expression str has three elements and usually looks like:
@@ -51,7 +51,7 @@ class expression():
 ### NODES ###
 # Each node is a single statement from CIL and represents a node in the CFG
 # It may contain some expressions, and it has an edge set represeting all edges
-# coming in or leaving the node. The pred and succ lists are built from the edge list
+# leaving the node. The Pred and Succ lists are node_numbs of each pred/succ
 class node():
     def __init__(self, node_numb, func):
         self.node_numb = node_numb
@@ -110,6 +110,8 @@ class CFG():
         self.node_dict[source].edges.append(edge(source, dest, condition))
         self.node_dict[source].succs.append(dest)
         self.node_dict[dest].preds.append(source)
+        # self.node_dict[dest].edges.append(edge(source, dest, condition))
+
 
     def add_existing_node(self, existing_node):
         self.node_dict[existing_node.node_numb] = existing_node
@@ -139,6 +141,13 @@ class CFG():
                 pred_list.append(self.get_node(edge.source))
         return pred_list
 
+    def update_succ_and_pred(self, node):
+        node.succs = []
+        node.preds = []
+        for edge in node.edges:
+            node.succs.append(edge.dest)
+            node.preds.append(edge.source)
+        return node
 
 class full_func():
     def __init__(self):
@@ -203,7 +212,9 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
 
                 if "LHS: " in data:
                     func_call.lhs = data[len("[LHS: "):-1].strip()
-                    get_data_edge("[" + func_call.type + "  " + func_call.lhs + ", " + func_call.func_name + ", " + func_call.line + "]", current_full_func)
+
+                    get_data_edge("[" + func_call.lhs + ", {int 32 " + func_call.func_name + "}, " + func_call.line + "]", current_full_func)
+                        # get_data_edge("[" + func_call.type + "  " + func_call.lhs + ", " + func_call.func_name + ", " + func_call.line + "]", current_full_func)
 
                 if "[(" in data:
                     initial_edge = data[1:-1]
@@ -380,13 +391,7 @@ def get_data_edge(line, current_full_func, return_bool=False):# optional return 
     # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
 
     [lhs_str, stmt_line_number] = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
-    # exp_lhs = build_variable(lhs_str.strip(), current_full_func.name) # add a variable
 
-    # if data_transfer[1].strip() == "__VERIFIER_nondet_int":
-    #     pass ADD INPUT HANDLING
-        # if len(exp_str.strip()) == 2:
-        #     import pdb; pdb.set_trace()
-        # var = build_variable(var_name, var_type, var_size, current_full_func.name) # add a variable
     lhs = build_variable(lhs_str.strip(), current_full_func.name) # add a variable
     exp = build_expression(condition_expr_str.strip(), current_full_func.name)
     line_number = stmt_line_number.strip() # statement number
@@ -472,7 +477,6 @@ def display_CFG(CFG_to_display_global, name):
                 lbl_str += "Unconstrained input: " + input_variable.name + "\n"
 
         for data_assignment in node.expressions:
-            # import pdb; pdb.set_trace()
             exp = data_assignment.exp
             lhs = data_assignment.lhs
             if exp.lhs == None:

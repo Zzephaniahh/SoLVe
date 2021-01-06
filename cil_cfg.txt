@@ -34,129 +34,227 @@ Input: [L27S16] [LHS: int 32 tmp___6]
 [int 32 p8, {int 32 tmp___6, }, L27S17]
 (L30S18, L30S19, True)
 Input: [L30S18] [LHS: int 32 tmp___7] 
-(L30S19, L36S20, True)
+(L30S19, L33S20, True)
 [int 32 p9, {int 32 tmp___7, }, L30S19]
-(L36S20, L37S21, True)
-(L37S21, L37S22, True)
-(L37S22, L38S23, True)
-Input: [L37S22] [LHS: int 32 cond] 
-(L38S23, L39S24, {int 32 cond == 0, int 32 cond, int 32 0, })
-(L38S23, L41S25, !{int 32 cond == 0, int 32 cond, int 32 0, })
-(L39S24, L146S80, True)
-(L41S25, L61S26, True)
-[int 32 lk1, {int 32 0, }, L41S25]
-[int 32 lk2, {int 32 0, }, L41S25]
-[int 32 lk3, {int 32 0, }, L41S25]
-[int 32 lk4, {int 32 0, }, L41S25]
-[int 32 lk5, {int 32 0, }, L41S25]
-[int 32 lk6, {int 32 0, }, L41S25]
-[int 32 lk7, {int 32 0, }, L41S25]
-[int 32 lk8, {int 32 0, }, L41S25]
-[int 32 lk9, {int 32 0, }, L41S25]
-(L61S26, L62S27, {int 32 p1 != 0, int 32 p1, int 32 0, })
-(L61S26, L65S28, !{int 32 p1 != 0, int 32 p1, int 32 0, })
-(L62S27, L65S28, True)
-[int 32 lk1, {int 32 1, }, L62S27]
-(L65S28, L66S29, {int 32 p2 != 0, int 32 p2, int 32 0, })
-(L65S28, L69S30, !{int 32 p2 != 0, int 32 p2, int 32 0, })
-(L66S29, L69S30, True)
-[int 32 lk2, {int 32 1, }, L66S29]
-(L69S30, L70S31, {int 32 p3 != 0, int 32 p3, int 32 0, })
-(L69S30, L73S32, !{int 32 p3 != 0, int 32 p3, int 32 0, })
-(L70S31, L73S32, True)
-[int 32 lk3, {int 32 1, }, L70S31]
-(L73S32, L74S33, {int 32 p4 != 0, int 32 p4, int 32 0, })
-(L73S32, L77S34, !{int 32 p4 != 0, int 32 p4, int 32 0, })
-(L74S33, L77S34, True)
-[int 32 lk4, {int 32 1, }, L74S33]
-(L77S34, L78S35, {int 32 p5 != 0, int 32 p5, int 32 0, })
-(L77S34, L81S36, !{int 32 p5 != 0, int 32 p5, int 32 0, })
-(L78S35, L81S36, True)
-[int 32 lk5, {int 32 1, }, L78S35]
-(L81S36, L82S37, {int 32 p6 != 0, int 32 p6, int 32 0, })
-(L81S36, L85S38, !{int 32 p6 != 0, int 32 p6, int 32 0, })
-(L82S37, L85S38, True)
-[int 32 lk6, {int 32 1, }, L82S37]
-(L85S38, L86S39, {int 32 p7 != 0, int 32 p7, int 32 0, })
-(L85S38, L89S40, !{int 32 p7 != 0, int 32 p7, int 32 0, })
-(L86S39, L89S40, True)
-[int 32 lk7, {int 32 1, }, L86S39]
-(L89S40, L90S41, {int 32 p8 != 0, int 32 p8, int 32 0, })
-(L89S40, L93S42, !{int 32 p8 != 0, int 32 p8, int 32 0, })
-(L90S41, L93S42, True)
-[int 32 lk8, {int 32 1, }, L90S41]
-(L93S42, L94S43, {int 32 p9 != 0, int 32 p9, int 32 0, })
-(L93S42, L99S44, !{int 32 p9 != 0, int 32 p9, int 32 0, })
-(L94S43, L99S44, True)
-[int 32 lk9, {int 32 1, }, L94S43]
-(L99S44, L100S45, {int 32 p1 != 0, int 32 p1, int 32 0, })
-(L99S44, L104S48, !{int 32 p1 != 0, int 32 p1, int 32 0, })
-(L100S45, L100S46, {int 32 lk1 != 1, int 32 lk1, int 32 1, })
-(L100S45, L101S47, !{int 32 lk1 != 1, int 32 lk1, int 32 1, })
-(L100S46, L147S81, True)
-(L101S47, L104S48, True)
-[int 32 lk1, {int 32 0, }, L101S47]
-(L104S48, L105S49, {int 32 p2 != 0, int 32 p2, int 32 0, })
-(L104S48, L109S52, !{int 32 p2 != 0, int 32 p2, int 32 0, })
-(L105S49, L105S50, {int 32 lk2 != 1, int 32 lk2, int 32 1, })
-(L105S49, L106S51, !{int 32 lk2 != 1, int 32 lk2, int 32 1, })
-(L105S50, L147S81, True)
-(L106S51, L109S52, True)
-[int 32 lk2, {int 32 0, }, L106S51]
-(L109S52, L110S53, {int 32 p3 != 0, int 32 p3, int 32 0, })
-(L109S52, L114S56, !{int 32 p3 != 0, int 32 p3, int 32 0, })
-(L110S53, L110S54, {int 32 lk3 != 1, int 32 lk3, int 32 1, })
-(L110S53, L111S55, !{int 32 lk3 != 1, int 32 lk3, int 32 1, })
-(L110S54, L147S81, True)
-(L111S55, L114S56, True)
-[int 32 lk3, {int 32 0, }, L111S55]
-(L114S56, L115S57, {int 32 p4 != 0, int 32 p4, int 32 0, })
-(L114S56, L119S60, !{int 32 p4 != 0, int 32 p4, int 32 0, })
-(L115S57, L115S58, {int 32 lk4 != 1, int 32 lk4, int 32 1, })
-(L115S57, L116S59, !{int 32 lk4 != 1, int 32 lk4, int 32 1, })
-(L115S58, L147S81, True)
-(L116S59, L119S60, True)
-[int 32 lk4, {int 32 0, }, L116S59]
-(L119S60, L120S61, {int 32 p5 != 0, int 32 p5, int 32 0, })
-(L119S60, L124S64, !{int 32 p5 != 0, int 32 p5, int 32 0, })
-(L120S61, L120S62, {int 32 lk5 != 1, int 32 lk5, int 32 1, })
-(L120S61, L121S63, !{int 32 lk5 != 1, int 32 lk5, int 32 1, })
-(L120S62, L147S81, True)
-(L121S63, L124S64, True)
-[int 32 lk5, {int 32 0, }, L121S63]
-(L124S64, L125S65, {int 32 p6 != 0, int 32 p6, int 32 0, })
-(L124S64, L129S68, !{int 32 p6 != 0, int 32 p6, int 32 0, })
-(L125S65, L125S66, {int 32 lk6 != 1, int 32 lk6, int 32 1, })
-(L125S65, L126S67, !{int 32 lk6 != 1, int 32 lk6, int 32 1, })
-(L125S66, L147S81, True)
-(L126S67, L129S68, True)
-[int 32 lk6, {int 32 0, }, L126S67]
-(L129S68, L130S69, {int 32 p7 != 0, int 32 p7, int 32 0, })
-(L129S68, L134S72, !{int 32 p7 != 0, int 32 p7, int 32 0, })
-(L130S69, L130S70, {int 32 lk7 != 1, int 32 lk7, int 32 1, })
-(L130S69, L131S71, !{int 32 lk7 != 1, int 32 lk7, int 32 1, })
-(L130S70, L147S81, True)
-(L131S71, L134S72, True)
-[int 32 lk7, {int 32 0, }, L131S71]
-(L134S72, L135S73, {int 32 p8 != 0, int 32 p8, int 32 0, })
-(L134S72, L139S76, !{int 32 p8 != 0, int 32 p8, int 32 0, })
-(L135S73, L135S74, {int 32 lk8 != 1, int 32 lk8, int 32 1, })
-(L135S73, L136S75, !{int 32 lk8 != 1, int 32 lk8, int 32 1, })
-(L135S74, L147S81, True)
-(L136S75, L139S76, True)
-[int 32 lk8, {int 32 0, }, L136S75]
-(L139S76, L140S77, {int 32 p9 != 0, int 32 p9, int 32 0, })
-(L139S76, L36S20, !{int 32 p9 != 0, int 32 p9, int 32 0, })
-(L140S77, L140S78, {int 32 lk9 != 1, int 32 lk9, int 32 1, })
-(L140S77, L141S79, !{int 32 lk9 != 1, int 32 lk9, int 32 1, })
-(L140S78, L147S81, True)
-(L141S79, L36S20, True)
-[int 32 lk9, {int 32 0, }, L141S79]
-(L146S80, L146S80, True)
-Return: [int  32 main, {int 32 0, }, L146S80]
-(L147S81, L147S82, True)
-(L147S82, L147S82, True)
-Property: [!L147S82] 
-(L148S83, L148S83, True)
-Return: [int  32 main, {int 32 0, }, L148S83]
+(L33S20, L33S21, True)
+Input: [L33S20] [LHS: int 32 tmp___8] 
+(L33S21, L36S22, True)
+[int 32 p10, {int 32 tmp___8, }, L33S21]
+(L36S22, L36S23, True)
+Input: [L36S22] [LHS: int 32 tmp___9] 
+(L36S23, L39S24, True)
+[int 32 p11, {int 32 tmp___9, }, L36S23]
+(L39S24, L39S25, True)
+Input: [L39S24] [LHS: int 32 tmp___10] 
+(L39S25, L42S26, True)
+[int 32 p12, {int 32 tmp___10, }, L39S25]
+(L42S26, L42S27, True)
+Input: [L42S26] [LHS: int 32 tmp___11] 
+(L42S27, L45S28, True)
+[int 32 p13, {int 32 tmp___11, }, L42S27]
+(L45S28, L45S29, True)
+Input: [L45S28] [LHS: int 32 tmp___12] 
+(L45S29, L48S30, True)
+[int 32 p14, {int 32 tmp___12, }, L45S29]
+(L48S30, L48S31, True)
+Input: [L48S30] [LHS: int 32 tmp___13] 
+(L48S31, L54S32, True)
+[int 32 p15, {int 32 tmp___13, }, L48S31]
+(L54S32, L55S33, True)
+(L55S33, L55S34, True)
+(L55S34, L56S35, True)
+Input: [L55S34] [LHS: int 32 cond] 
+(L56S35, L57S36, {int 32 cond == 0, int 32 cond, int 32 0, })
+(L56S35, L59S37, !{int 32 cond == 0, int 32 cond, int 32 0, })
+(L57S36, L230S130, True)
+(L59S37, L91S38, True)
+[int 32 lk1, {int 32 0, }, L59S37]
+[int 32 lk2, {int 32 0, }, L59S37]
+[int 32 lk3, {int 32 0, }, L59S37]
+[int 32 lk4, {int 32 0, }, L59S37]
+[int 32 lk5, {int 32 0, }, L59S37]
+[int 32 lk6, {int 32 0, }, L59S37]
+[int 32 lk7, {int 32 0, }, L59S37]
+[int 32 lk8, {int 32 0, }, L59S37]
+[int 32 lk9, {int 32 0, }, L59S37]
+[int 32 lk10, {int 32 0, }, L59S37]
+[int 32 lk11, {int 32 0, }, L59S37]
+[int 32 lk12, {int 32 0, }, L59S37]
+[int 32 lk13, {int 32 0, }, L59S37]
+[int 32 lk14, {int 32 0, }, L59S37]
+[int 32 lk15, {int 32 0, }, L59S37]
+(L91S38, L92S39, {int 32 p1 != 0, int 32 p1, int 32 0, })
+(L91S38, L95S40, !{int 32 p1 != 0, int 32 p1, int 32 0, })
+(L92S39, L95S40, True)
+[int 32 lk1, {int 32 1, }, L92S39]
+(L95S40, L96S41, {int 32 p2 != 0, int 32 p2, int 32 0, })
+(L95S40, L99S42, !{int 32 p2 != 0, int 32 p2, int 32 0, })
+(L96S41, L99S42, True)
+[int 32 lk2, {int 32 1, }, L96S41]
+(L99S42, L100S43, {int 32 p3 != 0, int 32 p3, int 32 0, })
+(L99S42, L103S44, !{int 32 p3 != 0, int 32 p3, int 32 0, })
+(L100S43, L103S44, True)
+[int 32 lk3, {int 32 1, }, L100S43]
+(L103S44, L104S45, {int 32 p4 != 0, int 32 p4, int 32 0, })
+(L103S44, L107S46, !{int 32 p4 != 0, int 32 p4, int 32 0, })
+(L104S45, L107S46, True)
+[int 32 lk4, {int 32 1, }, L104S45]
+(L107S46, L108S47, {int 32 p5 != 0, int 32 p5, int 32 0, })
+(L107S46, L111S48, !{int 32 p5 != 0, int 32 p5, int 32 0, })
+(L108S47, L111S48, True)
+[int 32 lk5, {int 32 1, }, L108S47]
+(L111S48, L112S49, {int 32 p6 != 0, int 32 p6, int 32 0, })
+(L111S48, L115S50, !{int 32 p6 != 0, int 32 p6, int 32 0, })
+(L112S49, L115S50, True)
+[int 32 lk6, {int 32 1, }, L112S49]
+(L115S50, L116S51, {int 32 p7 != 0, int 32 p7, int 32 0, })
+(L115S50, L119S52, !{int 32 p7 != 0, int 32 p7, int 32 0, })
+(L116S51, L119S52, True)
+[int 32 lk7, {int 32 1, }, L116S51]
+(L119S52, L120S53, {int 32 p8 != 0, int 32 p8, int 32 0, })
+(L119S52, L123S54, !{int 32 p8 != 0, int 32 p8, int 32 0, })
+(L120S53, L123S54, True)
+[int 32 lk8, {int 32 1, }, L120S53]
+(L123S54, L124S55, {int 32 p9 != 0, int 32 p9, int 32 0, })
+(L123S54, L127S56, !{int 32 p9 != 0, int 32 p9, int 32 0, })
+(L124S55, L127S56, True)
+[int 32 lk9, {int 32 1, }, L124S55]
+(L127S56, L128S57, {int 32 p10 != 0, int 32 p10, int 32 0, })
+(L127S56, L131S58, !{int 32 p10 != 0, int 32 p10, int 32 0, })
+(L128S57, L131S58, True)
+[int 32 lk10, {int 32 1, }, L128S57]
+(L131S58, L132S59, {int 32 p11 != 0, int 32 p11, int 32 0, })
+(L131S58, L135S60, !{int 32 p11 != 0, int 32 p11, int 32 0, })
+(L132S59, L135S60, True)
+[int 32 lk11, {int 32 1, }, L132S59]
+(L135S60, L136S61, {int 32 p12 != 0, int 32 p12, int 32 0, })
+(L135S60, L139S62, !{int 32 p12 != 0, int 32 p12, int 32 0, })
+(L136S61, L139S62, True)
+[int 32 lk12, {int 32 1, }, L136S61]
+(L139S62, L140S63, {int 32 p13 != 0, int 32 p13, int 32 0, })
+(L139S62, L143S64, !{int 32 p13 != 0, int 32 p13, int 32 0, })
+(L140S63, L143S64, True)
+[int 32 lk13, {int 32 1, }, L140S63]
+(L143S64, L144S65, {int 32 p14 != 0, int 32 p14, int 32 0, })
+(L143S64, L147S66, !{int 32 p14 != 0, int 32 p14, int 32 0, })
+(L144S65, L147S66, True)
+[int 32 lk14, {int 32 1, }, L144S65]
+(L147S66, L148S67, {int 32 p15 != 0, int 32 p15, int 32 0, })
+(L147S66, L153S68, !{int 32 p15 != 0, int 32 p15, int 32 0, })
+(L148S67, L153S68, True)
+[int 32 lk15, {int 32 1, }, L148S67]
+(L153S68, L154S69, {int 32 p1 != 0, int 32 p1, int 32 0, })
+(L153S68, L158S72, !{int 32 p1 != 0, int 32 p1, int 32 0, })
+(L154S69, L154S70, {int 32 lk1 != 1, int 32 lk1, int 32 1, })
+(L154S69, L155S71, !{int 32 lk1 != 1, int 32 lk1, int 32 1, })
+(L154S70, L231S131, True)
+(L155S71, L158S72, True)
+[int 32 lk1, {int 32 0, }, L155S71]
+(L158S72, L159S73, {int 32 p2 != 0, int 32 p2, int 32 0, })
+(L158S72, L161S76, !{int 32 p2 != 0, int 32 p2, int 32 0, })
+(L159S73, L159S74, {int 32 lk2 != 1, int 32 lk2, int 32 1, })
+(L159S73, L160S75, !{int 32 lk2 != 1, int 32 lk2, int 32 1, })
+(L159S74, L231S131, True)
+(L160S75, L163S77, True)
+[int 32 lk2, {int 32 0, }, L160S75]
+(L161S76, L231S131, True)
+(L163S77, L164S78, {int 32 p3 != 0, int 32 p3, int 32 0, })
+(L163S77, L168S81, !{int 32 p3 != 0, int 32 p3, int 32 0, })
+(L164S78, L164S79, {int 32 lk3 != 1, int 32 lk3, int 32 1, })
+(L164S78, L165S80, !{int 32 lk3 != 1, int 32 lk3, int 32 1, })
+(L164S79, L231S131, True)
+(L165S80, L168S81, True)
+[int 32 lk3, {int 32 0, }, L165S80]
+(L168S81, L169S82, {int 32 p4 != 0, int 32 p4, int 32 0, })
+(L168S81, L173S85, !{int 32 p4 != 0, int 32 p4, int 32 0, })
+(L169S82, L169S83, {int 32 lk4 != 1, int 32 lk4, int 32 1, })
+(L169S82, L170S84, !{int 32 lk4 != 1, int 32 lk4, int 32 1, })
+(L169S83, L231S131, True)
+(L170S84, L173S85, True)
+[int 32 lk4, {int 32 0, }, L170S84]
+(L173S85, L174S86, {int 32 p5 != 0, int 32 p5, int 32 0, })
+(L173S85, L178S89, !{int 32 p5 != 0, int 32 p5, int 32 0, })
+(L174S86, L174S87, {int 32 lk5 != 1, int 32 lk5, int 32 1, })
+(L174S86, L175S88, !{int 32 lk5 != 1, int 32 lk5, int 32 1, })
+(L174S87, L231S131, True)
+(L175S88, L178S89, True)
+[int 32 lk5, {int 32 0, }, L175S88]
+(L178S89, L179S90, {int 32 p6 != 0, int 32 p6, int 32 0, })
+(L178S89, L183S93, !{int 32 p6 != 0, int 32 p6, int 32 0, })
+(L179S90, L179S91, {int 32 lk6 != 1, int 32 lk6, int 32 1, })
+(L179S90, L180S92, !{int 32 lk6 != 1, int 32 lk6, int 32 1, })
+(L179S91, L231S131, True)
+(L180S92, L183S93, True)
+[int 32 lk6, {int 32 0, }, L180S92]
+(L183S93, L184S94, {int 32 p7 != 0, int 32 p7, int 32 0, })
+(L183S93, L188S97, !{int 32 p7 != 0, int 32 p7, int 32 0, })
+(L184S94, L184S95, {int 32 lk7 != 1, int 32 lk7, int 32 1, })
+(L184S94, L185S96, !{int 32 lk7 != 1, int 32 lk7, int 32 1, })
+(L184S95, L231S131, True)
+(L185S96, L188S97, True)
+[int 32 lk7, {int 32 0, }, L185S96]
+(L188S97, L189S98, {int 32 p8 != 0, int 32 p8, int 32 0, })
+(L188S97, L193S101, !{int 32 p8 != 0, int 32 p8, int 32 0, })
+(L189S98, L189S99, {int 32 lk8 != 1, int 32 lk8, int 32 1, })
+(L189S98, L190S100, !{int 32 lk8 != 1, int 32 lk8, int 32 1, })
+(L189S99, L231S131, True)
+(L190S100, L193S101, True)
+[int 32 lk8, {int 32 0, }, L190S100]
+(L193S101, L194S102, {int 32 p9 != 0, int 32 p9, int 32 0, })
+(L193S101, L198S105, !{int 32 p9 != 0, int 32 p9, int 32 0, })
+(L194S102, L194S103, {int 32 lk9 != 1, int 32 lk9, int 32 1, })
+(L194S102, L195S104, !{int 32 lk9 != 1, int 32 lk9, int 32 1, })
+(L194S103, L231S131, True)
+(L195S104, L198S105, True)
+[int 32 lk9, {int 32 0, }, L195S104]
+(L198S105, L199S106, {int 32 p10 != 0, int 32 p10, int 32 0, })
+(L198S105, L203S109, !{int 32 p10 != 0, int 32 p10, int 32 0, })
+(L199S106, L199S107, {int 32 lk10 != 1, int 32 lk10, int 32 1, })
+(L199S106, L200S108, !{int 32 lk10 != 1, int 32 lk10, int 32 1, })
+(L199S107, L231S131, True)
+(L200S108, L203S109, True)
+[int 32 lk10, {int 32 0, }, L200S108]
+(L203S109, L204S110, {int 32 p11 != 0, int 32 p11, int 32 0, })
+(L203S109, L208S113, !{int 32 p11 != 0, int 32 p11, int 32 0, })
+(L204S110, L204S111, {int 32 lk11 != 1, int 32 lk11, int 32 1, })
+(L204S110, L205S112, !{int 32 lk11 != 1, int 32 lk11, int 32 1, })
+(L204S111, L231S131, True)
+(L205S112, L208S113, True)
+[int 32 lk11, {int 32 0, }, L205S112]
+(L208S113, L209S114, {int 32 p12 != 0, int 32 p12, int 32 0, })
+(L208S113, L213S117, !{int 32 p12 != 0, int 32 p12, int 32 0, })
+(L209S114, L209S115, {int 32 lk12 != 1, int 32 lk12, int 32 1, })
+(L209S114, L210S116, !{int 32 lk12 != 1, int 32 lk12, int 32 1, })
+(L209S115, L231S131, True)
+(L210S116, L213S117, True)
+[int 32 lk12, {int 32 0, }, L210S116]
+(L213S117, L214S118, {int 32 p13 != 0, int 32 p13, int 32 0, })
+(L213S117, L218S121, !{int 32 p13 != 0, int 32 p13, int 32 0, })
+(L214S118, L214S119, {int 32 lk13 != 1, int 32 lk13, int 32 1, })
+(L214S118, L215S120, !{int 32 lk13 != 1, int 32 lk13, int 32 1, })
+(L214S119, L231S131, True)
+(L215S120, L218S121, True)
+[int 32 lk13, {int 32 0, }, L215S120]
+(L218S121, L219S122, {int 32 p14 != 0, int 32 p14, int 32 0, })
+(L218S121, L221S125, !{int 32 p14 != 0, int 32 p14, int 32 0, })
+(L219S122, L219S123, {int 32 lk14 != 1, int 32 lk14, int 32 1, })
+(L219S122, L220S124, !{int 32 lk14 != 1, int 32 lk14, int 32 1, })
+(L219S123, L231S131, True)
+(L220S124, L223S126, True)
+[int 32 lk14, {int 32 0, }, L220S124]
+(L221S125, L231S131, True)
+(L223S126, L224S127, {int 32 p15 != 0, int 32 p15, int 32 0, })
+(L223S126, L54S32, !{int 32 p15 != 0, int 32 p15, int 32 0, })
+(L224S127, L224S128, {int 32 lk15 != 1, int 32 lk15, int 32 1, })
+(L224S127, L225S129, !{int 32 lk15 != 1, int 32 lk15, int 32 1, })
+(L224S128, L231S131, True)
+(L225S129, L54S32, True)
+[int 32 lk15, {int 32 0, }, L225S129]
+(L230S130, L230S130, True)
+Return: [int  32 main, {int 32 0, }, L230S130]
+(L231S131, L231S132, True)
+(L231S132, L231S132, True)
+Property: [!L231S132] 
+(L232S133, L232S133, True)
+Return: [int  32 main, {int 32 0, }, L232S133]
 Call ends: main

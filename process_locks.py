@@ -15,6 +15,8 @@ f = []
 files_in_locks_dir = [f for f in listdir(LOCKSPATH) if (isfile(join(LOCKSPATH, f)) and (f.endswith(".c")))]
 
 for file_name in files_in_locks_dir:
+    if 'true-unreach-call' in file_name:
+        continue
     bashCommand = "./full_run.sh locks/" + file_name
     os.system(bashCommand)
 

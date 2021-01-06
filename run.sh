@@ -1,7 +1,9 @@
 make
 
+source_file=$1
 
-./cilcfgformula in.i > assert_test.txt
+./cilcfgformula $source_file > cil_cfg.txt
+
 
 # python3 SoLVe.py #test.txt
 

@@ -8,11 +8,11 @@ def main():
     # 'cfg_opt.txt'
     file_name = sys.argv[1]
     CFG = c_ut.get_file_CFG(file_name)
-    c_ut.display_CFG(CFG, "raw_CFG")
+    # c_ut.display_CFG(CFG, "raw_CFG")
     # e_ut.get_equations(CFG)
-    CFG = o_ut.remove_redundant_nodes(CFG)
-    CFG = o_ut.remove_isolated_nodes(CFG)
-    c_ut.display_CFG(CFG, "opt_CFG")
+    # CFG = o_ut.remove_redundant_nodes(CFG)
+    # CFG = o_ut.remove_isolated_nodes(CFG)
+    # c_ut.display_CFG(CFG, "opt_CFG")
     e_ut.get_equations(CFG)
 
 

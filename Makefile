@@ -1,5 +1,5 @@
 
-PATH_TO_CIL             = /home/zephaniah/Documents/Zephaniahs_Research/cil#/home/zephaniah/.opam/4.10.0/lib/cil #/home/weimerw/src/cil
+PATH_TO_CIL = /home/zephaniah/Documents/Zephaniahs_Research/cil#/home/zephaniah/.opam/4.10.0/lib/cil #/home/weimerw/src/cil
 PATH_TO_CIL_LIBS	= $(PATH_TO_CIL)/lib/cil
 PATH_TO_FRONTC_LIBS	= $(PATH_TO_CIL)/_build/src/frontc
 PATH_TO_OCAMLUTIL_LIBS	= $(PATH_TO_CIL)/_build/src/ocamlutil

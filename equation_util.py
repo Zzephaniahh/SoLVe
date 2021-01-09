@@ -173,7 +173,7 @@ def write_line_transition(name, terms, next_state_string):
                 condition_str = "(not " + condition_str + ")"
             next_line = term[0]
             vmt_condition = VMT_And([next_line, condition_str])
-            next_state_string += " " + vmt_condition 
+            next_state_string += " " + vmt_condition
     opening_brackets  = next_state_string.count("(")
     closing_brackets  = next_state_string.count(")")
     for i in range(0, opening_brackets-closing_brackets): # close all ite calls -1 is to add the final closing bracket
@@ -205,26 +205,26 @@ def write_line_transition(name, terms, next_state_string):
     #     next_state_string += ")"
     return next_state_string
 
-def print_one_hot_vmt(node, preds): # not in use FIXME remove
-    # next_state_string = "\t\t(= " + node + "\n"
-    next_state_string = "\n\t\t(ite\n"
-    if len(preds) > 1:
-        next_state_string += "\t\t\t(or "
-        for pred in preds:
-            next_state_string += pred + " "
-        next_state_string = next_state_string[:-1] + ")\n\t\t\tfalse\n"
-        # next_state_string += "\t\t\t" + node + "))"
+# def print_one_hot_vmt(node, preds): # not in use FIXME remove
+#     # next_state_string = "\t\t(= " + node + "\n"
+#     next_state_string = "\n\t\t(ite\n"
+#     if len(preds) > 1:
+#         next_state_string += "\t\t\t(or "
+#         for pred in preds:
+#             next_state_string += pred + " "
+#         next_state_string = next_state_string[:-1] + ")\n\t\t\tfalse\n"
+#         # next_state_string += "\t\t\t" + node + "))"
 
-    elif preds:
-            pred = preds[0]
-            next_state_string += "\t\t\t" + pred + " "
-            next_state_string = next_state_string[:-1] + "\n\t\t\tfalse\n"
-            # next_state_string += "\t\t\t" + node + "))"
-
-    else:
-        next_state_string = "" # FIXME check final state, should loop I think.
-
-    return next_state_string
+    # elif preds:
+    #         pred = preds[0]
+    #         next_state_string += "\t\t\t" + pred + " "
+    #         next_state_string = next_state_string[:-1] + "\n\t\t\tfalse\n"
+    #         # next_state_string += "\t\t\t" + node + "))"
+    #
+    # else:
+    #     next_state_string = "" # FIXME check final state, should loop I think.
+    #
+    # return next_state_string
 
 def build_transition_relation( implication_equation_dict, vmt_line_equation_dict): #one_hot_cfg_driven_eq_dict,
 
@@ -239,7 +239,7 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
     #     next_state_string = print_one_hot_vmt(next_node, next_preds)
     #     print(next_state_string)
 
-    print("(define-fun .trans () Bool (!  \n \t(and") # define the initial state function
+    print("(define-fun trel_equations () Bool (!  \n \t(and") # define the initial state function
     for eq in vmt_line_equation_dict.values():
         # if eq.lhs.name == 'L27S15$next':
 
@@ -345,33 +345,121 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
     print("\t) \n\t:trans true))")
     print("\n")
 
-def build_one_hot_encoding(one_hot_cfg_driven_eq_dict):
+def build_one_hot_encoding_global(node_name_list):
+    print('; GLOBAL one-hot encoding assumptions')
+    print('(define-fun one_hot_global () Bool\n(and')
+    from itertools import combinations_with_replacement
+    # node_name_list = set(['L0', 'L1', 'L2', 'L3', 'L4', 'L5'])
+    # this gets each unique pair of nodes as a list, ie unique_node_pairs = [(L0, L1), (L0, L2) ... ] but pairs such as (L1, L0) will not appear.
+    unique_node_pairs = list(combinations_with_replacement(node_name_list, 2))
+
+    for [node1, node2] in unique_node_pairs:
+        if node1 == node2:
+            continue
+        print('(or (not ' +  node1 + ') (not ' + node2 + '))')
+    print(')')
+    print(')')
+
+    print('; GLOBAL one-hot encoding assumptions')
+    print('(define-fun one_hot_global$next () Bool\n(and')
+
+    for [node1, node2] in unique_node_pairs:
+        if node1 == node2:
+            continue
+        print('(or (not ' +  node1 + '$next) (not ' + node2 + '$next))')
+
+    print(')')
+    print(')')
+def print_one_hot_vmt_local(node, succs):
+    one_hot_str = '(=> '
+    if (len(succs)>1):
+        one_hot_str += '(or '
+        for succ in succs:
+            one_hot_str += succ + ' '
+        one_hot_str += ')'
+    elif (len(succs) == 1):
+        one_hot_str += succs[0] + ' '
+    else:
+        return
+    one_hot_str += ' (not ' + node + '))'
+    print(one_hot_str)
+
+def build_one_hot_encoding_local(one_hot_cfg_driven_eq_dict):
     print('(define-fun one_hot_local () Bool')
     print('(and')
+
     for node in one_hot_cfg_driven_eq_dict:
-        # import pdb; pdb.set_trace()
-        one_hot_str = '(=> '
         succs = one_hot_cfg_driven_eq_dict[node]
-        if (len(succs)>1):
-            one_hot_str += '(or '
-            for succ in succs:
-                one_hot_str += succ + ' '
-            one_hot_str += ')'
-        elif (len(succs) == 1):
-            one_hot_str += succs[0] + ' '
-        else:
-            continue
-        one_hot_str += ' (not ' + node + '))'
-        print(one_hot_str)
+        print_one_hot_vmt_local(node, succs)
     print(')')
     print(')')
-    # next_state_string = print_one_hot_vmt(node, preds)
-    # next_succs = [succ + "$next" for succ in succs]
-    # next_node = node + "$next"
+
+    print('(define-fun one_hot_local$next () Bool')
+    print('(and')
+    for node in one_hot_cfg_driven_eq_dict:
+        succs = one_hot_cfg_driven_eq_dict[node]
+
+        next_succs = [succ + "$next" for succ in succs]
+        next_node = node + "$next"
+        # import pdb; pdb.set_trace()
+
+        next_state_string = print_one_hot_vmt_local(next_node, next_succs)
+    print(')')
+    print(')')
+
+    # print('(define-fun one_hot_local$next () Bool ')
+    # print('(and')
+    # for node in one_hot_cfg_driven_eq_dict:
+    #     # import pdb; pdb.set_trace()
+    #     one_hot_str = '(=> '
+    #     # succs = one_hot_cfg_driven_eq_dict[node]
+        # next_succs = [succ + "$next" for succ in succs]
+        # next_node = node + "$next"
+    #     if (len(next_succs)>1):
+    #         one_hot_str += '(or '
+    #         for succ in next_succs:
+    #             one_hot_str += succ + ' '
+    #         one_hot_str += ')'
+    #     elif (len(next_succs) == 1):
+    #         one_hot_str += next_succs[0] + ' '
+    #     else:
+    #         continue
+    #     one_hot_str += ' (not ' + next_node + '))'
+    #
+    #     print(one_hot_str)
+    # print(')')
+    # print(')')
     # next_state_string += print_one_hot_vmt(next_node, next_succs)
 
+    # ; transition relation formula
+    # (define-fun .trans () Bool (!
+    # (and
+    # 	trel_equations
+    # 	one_hot_global
+    # 	one_hot_global$next
+    # )
+    #  :trans true))
+def combine_one_hot_and_trans_formulas(LOCAL):
+    if LOCAL:
+        print('; With LOCAL one-hotness the combine formula is:')
+    else:
+        print('; With GLOBAL one-hotness the combine formula is:')
 
-def build_property (property_locations):
+    print('(define-fun .trans () Bool (! ')
+    print('(and ')
+    print('trel_equations ')
+    if LOCAL:
+        print('one_hot_local')
+        print('one_hot_local$next')
+    else:
+        print('one_hot_global')
+        print('one_hot_global$next')
+    print(') \n:trans true))')
+
+
+
+
+def build_property(property_locations):
     output_str = "\n(define-fun .property () Bool (!\n"
     output_str += "\t(and\n"
     output_str += "\t(not\n" #FIXME MAYBE NOT CORRECT?
@@ -380,7 +468,7 @@ def build_property (property_locations):
     output_str += "\t)) \n:invar-property 0))"
     print(output_str)
 
-def get_equations(CFG):
+def get_equations(CFG, LOCAL):
     line_equation_dict = {} # lhs_var_name, class equation
     vmt_line_equation_dict = {}
     line_variable_dict = {} # name, class variable
@@ -499,7 +587,14 @@ def get_equations(CFG):
         initial_state(line_variable_dict, CFG.file_entry_node)
 
         build_transition_relation( implication_equation_dict, vmt_line_equation_dict) #one_hot_cfg_driven_eq_dict,
-        build_one_hot_encoding(one_hot_cfg_driven_eq_dict)
+        if LOCAL:
+            build_one_hot_encoding_local(one_hot_cfg_driven_eq_dict)
+        else:
+            # using only the names of each node as a list
+            build_one_hot_encoding_global(list(CFG.node_dict.keys()))
+
+        # LOCAL is a bool which if true prints local one-hottness or if false prints global one-hotness
+        combine_one_hot_and_trans_formulas(LOCAL)
 
         build_property(CFG.property_locations)
         #         edge.condition = " & (" + edge.condition + ")"

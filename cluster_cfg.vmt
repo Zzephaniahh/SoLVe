@@ -1,0 +1,195 @@
+(declare-fun L8S0 () Bool)
+(declare-fun L8S0$next () Bool)
+(define-fun .L8S0 () Bool (! L8S0 :next L8S0$next))
+(declare-fun L9S1 () Bool)
+(declare-fun L9S1$next () Bool)
+(define-fun .L9S1 () Bool (! L9S1 :next L9S1$next))
+(declare-fun L10S2 () Bool)
+(declare-fun L10S2$next () Bool)
+(define-fun .L10S2 () Bool (! L10S2 :next L10S2$next))
+(declare-fun L12S3 () Bool)
+(declare-fun L12S3$next () Bool)
+(define-fun .L12S3 () Bool (! L12S3 :next L12S3$next))
+(declare-fun L13S4 () Bool)
+(declare-fun L13S4$next () Bool)
+(define-fun .L13S4 () Bool (! L13S4 :next L13S4$next))
+(declare-fun L13S5 () Bool)
+(declare-fun L13S5$next () Bool)
+(define-fun .L13S5 () Bool (! L13S5 :next L13S5$next))
+(declare-fun L10S6 () Bool)
+(declare-fun L10S6$next () Bool)
+(define-fun .L10S6 () Bool (! L10S6 :next L10S6$next))
+(declare-fun L18S11 () Bool)
+(declare-fun L18S11$next () Bool)
+(define-fun .L18S11 () Bool (! L18S11 :next L18S11$next))
+(declare-fun L10S7 () Bool)
+(declare-fun L10S7$next () Bool)
+(define-fun .L10S7 () Bool (! L10S7 :next L10S7$next))
+(declare-fun L16S8 () Bool)
+(declare-fun L16S8$next () Bool)
+(define-fun .L16S8 () Bool (! L16S8 :next L16S8$next))
+(declare-fun L16S9 () Bool)
+(declare-fun L16S9$next () Bool)
+(define-fun .L16S9 () Bool (! L16S9 :next L16S9$next))
+(declare-fun L17S10 () Bool)
+(declare-fun L17S10$next () Bool)
+(define-fun .L17S10 () Bool (! L17S10 :next L17S10$next))
+(declare-fun L18S12 () Bool)
+(declare-fun L18S12$next () Bool)
+(define-fun .L18S12 () Bool (! L18S12 :next L18S12$next))
+(declare-fun L19S13 () Bool)
+(declare-fun L19S13$next () Bool)
+(define-fun .L19S13 () Bool (! L19S13 :next L19S13$next))
+(declare-fun i () (_ BitVec 32))
+(declare-fun i$next () (_ BitVec 32))
+(define-fun .i () (_ BitVec 32) (! i :next i$next))
+(declare-fun main () (_ BitVec 32))
+(declare-fun main$next () (_ BitVec 32))
+(define-fun .main () (_ BitVec 32) (! main :next main$next))
+
+
+(define-fun .init () Bool (! 
+ 	(and
+		L8S0
+		(not L9S1)
+		(not L10S2)
+		(not L12S3)
+		(not L13S4)
+		(not L13S5)
+		(not L10S6)
+		(not L18S11)
+		(not L10S7)
+		(not L16S8)
+		(not L16S9)
+		(not L17S10)
+		(not L18S12)
+		(not L19S13)
+	)
+	:init true))
+
+
+
+
+(define-fun .trans () Bool (!  
+ 	(and
+	(= L8S0$next 
+		(ite
+			L9S1$next
+			false
+			false))
+	(= L9S1$next 
+		(ite
+			L10S2$next
+			false
+			L8S0))
+	(= L10S2$next 
+		(ite
+			L12S3$next
+			false
+		(ite
+			L9S1
+			L9S1
+		(ite
+			(and L10S6 (bvult i (_ bv5 32)))
+			L10S6
+			L10S2))))
+	(= L12S3$next 
+		(ite
+			L13S4$next
+			false
+			L10S2))
+	(= L13S4$next 
+		(ite
+			(or L13S5$next L10S6$next)
+			false
+			L12S3))
+	(= L13S5$next 
+		(ite
+			L18S11$next
+			false
+		(ite
+			(and L13S4 (bvugt i (_ bv7 32)))
+			L13S4
+			L13S5)))
+	(= L10S6$next 
+		(ite
+			(or L10S2$next L10S7$next)
+			false
+		(ite
+			(and L13S4 (not (bvugt i (_ bv7 32))))
+			L13S4
+			L10S6)))
+	(= L18S11$next 
+		(ite
+			L18S12$next
+			false
+		(ite
+			L13S5
+			L13S5
+		(ite
+			L16S9
+			L16S9
+			L18S11))))
+	(= L10S7$next 
+		(ite
+			L16S8$next
+			false
+		(ite
+			(and L10S6 (not (bvult i (_ bv5 32))))
+			L10S6
+			L10S7)))
+	(= L18S12$next 		(ite
+			L18S11
+			L18S11
+		(ite
+			L18S12
+			L18S12
+			L18S12)))
+	(= L16S8$next 
+		(ite
+			(or L16S9$next L17S10$next)
+			false
+			L10S7))
+	(= L16S9$next 
+		(ite
+			L18S11$next
+			false
+		(ite
+			(and L16S8 (bvugt i (_ bv7 32)))
+			L16S8
+			L16S9)))
+	(= L17S10$next 		(ite
+			(and L16S8 (not (bvugt i (_ bv7 32))))
+			L16S8
+		(ite
+			L17S10
+			L17S10
+			L17S10)))
+	(= L19S13$next 			L19S13)
+		(= i$next
+		(ite
+		   L9S1
+		   (_ bv0 32)
+		   (ite
+		      L12S3
+		      (bvadd i (_ bv2 32))
+			i)))
+		(= main$next
+		(ite
+		   L17S10
+		   (_ bv0 32)
+		   (ite
+		      L19S13
+		      (_ bv0 32)
+			main)))
+	) 
+	:trans true))
+
+
+
+(define-fun .property () Bool (!
+	(and
+	(not
+	 L18S12
+	)) 
+:invar-property 0))

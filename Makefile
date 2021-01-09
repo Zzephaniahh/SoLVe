@@ -1,11 +1,14 @@
 
-PATH_TO_CIL = /home/zephaniah/Documents/Zephaniahs_Research/cil#/home/zephaniah/.opam/4.10.0/lib/cil #/home/weimerw/src/cil
+PATH_TO_CIL = /home/zeph/cil #/home/zephaniah/.opam/4.10.0/lib/cil #/home/weimerw/src/cil
 PATH_TO_CIL_LIBS	= $(PATH_TO_CIL)/lib/cil
 PATH_TO_FRONTC_LIBS	= $(PATH_TO_CIL)/_build/src/frontc
 PATH_TO_OCAMLUTIL_LIBS	= $(PATH_TO_CIL)/_build/src/ocamlutil
 PATH_TO_EXT_LIBS_1	= $(PATH_TO_CIL)/_build/src/ext
 PATH_TO_EXT_LIBS_2	= $(PATH_TO_CIL)/_build/src/ext/simplify
-OCAMLOPT  = ocamlopt -I $(PATH_TO_CIL_LIBS) -I $(PATH_TO_FRONTC_LIBS) -I $(PATH_TO_OCAMLUTIL_LIBS) -I $(PATH_TO_EXT_LIBS_1) -I $(PATH_TO_EXT_LIBS_2)
+
+PATH_TO_OCAML = /home/zeph/ocml/bin
+OCAMLOPT  = $(PATH_TO_OCAML)/ocamlopt -I $(PATH_TO_CIL_LIBS) -I $(PATH_TO_FRONTC_LIBS) -I $(PATH_TO_OCAMLUTIL_LIBS) -I $(PATH_TO_EXT_LIBS_1) -I $(PATH_TO_EXT_LIBS_2)
+
 
 all: cilcfgformula
 

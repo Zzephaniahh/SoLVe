@@ -148,7 +148,6 @@ def VMT_And(literals):
     return and_str[:-1] + ")"
 
 
-
 def write_line_transition(name, terms, next_state_string):
     next_state_string = next_state_string
     next_state_string += "\n\t\t(or "
@@ -226,7 +225,7 @@ def write_line_transition(name, terms, next_state_string):
     #
     # return next_state_string
 
-def build_transition_relation( implication_equation_dict, vmt_line_equation_dict): #one_hot_cfg_driven_eq_dict,
+def build_transition_relation( implication_equation_dict, vmt_line_equation_dict, CFG): #one_hot_cfg_driven_eq_dict,
 
     print("\n")
     ######## line VMT transitions####################
@@ -282,42 +281,37 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
 
     ######## data VMT transitions####################
     for eq in implication_equation_dict.values():
+        # import pdb; pdb.set_trace()
         indent = "\t\t"
         next_state_string = indent
         next_state_string += "(= " + eq.variable + "$next\n"
         ite_count = 0
         for line, data_assignment in eq.line_and_data_set:
-            ite_count += 1
-            next_state_string += indent + "(ite\n"
-            indent += "   "
-            exp = data_assignment.exp
-            # if exp.rhs.name.isdigit(): # some digit ex: x = 9;
-            #     import pdb; pdb.set_trace()
-            #     next_state_string += indent + line + "\n"
-            #     next_state_string += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")\n"
+            node = CFG.node_dict[line]
+            for pred in node.preds:
+                pred_node = CFG.node_dict[pred]
+                for edge in pred_node.edges:
+                    if edge.dest == node.node_numb:
+                        condition = process_condition(edge.source, edge.condition)
+                        next_state_string += indent + "(ite\n"
+                        next_state_string += indent + condition
+                        exp = data_assignment.exp
+                        if exp.lhs == None: # this is an expression with a single term from something like: x = y;
+                            if exp.rhs.name.isdigit(): # some digit ex: x = 9;
+                                next_state_string += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")\n"
+                            else: # this some variable like: x = y;
+                            # lhs = data_assignment.lhs # this would be x and exp.rhs is y
+                                next_state_string += indent + exp.rhs.name + "\n"
 
-            # else:
-                # type(data) == type(variable("","","","")): # some variable ex: x = y;
-                # next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name +  " (_ bv" + exp.rhs.name.strip() + + " " + exp.rhs.size + "))\n"
+                        else:
+                            if exp.rhs.name.isdigit(): # some digit ex: x = x + 9;
+                                exp.rhs.name = "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
 
-            next_state_string += indent + line +"\n"
+                            if exp.lhs.name.isdigit(): # some digit ex: x = 9 + x;
+                                exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
 
-            if exp.lhs == None: # this is an expression with a single term from something like: x = y;
-                if exp.rhs.name.isdigit(): # some digit ex: x = 9;
-                    next_state_string += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")\n"
-                else: # this some variable like: x = y;
-                # lhs = data_assignment.lhs # this would be x and exp.rhs is y
-                    next_state_string += indent + exp.rhs.name + "\n"
-
-            else:
-                if exp.rhs.name.isdigit(): # some digit ex: x = x + 9;
-                    exp.rhs.name = "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
-
-                if exp.lhs.name.isdigit(): # some digit ex: x = 9 + x;
-                    exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
-
-                next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ")\n"
-
+                            next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ")\n"
+                            # import pdb; pdb.set_trace()
 
             #     if exp.rhs.strip().isdigit():
             #         next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs +  " (_ bv" + exp.rhs.strip() + " 32))\n"
@@ -326,24 +320,37 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
             # elif type(data) == type(expression("","","","")):
             #     pass
 
-        closing_brackets = ")"
-        for i in range(0, ite_count):
+        closing_brackets = ''
+        for i in range(0, next_state_string.count('(') - next_state_string.count(')')):
             closing_brackets += ")"
         next_state_string += "\t\t\t" + eq.variable + closing_brackets
         print(next_state_string)
 
-########### CFG-driven One-Hot ####################
-    # for node in one_hot_cfg_driven_eq_dict:
-    #     preds = one_hot_cfg_driven_eq_dict[node]
-    #     next_state_string = print_one_hot_vmt(node, preds)
-    #     print(next_state_string)
-    #     next_preds = [pred + "$next" for pred in preds]
-    #     next_node = node + "$next"
-    #     next_state_string = print_one_hot_vmt(next_node, next_preds)
-    #     print(next_state_string)
-
     print("\t) \n\t:trans true))")
     print("\n")
+
+def process_condition(pred_name, condition):
+    if condition.lhs == "":
+        next_state_string = " " + pred_name  + " "
+        return next_state_string
+
+    if isinstance(condition.lhs, str):
+        condition_str = condition.lhs[1:-1] # removes brackets FIXME for multiple return statements
+        if condition.negate:
+            condition_str =  " (not " + condition_str + ")"
+        next_line = term[0]
+        next_state_string = '(and ' + pred_name +  condition_str + ")"
+
+    else:
+        condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
+        if condition.operator == '!=':
+            condition_str = "(not " + condition_str + ")"
+        if condition.negate:
+            condition_str = "(not " + condition_str + ")"
+
+        vmt_condition = VMT_And([pred_name, condition_str])
+        next_state_string = " " + vmt_condition
+    return next_state_string
 
 def build_one_hot_encoding_global(node_name_list):
     print('; GLOBAL one-hot encoding assumptions')
@@ -367,9 +374,10 @@ def build_one_hot_encoding_global(node_name_list):
         if node1 == node2:
             continue
         print('(or (not ' +  node1 + '$next) (not ' + node2 + '$next))')
+    print(')')
+    print(')')
 
-    print(')')
-    print(')')
+
 def print_one_hot_vmt_local(node, succs):
     one_hot_str = '(=> '
     if (len(succs)>1):
@@ -401,49 +409,18 @@ def build_one_hot_encoding_local(one_hot_cfg_driven_eq_dict):
 
         next_succs = [succ + "$next" for succ in succs]
         next_node = node + "$next"
-        # import pdb; pdb.set_trace()
 
         next_state_string = print_one_hot_vmt_local(next_node, next_succs)
     print(')')
     print(')')
 
-    # print('(define-fun one_hot_local$next () Bool ')
-    # print('(and')
-    # for node in one_hot_cfg_driven_eq_dict:
-    #     # import pdb; pdb.set_trace()
-    #     one_hot_str = '(=> '
-    #     # succs = one_hot_cfg_driven_eq_dict[node]
-        # next_succs = [succ + "$next" for succ in succs]
-        # next_node = node + "$next"
-    #     if (len(next_succs)>1):
-    #         one_hot_str += '(or '
-    #         for succ in next_succs:
-    #             one_hot_str += succ + ' '
-    #         one_hot_str += ')'
-    #     elif (len(next_succs) == 1):
-    #         one_hot_str += next_succs[0] + ' '
-    #     else:
-    #         continue
-    #     one_hot_str += ' (not ' + next_node + '))'
-    #
-    #     print(one_hot_str)
-    # print(')')
-    # print(')')
-    # next_state_string += print_one_hot_vmt(next_node, next_succs)
 
-    # ; transition relation formula
-    # (define-fun .trans () Bool (!
-    # (and
-    # 	trel_equations
-    # 	one_hot_global
-    # 	one_hot_global$next
-    # )
-    #  :trans true))
+
 def combine_one_hot_and_trans_formulas(LOCAL):
     if LOCAL:
-        print('; With LOCAL one-hotness the combine formula is:')
+        print('; With LOCAL one-hotness the combined formula is:')
     else:
-        print('; With GLOBAL one-hotness the combine formula is:')
+        print('; With GLOBAL one-hotness the combined formula is:')
 
     print('(define-fun .trans () Bool (! ')
     print('(and ')
@@ -491,8 +468,6 @@ def get_equations(CFG, LOCAL):
         next_state = node.node_numb + "$next"
         line_variable_dict[node.node_numb] = bool_line_var(node.node_numb, "Bool")
         if node.preds == []:
-            # if next_state  == 'L27S15$next':
-            #     import pdb; pdb.set_trace()
             vmt_line_equation_dict[next_state] = equality_equation(bool_line_var(next_state, "Bool")) # define an eq and set the lhs to Ln+
             vmt_line_equation_dict[next_state].terms.append(["false"]) # next state = false, if no preds, this node never occurs again.
         for expression in node.expressions:
@@ -586,7 +561,7 @@ def get_equations(CFG, LOCAL):
             declare_variables(variable)
         initial_state(line_variable_dict, CFG.file_entry_node)
 
-        build_transition_relation( implication_equation_dict, vmt_line_equation_dict) #one_hot_cfg_driven_eq_dict,
+        build_transition_relation(implication_equation_dict, vmt_line_equation_dict, CFG) #one_hot_cfg_driven_eq_dict,
         if LOCAL:
             build_one_hot_encoding_local(one_hot_cfg_driven_eq_dict)
         else:

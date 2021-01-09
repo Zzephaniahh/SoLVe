@@ -10,8 +10,8 @@ def main():
     CFG = c_ut.get_file_CFG(file_name)
     c_ut.display_CFG(CFG, "raw_CFG")
     # e_ut.get_equations(CFG)
-    CFG = o_ut.remove_redundant_nodes(CFG)
-    CFG = o_ut.remove_isolated_nodes(CFG)
+    # CFG = o_ut.remove_redundant_nodes(CFG)
+    # CFG = o_ut.remove_isolated_nodes(CFG)
     c_ut.display_CFG(CFG, "opt_CFG")
     e_ut.get_equations(CFG)
 

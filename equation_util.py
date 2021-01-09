@@ -151,39 +151,61 @@ def VMT_And(literals):
 
 def write_line_transition(name, terms, next_state_string):
     next_state_string = next_state_string
-    term = terms[0]
-    condition = term[1]
-    if condition.lhs == "":
-        next_state_string += "\t\t(ite\n"
-        next_state_string += "\t\t\t" + term[0] + "\n"
-        next_state_string += "\t\t\t" + term[0]  + "\n"
-        if len(terms[1:]): # remove the processed term
-            next_state_string = write_line_transition(name, terms[1:], next_state_string)
-            return next_state_string
-    else:
-        next_line = term[0]
-        next_state_string += "\t\t(ite\n"
+    next_state_string += "\n\t\t(or "
+    for term in terms:
+        condition = term[1]
+        if condition.lhs == "":
+            next_state_string += " " + term[0]  + " "
+            continue
 
+        if isinstance(condition.lhs, str):
+            condition_str = condition.lhs[1:-1] # removes brackets FIXME for multiple return statements
+            if condition.negate:
+                condition_str =  " (not " + condition_str + ")"
+            next_line = term[0]
+            next_state_string += '(and ' + next_line +  condition_str + ")"
 
-        condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
-        if condition.operator == '!=':
-            condition_str = "(not " + condition_str + ")"
-        if condition.negate:
-            condition_str = "(not " + condition_str + ")"
-
-        vmt_condition = VMT_And([next_line, condition_str])
-        next_state_string += "\t\t\t" + vmt_condition + "\n"
-        next_state_string += "\t\t\t" + next_line + "\n"
-        if len(terms[1:]): # remove the processed term
-            next_state_string = write_line_transition(name, terms[1:], next_state_string)
-            return next_state_string
-    next_state_string += "\t\t\t" + name[:-5]
-
-    for i in range(-1, next_state_string.count("(ite")): # close all ite calls -1 is to add the final closing bracket
+        else:
+            condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
+            if condition.operator == '!=':
+                condition_str = "(not " + condition_str + ")"
+            if condition.negate:
+                condition_str = "(not " + condition_str + ")"
+            next_line = term[0]
+            vmt_condition = VMT_And([next_line, condition_str])
+            next_state_string += " " + vmt_condition 
+    opening_brackets  = next_state_string.count("(")
+    closing_brackets  = next_state_string.count(")")
+    for i in range(0, opening_brackets-closing_brackets): # close all ite calls -1 is to add the final closing bracket
         next_state_string += ")"
+    # else:
+    #     if isinstance(condition.lhs, str): # boolean/wait case
+    #         condition_str = condition.lhs[1:-1] # removes brackets FIXME for multiple return statements
+    #         if condition.negate:
+    #             condition_str = "(not " + condition_str + ")"
+    #
+    #     else:
+    #         # next_state_string += "\t\t(ite\n"
+    #         condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
+    #
+    #         if condition.operator == '!=':
+    #             condition_str = "(not " + condition_str + ")"
+    #         if condition.negate:
+    #             condition_str = "(not " + condition_str + ")"
+    #     next_line = term[0]
+    #     vmt_condition = VMT_And([next_line, condition_str])
+    #     next_state_string += "\t\t\t" + vmt_condition + "\n"
+    #     next_state_string += "\t\t\t" + next_line + "\n"
+    #     if len(terms[1:]): # remove the processed term
+    #         next_state_string = write_line_transition(name, terms[1:], next_state_string)
+    #         return next_state_string
+    # next_state_string += "\t\t\t" + name[:-5]
+
+    # for i in range(-1, next_state_string.count("(ite")): # close all ite calls -1 is to add the final closing bracket
+    #     next_state_string += ")"
     return next_state_string
 
-def print_one_hot_vmt(node, preds):
+def print_one_hot_vmt(node, preds): # not in use FIXME remove
     # next_state_string = "\t\t(= " + node + "\n"
     next_state_string = "\n\t\t(ite\n"
     if len(preds) > 1:
@@ -204,7 +226,7 @@ def print_one_hot_vmt(node, preds):
 
     return next_state_string
 
-def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_dict, vmt_line_equation_dict):
+def build_transition_relation( implication_equation_dict, vmt_line_equation_dict): #one_hot_cfg_driven_eq_dict,
 
     print("\n")
     ######## line VMT transitions####################
@@ -219,18 +241,19 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
 
     print("(define-fun .trans () Bool (!  \n \t(and") # define the initial state function
     for eq in vmt_line_equation_dict.values():
+        # if eq.lhs.name == 'L27S15$next':
+
         indent = '\t\t\t'
         # import pdb; pdb.set_trace()
         next_node = eq.lhs.name
         next_state_string = "\t(= " + next_node +  " "
         node = next_node[:-len('$next')]
-        preds = one_hot_cfg_driven_eq_dict[node]
-        # next_state_string = print_one_hot_vmt(node, preds)
-        # print(next_state_string)
-        next_preds = [pred + "$next" for pred in preds]
-        next_node = node + "$next"
-        next_state_string += print_one_hot_vmt(next_node, next_preds)
-        # print(next_state_string)
+        # succs = one_hot_cfg_driven_eq_dict[node]
+        # # next_state_string = print_one_hot_vmt(node, preds)
+        # next_succs = [succ + "$next" for succ in succs]
+        # next_node = node + "$next"
+        # next_state_string += print_one_hot_vmt(next_node, next_succs)
+
 
         if eq.terms[0][0] == "false":
             next_state_string += indent + eq.terms[0][0]
@@ -249,7 +272,6 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
                 closing_bracket_numb = next_state_string.count(')')
                 for i in range(closing_bracket_numb, open_bracket_numb):
                     next_state_string += ")"
-
                 print(next_state_string)
                 continue
         next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string)
@@ -323,6 +345,31 @@ def build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_d
     print("\t) \n\t:trans true))")
     print("\n")
 
+def build_one_hot_encoding(one_hot_cfg_driven_eq_dict):
+    print('(define-fun one_hot_local () Bool')
+    print('(and')
+    for node in one_hot_cfg_driven_eq_dict:
+        # import pdb; pdb.set_trace()
+        one_hot_str = '(=> '
+        succs = one_hot_cfg_driven_eq_dict[node]
+        if (len(succs)>1):
+            one_hot_str += '(or '
+            for succ in succs:
+                one_hot_str += succ + ' '
+            one_hot_str += ')'
+        elif (len(succs) == 1):
+            one_hot_str += succs[0] + ' '
+        else:
+            continue
+        one_hot_str += ' (not ' + node + '))'
+        print(one_hot_str)
+    print(')')
+    print(')')
+    # next_state_string = print_one_hot_vmt(node, preds)
+    # next_succs = [succ + "$next" for succ in succs]
+    # next_node = node + "$next"
+    # next_state_string += print_one_hot_vmt(next_node, next_succs)
+
 
 def build_property (property_locations):
     output_str = "\n(define-fun .property () Bool (!\n"
@@ -349,12 +396,15 @@ def get_equations(CFG):
 
         print_readable_init(CFG.file_entry_node)
 
-
+    # numb_of_nodes = 0
     for node in CFG.node_dict.values():
+        # numb_of_nodes += 1
         one_hot_cfg_driven_eq_dict[node.node_numb] = [] # empty list to be populated by each pred
         next_state = node.node_numb + "$next"
         line_variable_dict[node.node_numb] = bool_line_var(node.node_numb, "Bool")
         if node.preds == []:
+            # if next_state  == 'L27S15$next':
+            #     import pdb; pdb.set_trace()
             vmt_line_equation_dict[next_state] = equality_equation(bool_line_var(next_state, "Bool")) # define an eq and set the lhs to Ln+
             vmt_line_equation_dict[next_state].terms.append(["false"]) # next state = false, if no preds, this node never occurs again.
         for expression in node.expressions:
@@ -399,15 +449,21 @@ def get_equations(CFG):
                 vmt_line_equation_dict[dest_next_state] = equality_equation(bool_line_var(vmt_dest_next_state, "Bool"))
             vmt_line_equation_dict[dest_next_state].terms.append([node.node_numb, edge.condition])
 
-            if edge.condition.lhs == "": # if the edge is unconditional append the next (destination) node
-                line_equation_dict[dest_next_state].terms.append([node.node_numb])
-            else:
-                exp = edge.condition # this is an expression like: x > y
-
-                if exp.negate == True:# CLEAN ME UP SOON!
-                    line_equation_dict[dest_next_state].terms.append([node.node_numb, "!("+exp.lhs.name + exp.operator + exp.rhs.name + ")"])
-                else:
-                    line_equation_dict[dest_next_state].terms.append([node.node_numb, "("+exp.lhs.name + exp.operator + exp.rhs.name + ")"])
+            # used for READABLE eqs only
+            # if edge.condition.lhs == "": # if the edge is unconditional append the next (destination) node
+            #     line_equation_dict[dest_next_state].terms.append([node.node_numb])
+            # elif isinstance(edge.condition.lhs, str):
+            #
+            # else:
+            #     exp = edge.condition # this is an expression like: x > y
+            #
+            #     if exp.negate == True:# CLEAN ME UP SOON!
+            #         try:
+            #             line_equation_dict[dest_next_state].terms.append([node.node_numb, "!("+exp.lhs.name + exp.operator + exp.rhs.name + ")"])
+            #         except:
+            #             import pdb; pdb.set_trace()
+            #     else:
+            #         line_equation_dict[dest_next_state].terms.append([node.node_numb, "("+exp.lhs.name + exp.operator + exp.rhs.name + ")"])
 
 
 #################### READABLE EQS #####################
@@ -442,12 +498,10 @@ def get_equations(CFG):
             declare_variables(variable)
         initial_state(line_variable_dict, CFG.file_entry_node)
 
-        build_transition_relation(one_hot_cfg_driven_eq_dict, implication_equation_dict, vmt_line_equation_dict)
-
+        build_transition_relation( implication_equation_dict, vmt_line_equation_dict) #one_hot_cfg_driven_eq_dict,
+        build_one_hot_encoding(one_hot_cfg_driven_eq_dict)
 
         build_property(CFG.property_locations)
-
-
         #         edge.condition = " & (" + edge.condition + ")"
         #     if edge.dest in line_equation_dict:
         #         line_equation_dict[edge.dest] = line_equation_dict[edge.dest] + " || " + edge.source + edge.condition

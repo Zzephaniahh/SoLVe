@@ -173,12 +173,14 @@ end
    FIXME: add in alias analysis for function pointer resolution later, etc.
  *)
 let process_function_call calling_context_fundec
-                          func_hash lhs func_name arg_list stmt
+                          func_hash lhs func_exp arg_list stmt
                           : (Cil.fundec option) (* <- return type *)
                           =
-  match func_name with
+  (* let x:float = func_name in *)
+  match func_exp with
+
   | Lval(Var(func_var_info ), _) -> begin
-      let func_str = Pretty.sprint ~width:80 (dn_exp () func_name) in
+      let func_str = Pretty.sprint ~width:80 (dn_exp () func_exp) in
 
       if func_str = "__VERIFIER_error" then begin (* handle error state/property P *)
         let p_location = get_loc stmt in
@@ -198,7 +200,7 @@ let process_function_call calling_context_fundec
         (* let bitsize = bitsSizeOf callee_func_obj.svar.vtype in *)
         (* Printf.printf "HHHHHHHHHHHHHHH %s %d \n" type_str  bitsize ; (*lhs_str;*) *)
         (* FIXME why am I getting 8 as the size for a function of type int? *)
-        Printf.printf "[Name: %s] [Call Line: L%dS%d] [Return Type: %s]" func_str stmt_loc stmt.sid type_str; (*lhs_str;*)
+        Printf.printf "[Name: %s] [Call Line: L%dS%d] " func_str stmt_loc stmt.sid ; (*lhs_str;*)
       end;
 
       begin match lhs with
@@ -210,7 +212,17 @@ let process_function_call calling_context_fundec
               (* let lhs_str = Pretty.sprint ~width:80 (dn_lval () varinfo.vname) in *)
               let type_str = Pretty.sprint ~width:80 (dn_type () varinfo.vtype) in
               let bitsize = bitsSizeOf varinfo.vtype in
+              let func_str = Pretty.sprint ~width:80 (dn_exp () func_exp) in
+
+              if func_str = "__VERIFIER_error" then begin (* handle error state/property P *)
               Printf.printf " [LHS: %s%d %s] \n" type_str  bitsize varinfo.vname;
+              end
+
+              else if func_str = "__VERIFIER_nondet_int" then begin (* handle inputs *)
+                Printf.printf " [LHS: %s%d %s] \n" type_str  bitsize varinfo.vname;
+              end
+              else
+              Printf.printf " [Return Type: %s%d] [LHS: %s%d %s] \n" type_str  bitsize type_str  bitsize varinfo.vname;
 
             | _ -> ();
           end
@@ -222,8 +234,22 @@ let process_function_call calling_context_fundec
         let callee_func_obj:fundec = Hashtbl.find func_hash func_var_info in
         Printf.printf "Param_assign: ";
         List.iter2 (fun actual_param formal_param ->
+          match actual_param with
+          | Lval(Var(actual_var_info ), _) -> begin
+
+          let formal_type_str = Pretty.sprint ~width:80 (dn_type () formal_param.vtype) in
+          let formal_bitsize = bitsSizeOf formal_param.vtype in
+
           let actual_str = Pretty.sprint ~width:80 (dn_exp () actual_param) in
-          Printf.printf "(%s %s) " actual_str formal_param.vname;
+          let actual_type_str = Pretty.sprint ~width:80 (dn_type () actual_var_info.vtype) in
+          let actual_bitsize = bitsSizeOf actual_var_info.vtype in
+          (* all of this is to print the formal to actual param assignments in the same way as other expressions are printed *)
+          Printf.printf "[%s%d %s, {%s%d %s}] "
+          formal_type_str formal_bitsize formal_param.vname
+          actual_type_str actual_bitsize actual_str;
+          (* formal_type_str formal_bitsize formal_param.vname; *)
+                    end
+          | _ -> ()
         ) arg_list callee_func_obj.sformals;
         Printf.printf "\n";
         Some(callee_func_obj)

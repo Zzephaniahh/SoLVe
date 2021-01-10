@@ -1,5 +1,5 @@
 import re #regex for parsing
-from graphviz import Digraph
+# from graphviz import Digraph
 import copy # maybe fix this, used when graphing only.
 
 ### VARIABLES ###
@@ -480,65 +480,65 @@ def get_file_CFG(file_name):
     entry_function = full_func_dict["Main "]
 
     return build_file_CFG(entry_function)
-
-def display_CFG(CFG_to_display_global, name):
-    CFG_to_display = copy.deepcopy(CFG_to_display_global)
-    graph = Digraph(comment=name)
-    global func_call_list
-
-    for node_numb in CFG_to_display.node_dict:
-        lbl_str = node_numb + "\n"
-        node = CFG_to_display.node_dict[node_numb]
-
-        for edge in node.edges:
-            # try:
-            if edge.condition.lhs == "": # if any of the fields are missing its an 'always' edge
-                label = ""
-            elif isinstance(edge.condition.lhs, str): # if it's a wait node, maybe make this more robust
-                label = edge.condition.lhs
-            else:
-                label = edge.condition.lhs.name + edge.condition.operator + edge.condition.rhs.name
-            # except:
-            #     import pdb; pdb.set_trace()
-            if edge.condition.negate == True:
-                label = "!(" + label + ")"
-            graph.edge(edge.source, edge.dest, label = label)
-
-        if node_numb in CFG_to_display.input_variables:
-            for input_variable in CFG_to_display.input_variables[node_numb]:
-                lbl_str += "Unconstrained input: " + input_variable.name + "\n"
-
-        for data_assignment in node.expressions:
-            try:
-                exp = data_assignment.exp
-
-            except:
-                import pdb; pdb.set_trace()
-
-            lhs = data_assignment.lhs
-            try:
-                if exp.lhs == None:
-                    lbl_str += lhs.name + ' = ' + exp.rhs.name
-                else:
-                    lbl_str += lhs.name + ' = ' + exp.lhs.name + exp.operator + exp.rhs.name
-            except:
-                import pdb; pdb.set_trace()
-            lbl_str += "\n"
-
-            # the [::-1] simply reverses the list so Lx is printed on top.
-            # for lbl in lbl_set:
-            #     if type(lbl) == type(variable("name", "type", "funct")):
-            #         lbl_str += str(lbl.type + " " + lbl.name)
-            #     else:
-            #         lbl_str += str(lbl)
-            # lbl_str += "\n"
-        if node.node_numb in file_CFG.property_locations:
-            graph.node(node.node_numb, label=lbl_str, color="red", style='filled')
-
-        if node.node_numb == CFG_to_display.file_entry_node:
-            graph.node(node.node_numb, label=lbl_str, color="green", style='filled')
-
-        graph.node(node.node_numb, label=lbl_str)
-
-    file_name =  name+".gv"
-    graph.render(file_name, view=True)
+# 
+# def display_CFG(CFG_to_display_global, name):
+#     CFG_to_display = copy.deepcopy(CFG_to_display_global)
+#     graph = Digraph(comment=name)
+#     global func_call_list
+#
+#     for node_numb in CFG_to_display.node_dict:
+#         lbl_str = node_numb + "\n"
+#         node = CFG_to_display.node_dict[node_numb]
+#
+#         for edge in node.edges:
+#             # try:
+#             if edge.condition.lhs == "": # if any of the fields are missing its an 'always' edge
+#                 label = ""
+#             elif isinstance(edge.condition.lhs, str): # if it's a wait node, maybe make this more robust
+#                 label = edge.condition.lhs
+#             else:
+#                 label = edge.condition.lhs.name + edge.condition.operator + edge.condition.rhs.name
+#             # except:
+#             #     import pdb; pdb.set_trace()
+#             if edge.condition.negate == True:
+#                 label = "!(" + label + ")"
+#             graph.edge(edge.source, edge.dest, label = label)
+#
+#         if node_numb in CFG_to_display.input_variables:
+#             for input_variable in CFG_to_display.input_variables[node_numb]:
+#                 lbl_str += "Unconstrained input: " + input_variable.name + "\n"
+#
+#         for data_assignment in node.expressions:
+#             try:
+#                 exp = data_assignment.exp
+#
+#             except:
+#                 import pdb; pdb.set_trace()
+#
+#             lhs = data_assignment.lhs
+#             try:
+#                 if exp.lhs == None:
+#                     lbl_str += lhs.name + ' = ' + exp.rhs.name
+#                 else:
+#                     lbl_str += lhs.name + ' = ' + exp.lhs.name + exp.operator + exp.rhs.name
+#             except:
+#                 import pdb; pdb.set_trace()
+#             lbl_str += "\n"
+#
+#             # the [::-1] simply reverses the list so Lx is printed on top.
+#             # for lbl in lbl_set:
+#             #     if type(lbl) == type(variable("name", "type", "funct")):
+#             #         lbl_str += str(lbl.type + " " + lbl.name)
+#             #     else:
+#             #         lbl_str += str(lbl)
+#             # lbl_str += "\n"
+#         if node.node_numb in file_CFG.property_locations:
+#             graph.node(node.node_numb, label=lbl_str, color="red", style='filled')
+#
+#         if node.node_numb == CFG_to_display.file_entry_node:
+#             graph.node(node.node_numb, label=lbl_str, color="green", style='filled')
+#
+#         graph.node(node.node_numb, label=lbl_str)
+#
+#     file_name =  name+".gv"
+#     graph.render(file_name, view=True)

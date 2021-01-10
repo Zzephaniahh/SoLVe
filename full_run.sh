@@ -1,4 +1,4 @@
-make
+#make
 source_file=$1
 
 ./cilcfgformula $source_file > cil_cfg.txt

@@ -1,5 +1,5 @@
-AVR_PATH=/home/zephaniah/Documents/avr
-SOLVE_PATH=/home/zephaniah/Documents/Zephaniahs_Research/SoLVe
+AVR_PATH=/home/zeph/avr
+SOLVE_PATH=/home/zeph/SoLVe
 vmt_file=$1
 cd $AVR_PATH
 

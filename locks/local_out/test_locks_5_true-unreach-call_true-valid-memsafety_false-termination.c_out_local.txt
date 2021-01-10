@@ -1,0 +1,23 @@
+Error: Cannot find input file --local (exception Sys_error("--local: No such file or directory")
+Caught Errormsg.Error while parsing
+Fatal error: exception Errormsg.Error
+Error: Cannot find input file --local (exception Sys_error("--local: No such file or directory")
+Caught Errormsg.Error while parsing
+Fatal error: exception Errormsg.Error
+Traceback (most recent call last):
+  File "SoLVe.py", line 26, in <module>
+    main()
+  File "SoLVe.py", line 14, in main
+    CFG = c_ut.get_file_CFG(file_name)
+  File "/home/zeph/SoLVe/cfg_util.py", line 480, in get_file_CFG
+    entry_function = full_func_dict["Main "]
+KeyError: 'Main '
+/home/zeph/avr/bin/avr: line 277: 84629 Segmentation fault      (core dumped) $p_bin/vwn $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+/home/zeph/avr/bin/avr: line 286: 84634 Segmentation fault      (core dumped) $p_bin/dpa $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+	(abstraction: sa+uf)
+reach: avr_util.h:186: bool access_file(F&, std::__cxx11::string, bool) [with F = std::basic_ifstream<char>; std::__cxx11::string = std::__cxx11::basic_string<char>]: Assertion `0' failed.
+/home/zeph/avr/bin/avr: line 295: 84640 Aborted                 (core dumped) $p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+Could not access file: output/work_test/data/wn.dump
+
+0.09user 0.07system 0:00.30elapsed 52%CPU (0avgtext+0avgdata 10800maxresident)k
+0inputs+480outputs (0major+17398minor)pagefaults 0swaps

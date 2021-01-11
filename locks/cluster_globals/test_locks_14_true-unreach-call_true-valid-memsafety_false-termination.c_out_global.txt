@@ -1,0 +1,10 @@
+./full_run.sh: line 31: : command not found
+/home/zeph/avr/bin/avr: line 277: 261527 Killed                  $p_bin/vwn $OUT_PATH $p_bin > $OUT_PATH/data/vwn.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+/home/zeph/avr/bin/avr: line 286: 261577 Segmentation fault      (core dumped) $p_bin/dpa $OUT_PATH $p_bin > $OUT_PATH/data/dpa.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+	(abstraction: sa+uf)
+reach: avr_util.h:186: bool access_file(F&, std::__cxx11::string, bool) [with F = std::basic_ifstream<char>; std::__cxx11::string = std::__cxx11::basic_string<char>]: Assertion `0' failed.
+/home/zeph/avr/bin/avr: line 295: 261581 Aborted                 (core dumped) $p_bin/reach $OUT_PATH $p_bin > $OUT_PATH/data/reach.output 2>> >(tee -a $OUT_PATH/avr.err >&2)
+Could not access file: output/work_test/data/wn.dump
+12.48user 0.79system 0:13.83elapsed 95%CPU (0avgtext+0avgdata 1016032maxresident)k
+474328inputs+3024outputs (732major+291763minor)pagefaults 0swaps
+

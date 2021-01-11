@@ -8,38 +8,12 @@ class equality_equation():
         # L4+ = [L2 & !(x < y)] || L3  --- Becomes:
         # self.lhs = L4+
         # self.terms = [[L2, !(x < y)], L3]
-#
-# class term():
-#     def __init__(self, name, type, temporal_loc):
-#
 
-
-
-    # def add_term
-
-    # L1+ = 0
-    # L2+ = L1
-    # L3+ = L2 & (x < y)
-    # L4+ = [L2 & !(x < y)] || L3
-    # L5+ = L4
-
-    #         L2 --> i+ = i + 2
-    #         L3 --> i+ = i + 5
-    #         !L2 & !L3 --> i+ = i
-#
 class implication_equation():
     def __init__(self, variable):
         self.variable = variable
         self.line_and_data_set = []
 
-    # L1 --> y+ = 0
-    # !L1 --> y+ = y
-    # L1 --> x+ = 0
-    # !L1 --> x+ = x
-    # L1 --> z+ = 0
-    # L3 --> z+ = 1
-    # L4 --> z+ = 7
-    # !L1 & !L3 & !L4 --> z+ = z
 
 class bool_line_var():
     def __init__(self, name, type):
@@ -162,7 +136,7 @@ def write_line_transition(name, terms, next_state_string):
             if condition.negate:
                 condition_str =  " (not " + condition_str + ")"
             next_line = term[0]
-            next_state_string += '(and ' + next_line +  condition_str + ")"
+            next_state_string += '(and ' + next_line + ' ' + condition_str + ")"
 
         else:
             condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
@@ -228,30 +202,13 @@ def write_line_transition(name, terms, next_state_string):
 def build_transition_relation( implication_equation_dict, vmt_line_equation_dict, CFG): #one_hot_cfg_driven_eq_dict,
 
     print("\n")
-    ######## line VMT transitions####################
-    # for node in one_hot_cfg_driven_eq_dict:
-    #     preds = one_hot_cfg_driven_eq_dict[node]
-    #     next_state_string = print_one_hot_vmt(node, preds)
-    #     print(next_state_string)
-    #     next_preds = [pred + "$next" for pred in preds]
-    #     next_node = node + "$next"
-    #     next_state_string = print_one_hot_vmt(next_node, next_preds)
-    #     print(next_state_string)
-
     print("(define-fun trel_equations () Bool (!  \n \t(and") # define the initial state function
     for eq in vmt_line_equation_dict.values():
-        # if eq.lhs.name == 'L27S15$next':
 
         indent = '\t\t\t'
-        # import pdb; pdb.set_trace()
         next_node = eq.lhs.name
         next_state_string = "\t(= " + next_node +  " "
         node = next_node[:-len('$next')]
-        # succs = one_hot_cfg_driven_eq_dict[node]
-        # # next_state_string = print_one_hot_vmt(node, preds)
-        # next_succs = [succ + "$next" for succ in succs]
-        # next_node = node + "$next"
-        # next_state_string += print_one_hot_vmt(next_node, next_succs)
 
 
         if eq.terms[0][0] == "false":
@@ -274,14 +231,11 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
                 print(next_state_string)
                 continue
         next_state_string = write_line_transition(eq.lhs.name, eq.terms, next_state_string)
-        # open_bracket_numb = next_state_string.count('(')
-        # closing_bracket_numb = next_state_string.count(')')
-        # for i in range(closing_bracket_numb, open_bracket_numb):
+
         print(next_state_string)
 
     ######## data VMT transitions####################
     for eq in implication_equation_dict.values():
-        # import pdb; pdb.set_trace()
         indent = "\t\t"
         next_state_string = indent
         next_state_string += "(= " + eq.variable + "$next\n"
@@ -311,14 +265,7 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
                                 exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
 
                             next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ")\n"
-                            # import pdb; pdb.set_trace()
 
-            #     if exp.rhs.strip().isdigit():
-            #         next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs +  " (_ bv" + exp.rhs.strip() + " 32))\n"
-            #     else:
-            #         next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs + " " + exp.rhs + " )\n"
-            # elif type(data) == type(expression("","","","")):
-            #     pass
 
         closing_brackets = ''
         for i in range(0, next_state_string.count('(') - next_state_string.count(')')):
@@ -335,11 +282,11 @@ def process_condition(pred_name, condition):
         return next_state_string
 
     if isinstance(condition.lhs, str):
+
         condition_str = condition.lhs[1:-1] # removes brackets FIXME for multiple return statements
         if condition.negate:
             condition_str =  " (not " + condition_str + ")"
-        next_line = term[0]
-        next_state_string = '(and ' + pred_name +  condition_str + ")"
+        next_state_string = '(and ' + pred_name + ' ' + condition_str + ")"
 
     else:
         condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
@@ -359,9 +306,15 @@ def build_one_hot_encoding_global(node_name_list):
     # node_name_list = set(['L0', 'L1', 'L2', 'L3', 'L4', 'L5'])
     # this gets each unique pair of nodes as a list, ie unique_node_pairs = [(L0, L1), (L0, L2) ... ] but pairs such as (L1, L0) will not appear.
     unique_node_pairs = list(combinations_with_replacement(node_name_list, 2))
-
     for [node1, node2] in unique_node_pairs:
         if node1 == node2:
+            continue
+
+        char_list = ['W', 'R']
+        res2 = list(filter(lambda x:  x in node2, char_list))
+        res1 = list(filter(lambda x:  x in node1, char_list))
+        dummy_nodes = res1 + res2
+        if len(dummy_nodes) > 0:
             continue
         print('(or (not ' +  node1 + ') (not ' + node2 + '))')
     print(')')
@@ -371,6 +324,12 @@ def build_one_hot_encoding_global(node_name_list):
     print('(define-fun one_hot_global$next () Bool\n(and')
 
     for [node1, node2] in unique_node_pairs:
+        char_list = ['W', 'R']
+        res2 = list(filter(lambda x:  x in node2, char_list))
+        res1 = list(filter(lambda x:  x in node1, char_list))
+        dummy_nodes = res1 + res2
+        if len(dummy_nodes) > 0:
+            continue
         if node1 == node2:
             continue
         print('(or (not ' +  node1 + '$next) (not ' + node2 + '$next))')
@@ -491,12 +450,8 @@ def get_equations(CFG, LOCAL):
                 continue
             one_hot_cfg_driven_eq_dict[node.node_numb].append(succ_node.node_numb) # empty list to be populated by each pred
         if print_readable:
-            # if CFG.file_entry_node == node.node_numb:
-            #     # print("\n# CFG driven Encoding:")
-            # # cfg_driven_encodings.append([node.node_numb, expression.lhs.name, expression.rhs])
 
             readable_one_hot_list.append([node.node_numb, node.succs])
-            # print_cfg_driven_encoding(node.node_numb, node.succs)
 
         for edge in node.edges:
             dest_node = CFG.node_dict[edge.dest] # get the destination of the edge
@@ -526,7 +481,52 @@ def get_equations(CFG, LOCAL):
             #         except:
             #             import pdb; pdb.set_trace()
             #     else:
-            #         line_equation_dict[dest_next_state].terms.append([node.node_numb, "("+exp.lhs.name + exp.operator + exp.rhs.name + ")"])
+            #         line_equation_dict[dest_ne#         edge.condition = " & (" + edge.condition + ")"
+        #     if edge.dest in line_equation_dict:
+        #         line_equation_dict[edge.dest] = line_equation_dict[edge.dest] + " || " + edge.source + edge.condition
+        #     else:
+        #         line_equation_dict[edge.dest] = edge.source + edge.condition
+        #
+        # # line = node.node_numb
+        # for label_set in node.label_list:
+        #     if (type(label_set) is list) and (len(label_set) == 3): # This filters for assignment labels
+        #         data = label_set[2]
+        #         if type(label_set[0]) == type(cfg_util.variable("name", "type", "funct")):
+        #             variable = label_set[0].name
+        #         else:
+        #             variable = label_set[0]
+        #         if variable in data_equation_dict:
+        #             data_equation_dict[variable].append(data_equation(node.node_numb, variable, data))
+        #         else:
+        #             data_equation_dict[variable] = [data_equation(node.node_numb, variable, data)]
+        #
+
+                #         L2 --> i+ = i + 2
+                #         L3 --> i+ = i + 5
+                #         !L2 & !L3 --> i+ = i
+            # for lbl in label_set:
+            #     if lbl = "":
+            #         continue
+            #     if lbl =
+
+    #
+    # for eq in line_equation_dict:
+    #     print(eq + "+" + " = " + line_equation_dict[eq])
+    #
+    # for i, (variable, data_eq_set) in enumerate(data_equation_dict.items()):
+    #
+    #     line_list = []
+    #     for data_eq in data_eq_set:
+    #         print(data_eq.line + " --> " + variable + "+ = " + data_eq.data)
+    #         line_list.append(data_eq.line)
+    #
+    #     str = ""
+    #     for line in line_list:
+    #         str = str + "!" + line + " & "
+    #     str = str[:-3] + " --> " + variable + "+ = " + variable
+    #     print(str)
+
+# defxt_state].terms.append([node.node_numb, "("+exp.lhs.name + exp.operator + exp.rhs.name + ")"])
 
 
 #################### READABLE EQS #####################
@@ -572,49 +572,3 @@ def get_equations(CFG, LOCAL):
         combine_one_hot_and_trans_formulas(LOCAL)
 
         build_property(CFG.property_locations)
-        #         edge.condition = " & (" + edge.condition + ")"
-        #     if edge.dest in line_equation_dict:
-        #         line_equation_dict[edge.dest] = line_equation_dict[edge.dest] + " || " + edge.source + edge.condition
-        #     else:
-        #         line_equation_dict[edge.dest] = edge.source + edge.condition
-        #
-        # # line = node.node_numb
-        # for label_set in node.label_list:
-        #     if (type(label_set) is list) and (len(label_set) == 3): # This filters for assignment labels
-        #         data = label_set[2]
-        #         if type(label_set[0]) == type(cfg_util.variable("name", "type", "funct")):
-        #             variable = label_set[0].name
-        #         else:
-        #             variable = label_set[0]
-        #         if variable in data_equation_dict:
-        #             data_equation_dict[variable].append(data_equation(node.node_numb, variable, data))
-        #         else:
-        #             data_equation_dict[variable] = [data_equation(node.node_numb, variable, data)]
-        #
-
-                #         L2 --> i+ = i + 2
-                #         L3 --> i+ = i + 5
-                #         !L2 & !L3 --> i+ = i
-            # for lbl in label_set:
-            #     if lbl = "":
-            #         continue
-            #     if lbl =
-
-    #
-    # for eq in line_equation_dict:
-    #     print(eq + "+" + " = " + line_equation_dict[eq])
-    #
-    # for i, (variable, data_eq_set) in enumerate(data_equation_dict.items()):
-    #
-    #     line_list = []
-    #     for data_eq in data_eq_set:
-    #         print(data_eq.line + " --> " + variable + "+ = " + data_eq.data)
-    #         line_list.append(data_eq.line)
-    #
-    #     str = ""
-    #     for line in line_list:
-    #         str = str + "!" + line + " & "
-    #     str = str[:-3] + " --> " + variable + "+ = " + variable
-    #     print(str)
-
-# def

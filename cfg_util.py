@@ -362,9 +362,13 @@ def get_edge(line, current_full_func, entry=False, file_entry=False):
     return
 
 def get_input_var(input_str, current_full_func): # input_str looks like 'Input: [L13S3] [LHS: int 32 v_in]
+    # import pdb; pdb.set_trace()
     [line, var_str] = re.findall(r"\[(.*?)\]", input_str) # split into three strings
     var_str = var_str[len('LHS: '):] # for LHS: int 32 v_in  rm LHS:  and return 'int 32 v_in'
-    [type, size, name] = var_str.split() # changes [int 32] to: type = 'int' and size = '32'
+    if len(var_str.split()) == 4:
+        [additonal_type, type, size, name] = var_str.split() # changes [int 32] to: type = 'int' and size = '32'
+    else:
+        [type, size, name] = var_str.split() # changes [int 32] to: type = 'int' and size = '32'
     input_var = input_variable(name, type, size, current_full_func.name, line)
 
     if name in current_full_func.CFG.input_variables:
@@ -459,6 +463,7 @@ def build_file_CFG(entry_function):
     # file_CFG.input_variables = entry_function.CFG.input_variables
 
     for node in entry_function.CFG.node_dict.values():
+
         file_CFG.add_existing_node(node) # add each node
         # file_CFG.node_dict[node.node_numb].label_list.append(node.node_numb)
         if node.call_signature != "": # if theres a function call
@@ -470,6 +475,12 @@ def build_file_CFG(entry_function):
             file_CFG.add_edge(node.node_numb, entry_node.node_numb, cond) # add the edge from the call node
 
             build_file_CFG(called_function)
+    for bad_node_name in file_CFG.property_locations:
+        bad_node = file_CFG.node_dict[bad_node_name]
+        for pred in bad_node.preds:
+            pred_node = file_CFG.node_dict[pred]
+            if len(pred_node.succs) == 1:
+                file_CFG.property_locations.append(pred)
     return file_CFG
 
 

@@ -192,6 +192,11 @@ let process_function_call calling_context_fundec
         Printf.printf "Input: [L%dS%d]" location stmt.sid;
       end
 
+      else if func_str = "__VERIFIER_nondet_uint" then begin (* handle inputs *)
+        let location = get_loc stmt in
+        Printf.printf "Input: [L%dS%d]" location stmt.sid;
+      end
+
       else begin
         Printf.printf "FUNCTION CALL BEGIN: ";
         let type_str = Pretty.sprint ~width:80 (dn_type () func_var_info.vtype) in
@@ -214,10 +219,16 @@ let process_function_call calling_context_fundec
               let bitsize = bitsSizeOf varinfo.vtype in
               let func_str = Pretty.sprint ~width:80 (dn_exp () func_exp) in
 
+
+
               if func_str = "__VERIFIER_error" then begin (* handle error state/property P *)
               Printf.printf " [LHS: %s%d %s] \n" type_str  bitsize varinfo.vname;
               end
 
+              else if func_str = "__VERIFIER_nondet_uint" then begin (* handle error state/property P *)
+              Printf.printf " [LHS: %s%d %s] \n" type_str  bitsize varinfo.vname;
+              end
+              
               else if func_str = "__VERIFIER_nondet_int" then begin (* handle inputs *)
                 Printf.printf " [LHS: %s%d %s] \n" type_str  bitsize varinfo.vname;
               end

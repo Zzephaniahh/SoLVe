@@ -1,29 +1,20 @@
-FUNCTION CALL BEGIN: [Name: main] [(L9S0, L10S1, True)] 
-(L10S1, L12S2, True)
-[int 32 i, {int 32 0, }, L10S1]
-[int 32 j, {int 32 0, }, L10S1]
-(L12S2, L14S3, True)
-(L14S3, L14S4, {int 32 i > 7, int 32 i, int 32 7, })
-(L14S3, L15S5, !{int 32 i > 7, int 32 i, int 32 7, })
-(L14S4, L20S10, True)
-(L15S5, L15S6, True)
-(L15S6, L12S7, True)
-FUNCTION CALL BEGIN: [Name: addf] [Call Line: L15S6]  [Return Type: int 32] [LHS: int 32 i] 
-Param_assign: [int 32 x, {int 32 i}] [int 32 k, {int 32 j}] 
-(L27S13, L29S14, True)
-[int 32 k, {int 32 2, }, L27S13]
-[int 32 x, {int 32 x + 1, int 32 x, int 32 1, }, L27S13]
-(L29S14, L29S14, True)
-Return: [int  32 addf, {int 32 x, }, L29S14]
-Call ends: addf
-(L12S7, L12S2, {int 32 i < 5, int 32 i, int 32 5, })
-(L12S7, L12S8, !{int 32 i < 5, int 32 i, int 32 5, })
-(L12S8, L19S9, True)
-(L19S9, L19S9, True)
-Return: [int  32 main, {int 32 0, }, L19S9]
-(L20S10, L20S11, True)
-(L20S11, L20S11, True)
-Property: [!L20S11] 
-(L21S12, L21S12, True)
-Return: [int  32 main, {int 32 0, }, L21S12]
+FUNCTION CALL BEGIN: [Name: main] [(L8S0, L9S1, True)] 
+(L9S1, L10S2, True)
+[int 32 i, {int 32 0, }, L9S1]
+(L10S2, L12S3, True)
+(L12S3, L12S4, {int 32 i > 7, int 32 i, int 32 7, })
+(L12S3, L13S5, !{int 32 i > 7, int 32 i, int 32 7, })
+(L12S4, L17S9, True)
+(L13S5, L10S6, True)
+[int 32 i, {int 32 i + 2, int 32 i, int 32 2, }, L13S5]
+(L10S6, L10S2, {int 32 i < 5, int 32 i, int 32 5, })
+(L10S6, L10S7, !{int 32 i < 5, int 32 i, int 32 5, })
+(L10S7, L16S8, True)
+(L16S8, L16S8, True)
+Return: [int  32 main, {int 32 0, }, L16S8]
+(L17S9, L17S10, True)
+(L17S10, L17S10, True)
+Property: [!L17S10] 
+(L18S11, L18S11, True)
+Return: [int  32 main, {int 32 0, }, L18S11]
 Call ends: main

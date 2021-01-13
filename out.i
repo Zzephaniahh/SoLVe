@@ -574,62 +574,41 @@
    void __attribute__((__overloaded__))  __atomic_add_fetch_4(...) ;  */
 /* compiler builtin: 
    void *__builtin_frame_address(unsigned int  ) ;  */
-#line 2 "in.c"
-int addf(int x , int k ) ;
-#line 6
+#line 5 "in.c"
 extern  __attribute__((__noreturn__)) void __VERIFIER_error() ;
-#line 8
+#line 7
 extern int __VERIFIER_nondet_int() ;
-#line 9 "in.c"
+#line 8 "in.c"
 int main(void) 
 { 
   int i ;
-  int j ;
 
   {
-#line 10
+#line 9
   i = 0;
-#line 11
-  j = 0;
-#line 12
+#line 10
   while (1) {
-#line 14
+#line 12
     if (i > 7) {
-#line 14
+#line 12
       goto ERROR;
     }
-    {
-#line 15
-    i = addf(i, j);
-    }
-#line 12
+#line 13
+    i += 2;
+#line 10
     if (! (i < 5)) {
-#line 12
+#line 10
       break;
     }
   }
-#line 19
+#line 16
   return (0);
   ERROR: 
   {
-#line 20
+#line 17
   __VERIFIER_error();
   }
-#line 21
+#line 18
   return (0);
-}
-}
-#line 25 "in.c"
-int addf(int x , int k ) 
-{ 
-
-
-  {
-#line 27
-  k = 2;
-#line 28
-  x ++;
-#line 29
-  return (x);
 }
 }

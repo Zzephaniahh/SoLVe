@@ -1,69 +1,50 @@
 // raw_CFG
 digraph {
-	L9S0 -> L10S1 [label=""]
-	L9S0 [label=L9S0
+	L8S0 -> L9S1 [label=""]
+	L8S0 [label=L8S0
  color=green style=filled]
-	L9S0 [label=L9S0
+	L8S0 [label=L8S0
 ]
-	L10S1 -> L12S2 [label=""]
-	L10S1 [label="L10S1
+	L9S1 -> L10S2 [label=""]
+	L9S1 [label="L9S1
 i = 0
-j = 0
 "]
-	L12S2 -> L14S3 [label=""]
-	L12S2 [label=L12S2
+	L10S2 -> L12S3 [label=""]
+	L10S2 [label=L10S2
 ]
-	L14S3 -> L14S4 [label="i>7"]
-	L14S3 -> L15S5 [label="!(i>7)"]
-	L14S3 [label=L14S3
+	L12S3 -> L12S4 [label="i>7"]
+	L12S3 -> L13S5 [label="!(i>7)"]
+	L12S3 [label=L12S3
 ]
-	L14S4 -> L20S10 [label=""]
-	L14S4 [label=L14S4
+	L12S4 -> L17S9 [label=""]
+	L12S4 [label=L12S4
+ color=red style=filled]
+	L12S4 [label=L12S4
 ]
-	L15S5 -> L15S6 [label=""]
-	L15S5 [label=L15S5
-]
-	L20S10 -> L20S11 [label=""]
-	L20S10 [label=L20S10
-]
-	L15S6 -> WL15S6 [label=""]
-	L15S6 -> L27S13 [label=""]
-	L15S6 [label="L15S6
-i = addf
-x = i
-k = j
+	L13S5 -> L10S6 [label=""]
+	L13S5 [label="L13S5
+i = i+2
 "]
-	WL15S6 -> RL15S6 [label="(L29S14)"]
-	WL15S6 -> WL15S6 [label="!((L29S14))"]
-	WL15S6 [label=WL15S6
+	L17S9 -> L17S10 [label=""]
+	L17S9 [label=L17S9
+ color=red style=filled]
+	L17S9 [label=L17S9
 ]
-	RL15S6 -> L12S7 [label=""]
-	RL15S6 [label="RL15S6
-i = addf
-"]
-	L12S7 -> L12S2 [label="i<5"]
-	L12S7 -> L12S8 [label="!(i<5)"]
-	L12S7 [label=L12S7
+	L10S6 -> L10S2 [label="i<5"]
+	L10S6 -> L10S7 [label="!(i<5)"]
+	L10S6 [label=L10S6
 ]
-	L27S13 -> L29S14 [label=""]
-	L27S13 [label="L27S13
-k = 2
-x = x+1
-"]
-	L29S14 [label="L29S14
-addf = x
-"]
-	L12S8 -> L19S9 [label=""]
-	L12S8 [label=L12S8
+	L10S7 -> L16S8 [label=""]
+	L10S7 [label=L10S7
 ]
-	L19S9 [label="L19S9
+	L16S8 [label="L16S8
 main = 0
 "]
-	L20S11 [label=L20S11
+	L17S10 [label=L17S10
  color=red style=filled]
-	L20S11 [label=L20S11
+	L17S10 [label=L17S10
 ]
-	L21S12 [label="L21S12
+	L18S11 [label="L18S11
 main = 0
 "]
 }

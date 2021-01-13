@@ -199,6 +199,7 @@ def write_line_transition(name, terms, next_state_string):
     #
     # return next_state_string
 
+
 def build_transition_relation( implication_equation_dict, vmt_line_equation_dict, CFG): #one_hot_cfg_driven_eq_dict,
 
     print("\n")
@@ -397,12 +398,23 @@ def combine_one_hot_and_trans_formulas(LOCAL):
 
 def build_property(property_locations):
     output_str = "\n(define-fun .property () Bool (!\n"
-    output_str += "\t(and\n"
-    output_str += "\t(not\n" #FIXME MAYBE NOT CORRECT?
+    output_str += "\t(not\n"
+    output_str += "\t(or\n" #FIXME MAYBE NOT CORRECT?
     for location in property_locations:
         output_str += "\t " + location + "\n"
     output_str += "\t)) \n:invar-property 0))"
     print(output_str)
+
+
+def CFG_node_edge_count(node, node_count, conditional_branches):
+    node_count += 1
+    for edge in node.edges:
+        if edge.condition.lhs != '':
+            # import pdb; pdb.set_trace()
+            conditional_branches += 1
+    return [node_count, conditional_branches]
+
+
 
 def get_equations(CFG, LOCAL):
     line_equation_dict = {} # lhs_var_name, class equation
@@ -414,15 +426,18 @@ def get_equations(CFG, LOCAL):
     data_variable_dict = {}
     print_readable = False
     print_vmt = True
+    node_count = 0
+    conditional_branches = 0
     if print_readable:
         readable_one_hot_list = []
         readable_data_assignments = []
 
         print_readable_init(CFG.file_entry_node)
 
-    # numb_of_nodes = 0
+
     for node in CFG.node_dict.values():
-        # numb_of_nodes += 1
+        [node_count, conditional_branches] = CFG_node_edge_count(node, node_count, conditional_branches)
+
         one_hot_cfg_driven_eq_dict[node.node_numb] = [] # empty list to be populated by each pred
         next_state = node.node_numb + "$next"
         line_variable_dict[node.node_numb] = bool_line_var(node.node_numb, "Bool")
@@ -570,5 +585,20 @@ def get_equations(CFG, LOCAL):
 
         # LOCAL is a bool which if true prints local one-hottness or if false prints global one-hotness
         combine_one_hot_and_trans_formulas(LOCAL)
-
         build_property(CFG.property_locations)
+        numb_of_data_variables = len(variable_update_loc_dict)
+        numb_of_data_updates = 0
+        for variable_update_loc_list in variable_update_loc_dict.values():
+            numb_of_data_updates += len(variable_update_loc_list)
+        node_count = 0
+        conditional_branches = 0
+        print_CFG_analytics_2_file(node_count, conditional_branches, numb_of_data_variables, numb_of_data_updates)
+
+
+
+def print_CFG_analytics_2_file(node_count, conditional_branches, numb_of_data_variables, numb_of_data_updates):
+    f = open("demofile2.txt", "a")
+    f.write("NODES: " + str(node_count))
+    f.write("CONDITIONAL BRANCHES: " + str(conditional_branches))
+    f.write("NUMBER OF VARIABLES: " + str(numb_of_data_variables))
+    f.write("NUMBER OF DATA UPDATES: " + str(numb_of_data_updates))

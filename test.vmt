@@ -1,75 +1,42 @@
-(declare-fun L9S0 () Bool)
-(declare-fun L9S0$next () Bool)
-(define-fun .L9S0 () Bool (! L9S0 :next L9S0$next))
-(declare-fun L10S1 () Bool)
-(declare-fun L10S1$next () Bool)
-(define-fun .L10S1 () Bool (! L10S1 :next L10S1$next))
-(declare-fun L12S2 () Bool)
-(declare-fun L12S2$next () Bool)
-(define-fun .L12S2 () Bool (! L12S2 :next L12S2$next))
-(declare-fun L14S3 () Bool)
-(declare-fun L14S3$next () Bool)
-(define-fun .L14S3 () Bool (! L14S3 :next L14S3$next))
-(declare-fun L14S4 () Bool)
-(declare-fun L14S4$next () Bool)
-(define-fun .L14S4 () Bool (! L14S4 :next L14S4$next))
-(declare-fun WL14S4 () Bool)
-(declare-fun WL14S4$next () Bool)
-(define-fun .WL14S4 () Bool (! WL14S4 :next WL14S4$next))
-(declare-fun RL14S4 () Bool)
-(declare-fun RL14S4$next () Bool)
-(define-fun .RL14S4 () Bool (! RL14S4 :next RL14S4$next))
-(declare-fun L16S5 () Bool)
-(declare-fun L16S5$next () Bool)
-(define-fun .L16S5 () Bool (! L16S5 :next L16S5$next))
-(declare-fun L27S15 () Bool)
-(declare-fun L27S15$next () Bool)
-(define-fun .L27S15 () Bool (! L27S15 :next L27S15$next))
-(declare-fun L29S16 () Bool)
-(declare-fun L29S16$next () Bool)
-(define-fun .L29S16 () Bool (! L29S16 :next L29S16$next))
-(declare-fun L16S6 () Bool)
-(declare-fun L16S6$next () Bool)
-(define-fun .L16S6 () Bool (! L16S6 :next L16S6$next))
-(declare-fun L12S7 () Bool)
-(declare-fun L12S7$next () Bool)
-(define-fun .L12S7 () Bool (! L12S7 :next L12S7$next))
-(declare-fun L21S12 () Bool)
-(declare-fun L21S12$next () Bool)
-(define-fun .L21S12 () Bool (! L21S12 :next L21S12$next))
-(declare-fun L12S8 () Bool)
-(declare-fun L12S8$next () Bool)
-(define-fun .L12S8 () Bool (! L12S8 :next L12S8$next))
-(declare-fun L19S9 () Bool)
-(declare-fun L19S9$next () Bool)
-(define-fun .L19S9 () Bool (! L19S9 :next L19S9$next))
-(declare-fun L19S10 () Bool)
-(declare-fun L19S10$next () Bool)
-(define-fun .L19S10 () Bool (! L19S10 :next L19S10$next))
-(declare-fun L20S11 () Bool)
-(declare-fun L20S11$next () Bool)
-(define-fun .L20S11 () Bool (! L20S11 :next L20S11$next))
-(declare-fun L21S13 () Bool)
-(declare-fun L21S13$next () Bool)
-(define-fun .L21S13 () Bool (! L21S13 :next L21S13$next))
-(declare-fun L22S14 () Bool)
-(declare-fun L22S14$next () Bool)
-(define-fun .L22S14 () Bool (! L22S14 :next L22S14$next))
+(declare-fun L8S0 () Bool)
+(declare-fun L8S0$next () Bool)
+(define-fun .L8S0 () Bool (! L8S0 :next L8S0$next))
+(declare-fun L9S1 () Bool)
+(declare-fun L9S1$next () Bool)
+(define-fun .L9S1 () Bool (! L9S1 :next L9S1$next))
+(declare-fun L10S2 () Bool)
+(declare-fun L10S2$next () Bool)
+(define-fun .L10S2 () Bool (! L10S2 :next L10S2$next))
+(declare-fun L12S3 () Bool)
+(declare-fun L12S3$next () Bool)
+(define-fun .L12S3 () Bool (! L12S3 :next L12S3$next))
+(declare-fun L12S4 () Bool)
+(declare-fun L12S4$next () Bool)
+(define-fun .L12S4 () Bool (! L12S4 :next L12S4$next))
+(declare-fun L13S5 () Bool)
+(declare-fun L13S5$next () Bool)
+(define-fun .L13S5 () Bool (! L13S5 :next L13S5$next))
+(declare-fun L17S9 () Bool)
+(declare-fun L17S9$next () Bool)
+(define-fun .L17S9 () Bool (! L17S9 :next L17S9$next))
+(declare-fun L10S6 () Bool)
+(declare-fun L10S6$next () Bool)
+(define-fun .L10S6 () Bool (! L10S6 :next L10S6$next))
+(declare-fun L10S7 () Bool)
+(declare-fun L10S7$next () Bool)
+(define-fun .L10S7 () Bool (! L10S7 :next L10S7$next))
+(declare-fun L16S8 () Bool)
+(declare-fun L16S8$next () Bool)
+(define-fun .L16S8 () Bool (! L16S8 :next L16S8$next))
+(declare-fun L17S10 () Bool)
+(declare-fun L17S10$next () Bool)
+(define-fun .L17S10 () Bool (! L17S10 :next L17S10$next))
+(declare-fun L18S11 () Bool)
+(declare-fun L18S11$next () Bool)
+(define-fun .L18S11 () Bool (! L18S11 :next L18S11$next))
 (declare-fun i () (_ BitVec 32))
 (declare-fun i$next () (_ BitVec 32))
 (define-fun .i () (_ BitVec 32) (! i :next i$next))
-(declare-fun j () (_ BitVec 32))
-(declare-fun j$next () (_ BitVec 32))
-(define-fun .j () (_ BitVec 32) (! j :next j$next))
-(declare-fun x () (_ BitVec 32))
-(declare-fun x$next () (_ BitVec 32))
-(define-fun .x () (_ BitVec 32) (! x :next x$next))
-(declare-fun k () (_ BitVec 32))
-(declare-fun k$next () (_ BitVec 32))
-(define-fun .k () (_ BitVec 32) (! k :next k$next))
-(declare-fun addf () (_ BitVec 32))
-(declare-fun addf$next () (_ BitVec 32))
-(define-fun .addf () (_ BitVec 32) (! addf :next addf$next))
 (declare-fun main () (_ BitVec 32))
 (declare-fun main$next () (_ BitVec 32))
 (define-fun .main () (_ BitVec 32) (! main :next main$next))
@@ -77,219 +44,212 @@
 
 (define-fun .init () Bool (!
  	(and
-		L9S0
-		(not L10S1)
-		(not L12S2)
-		(not L14S3)
-		(not L14S4)
-		(not WL14S4)
-		(not RL14S4)
-		(not L16S5)
-		(not L27S15)
-		(not L29S16)
-		(not L16S6)
-		(not L12S7)
-		(not L21S12)
-		(not L12S8)
-		(not L19S9)
-		(not L19S10)
-		(not L20S11)
-		(not L21S13)
-		(not L22S14)
+		L8S0
+		(not L9S1)
+		(not L10S2)
+		(not L12S3)
+		(not L12S4)
+		(not L13S5)
+		(not L17S9)
+		(not L10S6)
+		(not L10S7)
+		(not L16S8)
+		(not L17S10)
+		(not L18S11)
 	)
 	:init true))
 
 
 
 
-(define-fun .trans () Bool (!
+(define-fun trel_equations () Bool (!
  	(and
-	(= L9S0$next
-		(ite
-			L10S1$next
-			false
-			false))
-	(= L10S1$next
-		(ite
-			L12S2$next
-			false
-			L9S0))
-	(= L12S2$next
-		(ite
-			L14S3$next
-			false
-		(ite
-			L10S1
-			L10S1
-		(ite
-			(and L12S7 (bvult i (_ bv9 32)))
-			L12S7
-			L12S2))))
-	(= L14S3$next
-		(ite
-			L14S4$next
-			false
-			L12S2))
-	(= L14S4$next
-		(ite
-			(or L16S5$next L27S15$next)
-			false
-			L14S3))
-	(= WL14S4$next
-		(ite
-			RL14S4$next
-			false
-		(ite
-			L14S4
-			L14S4
-			WL14S4)))
-	(= L27S15$next
-		(ite
-			L29S16$next
-			false
-			L14S4))
-	(= RL14S4$next
-		(ite
-			L16S5$next
-			false
-    (ite
-    (and L29S16 WL14S4)
-    true
-			RL14S4)))
-	(= L16S5$next
-		(ite
-			(or L16S6$next L12S7$next)
-			false
-			RL14S4))
-	(= L16S6$next
-		(ite
-			L21S12$next
-			false
-		(ite
-			(and L16S5 (bvugt i (_ bv7 32)))
-			L16S5
-			L16S6)))
-	(= L12S7$next
-		(ite
-			(or L12S2$next L12S8$next)
-			false
-		(ite
-			(and L16S5 (not (bvugt i (_ bv7 32))))
-			L16S5
-			L12S7)))
-	(= L27S15$next
-		(ite
-			L29S16$next
-			false
-    (ite
-    L14S4
-    L14S4
-			L27S15)))
-	(= L29S16$next
-  (ite
-			L27S15
-			L27S15
-		(ite
-			L29S16
-			false
-			L29S16)))
-	(= L21S12$next
-		(ite
-			L21S13$next
-			false
-		(ite
-			L16S6
-			L16S6
-		(ite
-			L19S10
-			L19S10
-			L21S12))))
-	(= L12S8$next
-		(ite
-			L19S9$next
-			false
-		(ite
-			(and L12S7 (not (bvult i (_ bv9 32))))
-			L12S7
-			L12S8)))
-	(= L21S13$next 		(ite
-			L21S12
-			L21S12
-		(ite
-			L21S13
-			L21S13
-			L21S13)))
-	(= L19S9$next
-		(ite
-			(or L19S10$next L20S11$next)
-			false
-			L12S8))
-	(= L19S10$next
-		(ite
-			L21S12$next
-			false
-		(ite
-			(and L19S9 (bvugt i (_ bv7 32)))
-			L19S9
-			L19S10)))
-	(= L20S11$next 		(ite
-			(and L19S9 (not (bvugt i (_ bv7 32))))
-			L19S9
-		(ite
-			L20S11
-			L20S11
-			L20S11)))
-	(= L22S14$next 			L22S14)
+	(= L8S0$next 			false)
+	(= L9S1$next 			L8S0)
+	(= L10S2$next
+		(or  L9S1  (and L10S6 (bvult i (_ bv5 32)))))
+	(= L12S3$next 			L10S2)
+	(= L12S4$next
+		(or  (and L12S3 (bvugt i (_ bv7 32)))))
+	(= L13S5$next
+		(or  (and L12S3 (not (bvugt i (_ bv7 32))))))
+	(= L17S9$next 			L12S4)
+	(= L10S6$next 			L13S5)
+	(= L17S10$next 			L17S9)
+	(= L10S7$next
+		(or  (and L10S6 (not (bvult i (_ bv5 32))))))
+	(= L16S8$next 			L10S7)
+	(= L18S11$next 			false)
 		(= i$next
 		(ite
-		   L10S1
-		   (_ bv0 32)
-		      (ite
-		         RL14S4
-		         addf
+		 L8S0 		(_ bv0 32)
+		(ite
+		 (and L12S3 (not (bvugt i (_ bv7 32))))		(bvadd i (_ bv2 32))
 			i)))
-		(= j$next
-		(ite
-		   L10S1
-		   (_ bv0 32)
-			j))
-		(= x$next
-		(ite
-		   L14S4
-		   i
-		   (ite
-		      L27S15
-		      (bvadd x (_ bv1 32))
-			x)))
-		(= k$next
-		(ite
-		   L14S4
-		   j
-		   (ite
-		      L27S15
-		      (_ bv2 32)
-			k)))
-		(= addf$next
-		(ite
-		   L29S16
-		   x
-			addf))
 		(= main$next
 		(ite
-		   L20S11
-		   (_ bv0 32)
-		   (ite
-		      L22S14
-		      (_ bv0 32)
-			main)))
+		 L10S7 		(_ bv0 32)
+			main))
 	)
 	:trans true))
 
 
+; GLOBAL one-hot encoding assumptions
+(define-fun one_hot_global () Bool
+(and
+(or (not L8S0) (not L9S1))
+(or (not L8S0) (not L10S2))
+(or (not L8S0) (not L12S3))
+(or (not L8S0) (not L12S4))
+(or (not L8S0) (not L13S5))
+(or (not L8S0) (not L17S9))
+(or (not L8S0) (not L10S6))
+(or (not L8S0) (not L10S7))
+(or (not L8S0) (not L16S8))
+(or (not L8S0) (not L17S10))
+(or (not L8S0) (not L18S11))
+(or (not L9S1) (not L10S2))
+(or (not L9S1) (not L12S3))
+(or (not L9S1) (not L12S4))
+(or (not L9S1) (not L13S5))
+(or (not L9S1) (not L17S9))
+(or (not L9S1) (not L10S6))
+(or (not L9S1) (not L10S7))
+(or (not L9S1) (not L16S8))
+(or (not L9S1) (not L17S10))
+(or (not L9S1) (not L18S11))
+(or (not L10S2) (not L12S3))
+(or (not L10S2) (not L12S4))
+(or (not L10S2) (not L13S5))
+(or (not L10S2) (not L17S9))
+(or (not L10S2) (not L10S6))
+(or (not L10S2) (not L10S7))
+(or (not L10S2) (not L16S8))
+(or (not L10S2) (not L17S10))
+(or (not L10S2) (not L18S11))
+(or (not L12S3) (not L12S4))
+(or (not L12S3) (not L13S5))
+(or (not L12S3) (not L17S9))
+(or (not L12S3) (not L10S6))
+(or (not L12S3) (not L10S7))
+(or (not L12S3) (not L16S8))
+(or (not L12S3) (not L17S10))
+(or (not L12S3) (not L18S11))
+(or (not L12S4) (not L13S5))
+(or (not L12S4) (not L17S9))
+(or (not L12S4) (not L10S6))
+(or (not L12S4) (not L10S7))
+(or (not L12S4) (not L16S8))
+(or (not L12S4) (not L17S10))
+(or (not L12S4) (not L18S11))
+(or (not L13S5) (not L17S9))
+(or (not L13S5) (not L10S6))
+(or (not L13S5) (not L10S7))
+(or (not L13S5) (not L16S8))
+(or (not L13S5) (not L17S10))
+(or (not L13S5) (not L18S11))
+(or (not L17S9) (not L10S6))
+(or (not L17S9) (not L10S7))
+(or (not L17S9) (not L16S8))
+(or (not L17S9) (not L17S10))
+(or (not L17S9) (not L18S11))
+(or (not L10S6) (not L10S7))
+(or (not L10S6) (not L16S8))
+(or (not L10S6) (not L17S10))
+(or (not L10S6) (not L18S11))
+(or (not L10S7) (not L16S8))
+(or (not L10S7) (not L17S10))
+(or (not L10S7) (not L18S11))
+(or (not L16S8) (not L17S10))
+(or (not L16S8) (not L18S11))
+(or (not L17S10) (not L18S11))
+)
+)
+; GLOBAL one-hot encoding assumptions
+(define-fun one_hot_global$next () Bool
+(and
+(or (not L8S0$next) (not L9S1$next))
+(or (not L8S0$next) (not L10S2$next))
+(or (not L8S0$next) (not L12S3$next))
+(or (not L8S0$next) (not L12S4$next))
+(or (not L8S0$next) (not L13S5$next))
+(or (not L8S0$next) (not L17S9$next))
+(or (not L8S0$next) (not L10S6$next))
+(or (not L8S0$next) (not L10S7$next))
+(or (not L8S0$next) (not L16S8$next))
+(or (not L8S0$next) (not L17S10$next))
+(or (not L8S0$next) (not L18S11$next))
+(or (not L9S1$next) (not L10S2$next))
+(or (not L9S1$next) (not L12S3$next))
+(or (not L9S1$next) (not L12S4$next))
+(or (not L9S1$next) (not L13S5$next))
+(or (not L9S1$next) (not L17S9$next))
+(or (not L9S1$next) (not L10S6$next))
+(or (not L9S1$next) (not L10S7$next))
+(or (not L9S1$next) (not L16S8$next))
+(or (not L9S1$next) (not L17S10$next))
+(or (not L9S1$next) (not L18S11$next))
+(or (not L10S2$next) (not L12S3$next))
+(or (not L10S2$next) (not L12S4$next))
+(or (not L10S2$next) (not L13S5$next))
+(or (not L10S2$next) (not L17S9$next))
+(or (not L10S2$next) (not L10S6$next))
+(or (not L10S2$next) (not L10S7$next))
+(or (not L10S2$next) (not L16S8$next))
+(or (not L10S2$next) (not L17S10$next))
+(or (not L10S2$next) (not L18S11$next))
+(or (not L12S3$next) (not L12S4$next))
+(or (not L12S3$next) (not L13S5$next))
+(or (not L12S3$next) (not L17S9$next))
+(or (not L12S3$next) (not L10S6$next))
+(or (not L12S3$next) (not L10S7$next))
+(or (not L12S3$next) (not L16S8$next))
+(or (not L12S3$next) (not L17S10$next))
+(or (not L12S3$next) (not L18S11$next))
+(or (not L12S4$next) (not L13S5$next))
+(or (not L12S4$next) (not L17S9$next))
+(or (not L12S4$next) (not L10S6$next))
+(or (not L12S4$next) (not L10S7$next))
+(or (not L12S4$next) (not L16S8$next))
+(or (not L12S4$next) (not L17S10$next))
+(or (not L12S4$next) (not L18S11$next))
+(or (not L13S5$next) (not L17S9$next))
+(or (not L13S5$next) (not L10S6$next))
+(or (not L13S5$next) (not L10S7$next))
+(or (not L13S5$next) (not L16S8$next))
+(or (not L13S5$next) (not L17S10$next))
+(or (not L13S5$next) (not L18S11$next))
+(or (not L17S9$next) (not L10S6$next))
+(or (not L17S9$next) (not L10S7$next))
+(or (not L17S9$next) (not L16S8$next))
+(or (not L17S9$next) (not L17S10$next))
+(or (not L17S9$next) (not L18S11$next))
+(or (not L10S6$next) (not L10S7$next))
+(or (not L10S6$next) (not L16S8$next))
+(or (not L10S6$next) (not L17S10$next))
+(or (not L10S6$next) (not L18S11$next))
+(or (not L10S7$next) (not L16S8$next))
+(or (not L10S7$next) (not L17S10$next))
+(or (not L10S7$next) (not L18S11$next))
+(or (not L16S8$next) (not L17S10$next))
+(or (not L16S8$next) (not L18S11$next))
+(or (not L17S10$next) (not L18S11$next))
+)
+)
+; With GLOBAL one-hotness the combined formula is:
+(define-fun .trans () Bool (!
+(and
+trel_equations
+one_hot_global
+one_hot_global$next
+)
+:trans true))
 
 (define-fun .property () Bool (!
-	(and
 	(not
-	 L21S13
+	(and
+	 L17S10
+	 L17S9
+	 L12S4
 	))
 :invar-property 0))

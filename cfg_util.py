@@ -12,11 +12,12 @@ class data_assignment():
         self.exp = exp
 
 class variable():
-    def __init__(self, name, type, bitwidth, function):
+    def __init__(self, name, type, bitwidth, function, int_type=''):
         self.type = type
         self.name = name
         self.function_scope = function
         self.size = bitwidth
+        self.int_type = int_type
 
 class input_variable(): # A primary input shown by: __VERIFIER_nondet_XXX() where 'XXX' is the type
     def __init__(self, name, type, bitwidth, function, location):
@@ -127,19 +128,6 @@ class CFG():
     def get_node(self, this_node):
         self.node_dict[this_node]
 
-    def succ(self, node):
-        succ_list = []
-        for edge in self.edges:
-            if node == edge.source:
-                succ_list.append(self.get_node(edge.dest))
-        return succ_list
-
-    def pred(self, node):
-        pred_list = []
-        for edge in self.edges:
-            if node == edge.dest:
-                pred_list.append(self.get_node(edge.source))
-        return pred_list
 
     def update_succ_and_pred(self, node):
         node.succs = []
@@ -178,7 +166,7 @@ full_func_dict = {}
 def process_cil_output(file_name):
     file_id = open(file_name, "r")
     lines = file_id.readlines()
-    get_call_CFG(lines, "Main")
+    get_call_CFG(lines, "Main") # C file entry point
 
 
 def get_call_CFG(lines, func_name, formal_list = []): # recursive function
@@ -243,6 +231,7 @@ def get_call_CFG(lines, func_name, formal_list = []): # recursive function
             # import pdb; pdb.set_trace()
             if "(" and ")" in line:
                 line = line[ :line.find("(")-1 ] + line[line.find(")")+1: ] # super hacky, but removes formal params
+            
             get_data_edge(line[len('Return: '):], current_full_func, True)
             continue
 
@@ -378,23 +367,46 @@ def get_input_var(input_str, current_full_func): # input_str looks like 'Input: 
 
 
 def build_variable(var_str, func_name): # var string looks something like: int 32 i
-    [type, size, name] = var_str.split() # split on spaces
-    var = variable(name, type, size, func_name)
+
+    if len(var_str.split()) == 4: # short int, unsigned int, etc.
+        [int_type, type, size, name] = var_str.split() # var_string ex: short int 32 i
+        name = name.replace('U', '') # for unsigned remove the U placed by CIL
+        var = variable(name, type, size, func_name, int_type)
+    else:
+        [type, size, name] = var_str.split() # var_string ex: int 32 i
+        var = variable(name, type, size, func_name)
     return var
 
 def build_expression(exp_str, func_name, lhs=None):
-    negate = True if '!{' in exp_str else False # check if it needs to be negated
     if exp_str.endswith(', }'): # this is because I cannot currently print exps cleanly from Cil
         exp_str = exp_str[:-3] + '}' # changes {int 32 i > 7, int 32 i, int 32 7, } to: {int 32 i > 7, int 32 i, int 32 7}
+
+    negate =  False
+    if '!{' in exp_str:
+        negate = True 
+        exp_str = exp_str.replace('!{', '{') # rm the "!"
+
     exp_str = exp_str[1:-1] # remove the '{ }'
     exp_set = exp_str.split(',') # split into one or three elements
+    # Because C has no boolean type, we need to augment to check if the value is non-zero
+    if ' ! ' in exp_set[0]: # something like 'int 32 ! cond, int 32 cond'
+        # Needs to become: {int 32 cond != 0, int 32 cond, int 32 0}
+        exp_str = exp_set[0].replace(' !', '') # int 32 cond
+        bool_check = ' != 0, ' + exp_str + ', int 32 0' # check the value against 0
+        exp_str =  exp_str + bool_check
+        exp_set = exp_str.split(',') # redefine to match the new bool string
+    
     if len(exp_set) == 3:
         lhs = build_variable(exp_set[1].strip(), func_name) # int 32 i
         rhs = build_variable(exp_set[2].strip(), func_name) # int 32 7
-        operator = exp_set[0].split()[3].strip() # hardcoded to find '>' may not always be the 4th element, check this!
+    
+        
+
+        operator = exp_set[0].split()[-2].strip() # hardcoded to find '>' may not always be the 4th element, check this!
         exp = expression(lhs, rhs, operator, negate)
     else: # an assignment such as: [int 32 i, {int 32 0}, L8S1]
-
+        
+            
         rhs = build_variable(exp_str.strip(), func_name)
 
         operator = "=" # assignment operator
@@ -409,13 +421,19 @@ def get_data_edge(line, current_full_func, return_bool=False):# optional return 
         condition_expr_str = re.search(r"\{.*?}", line).group(0)
         line = line.replace(condition_expr_str + ',', '') # remove the expression
     # this somewhat ugly regex line simply locates the data inside the brackets, strips off the new line, and splits it into a list
+    if 'None' in line: # a void function has no return value.
+        void_set = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+        line_number = void_set[-1].strip()
+    else:
+        [lhs_str, stmt_line_number] = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
+        lhs = build_variable(lhs_str.strip(), current_full_func.name) # add a variable
+        exp = build_expression(condition_expr_str.strip(), current_full_func.name)
+        line_number = stmt_line_number.strip() # statement number
+        if ((exp.operator == '!=') or (exp.operator == '==')) and (lhs.type == 'int'):
+            lhs.type = 'int2bool'
+        data_assign = data_assignment(line_number, lhs, exp)
+        current_full_func.CFG.add_node(line_number, current_full_func.name, data_assign)
 
-    [lhs_str, stmt_line_number] = re.sub(r'\[(.*?)\]', lambda L: L.group(1).rsplit('|', 1)[-1], line).rstrip().split(",")
-    lhs = build_variable(lhs_str.strip(), current_full_func.name) # add a variable
-    exp = build_expression(condition_expr_str.strip(), current_full_func.name)
-    line_number = stmt_line_number.strip() # statement number
-    data_assign = data_assignment(line_number, lhs, exp)
-    current_full_func.CFG.add_node(line_number, current_full_func.name, data_assign)
     if (return_bool):
         current_full_func.return_list.append(current_full_func.CFG.node_dict[line_number])
     return
@@ -429,13 +447,16 @@ def insert_wait_node(call_node, entry_function, called_function):
     entry_node.preds.append(call_node.node_numb)
     wait_node_name = "W" + call_node.node_numb
     return_node_name = "R" + call_node.node_numb
-
+    return_exp = None
     for expr in call_node.expressions:
         if expr.exp.rhs.name == called_function.name:
             return_exp = expr
 
     file_CFG.add_node(wait_node_name, entry_function.name) # add each node
-    file_CFG.add_node(return_node_name, entry_function.name, return_exp) # add each node
+    if return_exp == None:
+        file_CFG.add_node(return_node_name, entry_function.name) # add each node
+    else:
+        file_CFG.add_node(return_node_name, entry_function.name, return_exp) # add each node
 
     self_edge_cond = "("
     for return_node in called_function.return_list:
@@ -459,6 +480,7 @@ def build_file_CFG(entry_function):
     if file_CFG.file_entry_node == '': # assign these only from main()
             file_CFG.file_entry_node = entry_function.CFG.file_entry_node
             file_CFG.input_variables = entry_function.CFG.input_variables
+            
 
     # file_CFG.input_variables = entry_function.CFG.input_variables
 
@@ -475,12 +497,15 @@ def build_file_CFG(entry_function):
             file_CFG.add_edge(node.node_numb, entry_node.node_numb, cond) # add the edge from the call node
 
             build_file_CFG(called_function)
-    for bad_node_name in file_CFG.property_locations:
-        bad_node = file_CFG.node_dict[bad_node_name]
-        for pred in bad_node.preds:
-            pred_node = file_CFG.node_dict[pred]
-            if len(pred_node.succs) == 1:
-                file_CFG.property_locations.append(pred)
+
+            
+            
+    # for bad_node_name in file_CFG.property_locations:
+    #     bad_node = file_CFG.node_dict[bad_node_name]
+    #     for pred in bad_node.preds:
+    #         pred_node = file_CFG.node_dict[pred]
+    #         if len(pred_node.succs) == 1:
+    #             file_CFG.property_locations.append(pred)
     return file_CFG
 
 
@@ -489,8 +514,15 @@ def get_file_CFG(file_name):
 
     process_cil_output(file_name)
     entry_function = full_func_dict["Main "]
+    build_file_CFG(entry_function)
+    for bad_node_name in file_CFG.property_locations:                
+                bad_node = file_CFG.node_dict[bad_node_name]
+                for pred in bad_node.preds:
+                    pred_node = file_CFG.node_dict[pred]
+                    if len(pred_node.succs) == 1:
+                        file_CFG.property_locations.append(pred)
 
-    return build_file_CFG(entry_function)
+    return file_CFG
 
 def display_CFG(CFG_to_display_global, name):
     CFG_to_display = copy.deepcopy(CFG_to_display_global)

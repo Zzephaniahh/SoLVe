@@ -241,8 +241,10 @@ let process_function_call calling_context_fundec
           (* actual_lhs.lhost; *)
 
       end;
+     
       if Hashtbl.mem func_hash func_var_info then begin
         let callee_func_obj:fundec = Hashtbl.find func_hash func_var_info in
+        Printf.printf "fun [Name: %s]\n" func_var_info.vname ;
         Printf.printf "Param_assign: ";
         List.iter2 (fun actual_param formal_param ->
           match actual_param with
@@ -363,7 +365,8 @@ let main () = begin
   List.iter (fun glob -> match glob with
   | GFun(fundec, loc) ->
     begin
-      Hashtbl.add func_hash fundec.svar fundec
+      Hashtbl.add func_hash fundec.svar fundec;
+
     end
   | _ -> ()
   ) ast.globals;
@@ -371,7 +374,6 @@ let main () = begin
   List.iter (fun glob -> match glob with
   | GFun(fundec, loc) -> begin
     if fundec.svar.vname = "main" then begin
-      (* Think a out how to add the entry node in a clean way *)
       let stmt = List.hd fundec.sallstmts in
       let stmt_loc = get_loc stmt in
       Printf.printf "FUNCTION CALL BEGIN: [Name: %s] [(L%dS0, L%dS%d, True)] \n" fundec.svar.vname loc.line stmt_loc stmt.sid ;

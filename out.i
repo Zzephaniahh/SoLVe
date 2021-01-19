@@ -574,41 +574,62 @@
    void __attribute__((__overloaded__))  __atomic_add_fetch_4(...) ;  */
 /* compiler builtin: 
    void *__builtin_frame_address(unsigned int  ) ;  */
-#line 5 "in.c"
+#line 1 "count_up_down_true-unreach-call_true-termination.c"
 extern  __attribute__((__noreturn__)) void __VERIFIER_error() ;
-#line 7
-extern int __VERIFIER_nondet_int() ;
-#line 8 "in.c"
-int main(void) 
+#line 3 "count_up_down_true-unreach-call_true-termination.c"
+void __VERIFIER_assert(int cond ) 
 { 
-  int i ;
+
 
   {
+#line 4
+  if (! cond) {
+    ERROR: 
+    {
+#line 5
+    __VERIFIER_error();
+    }
+  }
+#line 7
+  return;
+}
+}
 #line 9
-  i = 0;
-#line 10
-  while (1) {
-#line 12
-    if (i > 7) {
-#line 12
-      goto ERROR;
-    }
-#line 13
-    i += 2;
-#line 10
-    if (! (i < 5)) {
-#line 10
-      break;
-    }
-  }
-#line 16
-  return (0);
-  ERROR: 
+extern unsigned int __VERIFIER_nondet_uint() ;
+#line 11 "count_up_down_true-unreach-call_true-termination.c"
+int main(void) 
+{ 
+  unsigned int n ;
+  unsigned int tmp ;
+  unsigned int x ;
+  unsigned int y ;
+  int __cil_tmp5 ;
+
   {
-#line 17
-  __VERIFIER_error();
+  {
+#line 13
+  tmp = __VERIFIER_nondet_uint();
+#line 13
+  n = tmp;
+#line 14
+  x = n;
+#line 14
+  y = 0U;
   }
+#line 15
+  while (x > 0U) {
+#line 17
+    x --;
 #line 18
+    y ++;
+  }
+  {
+#line 20
+  __cil_tmp5 = y == n;
+#line 20
+  __VERIFIER_assert(__cil_tmp5);
+  }
+#line 21
   return (0);
 }
 }

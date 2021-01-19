@@ -69,7 +69,7 @@ def declare_input_variables(input_variable):
         print("Variable: " + input_variable.name +  " of type: " + input_variable.type + ' is not currently supported')
 
 def declare_variables(variable):
-    if variable.type == "int": #this is a hack which will be removed once CIL produces full variable info.
+    if (variable.type == "int") or (variable.type == 'int2bool'): #this is a hack which will be removed once CIL produces full variable info.
         print("(declare-fun " + variable.name + " () " + "(_ BitVec " + variable.size + "))") # current state declaration
         print("(declare-fun " + variable.name + "$next () " + "(_ BitVec " + variable.size + "))") # next state declaration
         print("(define-fun ." + variable.name + " () " + "(_ BitVec " + variable.size + ")" + " (! " + variable.name + " :next " + variable.name + "$next))") # next state link
@@ -239,8 +239,8 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
     for eq in implication_equation_dict.values():
         indent = "\t\t"
         next_state_string = indent
-        next_state_string += "(= " + eq.variable + "$next\n"
-        ite_count = 0
+        next_state_string += "(= " + eq.variable.name + "$next\n"
+       
         for line, data_assignment in eq.line_and_data_set:
             node = CFG.node_dict[line]
             for pred in node.preds:
@@ -251,27 +251,40 @@ def build_transition_relation( implication_equation_dict, vmt_line_equation_dict
                         next_state_string += indent + "(ite\n"
                         next_state_string += indent + condition
                         exp = data_assignment.exp
-                        if exp.lhs == None: # this is an expression with a single term from something like: x = y;
-                            if exp.rhs.name.isdigit(): # some digit ex: x = 9;
-                                next_state_string += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")\n"
-                            else: # this some variable like: x = y;
-                            # lhs = data_assignment.lhs # this would be x and exp.rhs is y
-                                next_state_string += indent + exp.rhs.name + "\n"
+                        # Really hacky, but it's because a Bool in C is an int type, but a Bool in VMT
+                        # is incompatable with int. So we convert to something like:
+                        # G = (x==y) to: G = (x==y) ? 1 : G
+                        if eq.variable.type == 'int2bool':
+                            next_state_string += indent + "(ite\n"
+                            int_2_bool_str =  "(" + get_vmt_operator(exp.operator) + ' ' + exp.rhs.name + ' ' + ' ' + exp.lhs.name + ")\n"
+                            if exp.operator == '!=':
+                                int_2_bool_str =  " (not " + int_2_bool_str + ")"
+                            next_state_string += indent + int_2_bool_str 
+                            next_state_string += indent + '(_ bv1 32)'
+                            next_state_string += indent + eq.variable.name + ')'
+                        else: 
+                            if exp.lhs == None: # this is an expression with a single term from something like: x = y;
+                                if exp.rhs.name.isdigit(): # some digit ex: x = 9;
+                                    next_state_string += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")\n"
+                                else: # this some variable like: x = y;
+                                # lhs = data_assignment.lhs # this would be x and exp.rhs is y
+                                    next_state_string += indent + exp.rhs.name + "\n"
 
-                        else:
-                            if exp.rhs.name.isdigit(): # some digit ex: x = x + 9;
-                                exp.rhs.name = "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
+                            else:
 
-                            if exp.lhs.name.isdigit(): # some digit ex: x = 9 + x;
-                                exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
+                                if exp.rhs.name.isdigit(): # some digit ex: x = x + 9;
+                                    exp.rhs.name = "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
 
-                            next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ")\n"
+                                if exp.lhs.name.isdigit(): # some digit ex: x = 9 + x;
+                                    exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
+
+                                next_state_string += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ")\n"
 
 
         closing_brackets = ''
         for i in range(0, next_state_string.count('(') - next_state_string.count(')')):
             closing_brackets += ")"
-        next_state_string += "\t\t\t" + eq.variable + closing_brackets
+        next_state_string += "\t\t\t" + eq.variable.name + closing_brackets
         print(next_state_string)
 
     print("\t) \n\t:trans true))")
@@ -447,7 +460,7 @@ def get_equations(CFG, LOCAL):
         for expression in node.expressions:
             if expression.lhs.name not in implication_equation_dict:
                 data_variable_dict[expression.lhs.name] = expression.lhs # exp.lhs is of class variable defined in the CFG python file
-                implication_equation_dict[expression.lhs.name] = implication_equation(expression.lhs.name)
+                implication_equation_dict[expression.lhs.name] = implication_equation(expression.lhs)
 
                 variable_update_loc_dict[expression.lhs.name] = [node.node_numb] # track each update location
             else:

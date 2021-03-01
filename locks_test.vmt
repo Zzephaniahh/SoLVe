@@ -1,76 +1,54 @@
-(declare-fun tmp () (_ BitVec 32))
-(declare-fun L11S0 () Bool)
-(declare-fun L11S0$next () Bool)
-(define-fun .L11S0 () Bool (! L11S0 :next L11S0$next))
-(declare-fun L13S5 () Bool)
-(declare-fun L13S5$next () Bool)
-(define-fun .L13S5 () Bool (! L13S5 :next L13S5$next))
-(declare-fun L13S6 () Bool)
-(declare-fun L13S6$next () Bool)
-(define-fun .L13S6 () Bool (! L13S6 :next L13S6$next))
-(declare-fun L13S7 () Bool)
-(declare-fun L13S7$next () Bool)
-(define-fun .L13S7 () Bool (! L13S7 :next L13S7$next))
-(declare-fun L14S8 () Bool)
-(declare-fun L14S8$next () Bool)
-(define-fun .L14S8 () Bool (! L14S8 :next L14S8$next))
-(declare-fun L14S9 () Bool)
-(declare-fun L14S9$next () Bool)
-(define-fun .L14S9 () Bool (! L14S9 :next L14S9$next))
-(declare-fun L15S10 () Bool)
-(declare-fun L15S10$next () Bool)
-(define-fun .L15S10 () Bool (! L15S10 :next L15S10$next))
-(declare-fun L15S11 () Bool)
-(declare-fun L15S11$next () Bool)
-(define-fun .L15S11 () Bool (! L15S11 :next L15S11$next))
-(declare-fun L17S13 () Bool)
-(declare-fun L17S13$next () Bool)
-(define-fun .L17S13 () Bool (! L17S13 :next L17S13$next))
-(declare-fun L15S12 () Bool)
-(declare-fun L15S12$next () Bool)
-(define-fun .L15S12 () Bool (! L15S12 :next L15S12$next))
-(declare-fun L20S14 () Bool)
-(declare-fun L20S14$next () Bool)
-(define-fun .L20S14 () Bool (! L20S14 :next L20S14$next))
-(declare-fun L20S15 () Bool)
-(declare-fun L20S15$next () Bool)
-(define-fun .L20S15 () Bool (! L20S15 :next L20S15$next))
-(declare-fun WL20S15 () Bool)
-(declare-fun WL20S15$next () Bool)
-(define-fun .WL20S15 () Bool (! WL20S15 :next WL20S15$next))
-(declare-fun RL20S15 () Bool)
-(declare-fun RL20S15$next () Bool)
-(define-fun .RL20S15 () Bool (! RL20S15 :next RL20S15$next))
-(declare-fun L21S16 () Bool)
-(declare-fun L21S16$next () Bool)
-(define-fun .L21S16 () Bool (! L21S16 :next L21S16$next))
-(declare-fun L4S1 () Bool)
-(declare-fun L4S1$next () Bool)
-(define-fun .L4S1 () Bool (! L4S1 :next L4S1$next))
-(declare-fun L5S2 () Bool)
-(declare-fun L5S2$next () Bool)
-(define-fun .L5S2 () Bool (! L5S2 :next L5S2$next))
-(declare-fun L7S4 () Bool)
-(declare-fun L7S4$next () Bool)
-(define-fun .L7S4 () Bool (! L7S4 :next L7S4$next))
-(declare-fun L5S3 () Bool)
-(declare-fun L5S3$next () Bool)
-(define-fun .L5S3 () Bool (! L5S3 :next L5S3$next))
-(declare-fun n () (_ BitVec 32))
-(declare-fun n$next () (_ BitVec 32))
-(define-fun .n () (_ BitVec 32) (! n :next n$next))
-(declare-fun x () (_ BitVec 32))
-(declare-fun x$next () (_ BitVec 32))
-(define-fun .x () (_ BitVec 32) (! x :next x$next))
-(declare-fun y () (_ BitVec 32))
-(declare-fun y$next () (_ BitVec 32))
-(define-fun .y () (_ BitVec 32) (! y :next y$next))
-(declare-fun __cil_tmp5 () (_ BitVec 32))
-(declare-fun __cil_tmp5$next () (_ BitVec 32))
-(define-fun .__cil_tmp5 () (_ BitVec 32) (! __cil_tmp5 :next __cil_tmp5$next))
-(declare-fun cond () (_ BitVec 32))
-(declare-fun cond$next () (_ BitVec 32))
-(define-fun .cond () (_ BitVec 32) (! cond :next cond$next))
+(declare-fun L12S0 () Bool)
+(declare-fun L12S0$next () Bool)
+(define-fun .L12S0 () Bool (! L12S0 :next L12S0$next))
+(define-fun .locL12S0 () Bool (! L12S0 :loc_var L12S0$next))
+(declare-fun L13S1 () Bool)
+(declare-fun L13S1$next () Bool)
+(define-fun .L13S1 () Bool (! L13S1 :next L13S1$next))
+(define-fun .locL13S1 () Bool (! L13S1 :loc_var L13S1$next))
+(declare-fun L14S2 () Bool)
+(declare-fun L14S2$next () Bool)
+(define-fun .L14S2 () Bool (! L14S2 :next L14S2$next))
+(define-fun .locL14S2 () Bool (! L14S2 :loc_var L14S2$next))
+(declare-fun L16S3 () Bool)
+(declare-fun L16S3$next () Bool)
+(define-fun .L16S3 () Bool (! L16S3 :next L16S3$next))
+(define-fun .locL16S3 () Bool (! L16S3 :loc_var L16S3$next))
+(declare-fun L16S4 () Bool)
+(declare-fun L16S4$next () Bool)
+(define-fun .L16S4 () Bool (! L16S4 :next L16S4$next))
+(define-fun .locL16S4 () Bool (! L16S4 :loc_var L16S4$next))
+(declare-fun L17S5 () Bool)
+(declare-fun L17S5$next () Bool)
+(define-fun .L17S5 () Bool (! L17S5 :next L17S5$next))
+(define-fun .locL17S5 () Bool (! L17S5 :loc_var L17S5$next))
+(declare-fun L21S9 () Bool)
+(declare-fun L21S9$next () Bool)
+(define-fun .L21S9 () Bool (! L21S9 :next L21S9$next))
+(define-fun .locL21S9 () Bool (! L21S9 :loc_var L21S9$next))
+(declare-fun L14S6 () Bool)
+(declare-fun L14S6$next () Bool)
+(define-fun .L14S6 () Bool (! L14S6 :next L14S6$next))
+(define-fun .locL14S6 () Bool (! L14S6 :loc_var L14S6$next))
+(declare-fun L14S7 () Bool)
+(declare-fun L14S7$next () Bool)
+(define-fun .L14S7 () Bool (! L14S7 :next L14S7$next))
+(define-fun .locL14S7 () Bool (! L14S7 :loc_var L14S7$next))
+(declare-fun L20S8 () Bool)
+(declare-fun L20S8$next () Bool)
+(define-fun .L20S8 () Bool (! L20S8 :next L20S8$next))
+(define-fun .locL20S8 () Bool (! L20S8 :loc_var L20S8$next))
+(declare-fun L21S10 () Bool)
+(declare-fun L21S10$next () Bool)
+(define-fun .L21S10 () Bool (! L21S10 :next L21S10$next))
+(define-fun .locL21S10 () Bool (! L21S10 :loc_var L21S10$next))
+(declare-fun L22S11 () Bool)
+(declare-fun L22S11$next () Bool)
+(define-fun .L22S11 () Bool (! L22S11 :next L22S11$next))
+(define-fun .locL22S11 () Bool (! L22S11 :loc_var L22S11$next))
+(declare-fun i () (_ BitVec 32))
+(declare-fun i$next () (_ BitVec 32))
+(define-fun .i () (_ BitVec 32) (! i :next i$next))
 (declare-fun main () (_ BitVec 32))
 (declare-fun main$next () (_ BitVec 32))
 (define-fun .main () (_ BitVec 32) (! main :next main$next))
@@ -78,385 +56,163 @@
 
 (define-fun .init () Bool (! 
  	(and
-		L11S0
-		(not L13S5)
-		(not L13S6)
-		(not L13S7)
-		(not L14S8)
-		(not L14S9)
-		(not L15S10)
-		(not L15S11)
-		(not L17S13)
-		(not L15S12)
-		(not L20S14)
-		(not L20S15)
-		(not WL20S15)
-		(not RL20S15)
-		(not L21S16)
-		(not L4S1)
-		(not L5S2)
-		(not L7S4)
-		(not L5S3)
+		L12S0
+		(not L13S1)
+		(not L14S2)
+		(not L16S3)
+		(not L16S4)
+		(not L17S5)
+		(not L21S9)
+		(not L14S6)
+		(not L14S7)
+		(not L20S8)
+		(not L21S10)
+		(not L22S11)
 	)
 	:init true))
 
 
 
 
-(define-fun trel_equations () Bool (!  
- 	(and
-	(= L11S0$next 			false)
-	(= L13S5$next 			L11S0)
-	(= L13S6$next 			L13S5)
-	(= L13S7$next 			L13S6)
-	(= L14S8$next 			L13S7)
-	(= L14S9$next 			L14S8)
-	(= L15S10$next 
-		(or  L14S9  L17S13 ))
-	(= L15S11$next 			L15S10)
-	(= L17S13$next 
-		(or  (and L15S11 (bvugt x (_ bv0 32)))))
-	(= L15S12$next 
-		(or  (and L15S11 (not (bvugt x (_ bv0 32))))))
-	(= L20S14$next 			L15S12)
-	(= L20S15$next 			L20S14)
-	(= WL20S15$next 
-		(or  L20S15 (and WL20S15  (not L7S4))))
-	(= L4S1$next 			L20S15)
-	(= RL20S15$next 
-		(or (and WL20S15 L7S4)))
-	(= L21S16$next 			RL20S15)
-	(= L5S2$next 
-		(or  (and L4S1 (not (= cond (_ bv0 32))))))
-	(= L7S4$next 
-		(or  (and L4S1 (not (not (= cond (_ bv0 32)))))))
-	(= L5S3$next 			L5S2)
-		(= n$next
-		(ite
-		 L13S6 		tmp
-			n))
-		(= x$next
-		(ite
-		 L13S7 		n
-		(ite
-		 (and L15S11 (bvugt x (_ bv0 32)))		(bvsub x (_ bv1 32))
-			x)))
-		(= y$next
-		(ite
-		 L14S8 		(_ bv0 32)
-		(ite
-		 (and L15S11 (bvugt x (_ bv0 32)))		(bvadd y (_ bv1 32))
-			y)))
-		(= __cil_tmp5$next
-		(ite
-		 L20S14 		(ite
-		(= n  y)
-		(_ bv1 32)		__cil_tmp5)			__cil_tmp5))
-		(= cond$next
-		(ite
-		 L20S14 		__cil_tmp5
-			cond))
-		(= main$next
-			main)
-	) 
-	:trans true))
+(define-fun .trel_slice_L12S0$next () Bool (!
+	(= L12S0$next 			false)
+	:trans_slice_L12S0$next true))
+
+(define-fun .trel_slice_L13S1$next () Bool (!
+	(= L13S1$next 			L12S0)
+	:trans_slice_L13S1$next true))
+
+(define-fun .trel_slice_L14S2$next () Bool (!
+	(= L14S2$next 
+		(or  L13S1  (and L14S6 (bvult i (_ bv5 32)))))
+	:trans_slice_L14S2$next true))
+
+(define-fun .trel_slice_L16S3$next () Bool (!
+	(= L16S3$next 			L14S2)
+	:trans_slice_L16S3$next true))
+
+(define-fun .trel_slice_L16S4$next () Bool (!
+	(= L16S4$next 
+		(or  (and L16S3 (bvugt i (_ bv7 32)))))
+	:trans_slice_L16S4$next true))
+
+(define-fun .trel_slice_L17S5$next () Bool (!
+	(= L17S5$next 
+		(or  (and L16S3 (not (bvugt i (_ bv7 32))))))
+	:trans_slice_L17S5$next true))
+
+(define-fun .trel_slice_L21S9$next () Bool (!
+	(= L21S9$next 			L16S4)
+	:trans_slice_L21S9$next true))
+
+(define-fun .trel_slice_L14S6$next () Bool (!
+	(= L14S6$next 			L17S5)
+	:trans_slice_L14S6$next true))
+
+(define-fun .trel_slice_L21S10$next () Bool (!
+	(= L21S10$next 			L21S9)
+	:trans_slice_L21S10$next true))
+
+(define-fun .trel_slice_L14S7$next () Bool (!
+	(= L14S7$next 
+		(or  (and L14S6 (not (bvult i (_ bv5 32))))))
+	:trans_slice_L14S7$next true))
+
+(define-fun .trel_slice_L20S8$next () Bool (!
+	(= L20S8$next 			L14S7)
+	:trans_slice_L20S8$next true))
+
+(define-fun .trel_slice_L22S11$next () Bool (!
+	(= L22S11$next 			false)
+	:trans_slice_L22S11$next true))
+
+(define-fun .data_slice_i_L13S1$next () Bool (!
+		(= i$next		(_ bv0 32))
+:data_slice_i_L13S1$next true))
 
 
-; GLOBAL one-hot encoding assumptions
-(define-fun one_hot_global () Bool
-(and
-(or (not L11S0) (not L13S5))
-(or (not L11S0) (not L13S6))
-(or (not L11S0) (not L13S7))
-(or (not L11S0) (not L14S8))
-(or (not L11S0) (not L14S9))
-(or (not L11S0) (not L15S10))
-(or (not L11S0) (not L15S11))
-(or (not L11S0) (not L17S13))
-(or (not L11S0) (not L15S12))
-(or (not L11S0) (not L20S14))
-(or (not L11S0) (not L20S15))
-(or (not L11S0) (not L21S16))
-(or (not L11S0) (not L4S1))
-(or (not L11S0) (not L5S2))
-(or (not L11S0) (not L7S4))
-(or (not L11S0) (not L5S3))
-(or (not L13S5) (not L13S6))
-(or (not L13S5) (not L13S7))
-(or (not L13S5) (not L14S8))
-(or (not L13S5) (not L14S9))
-(or (not L13S5) (not L15S10))
-(or (not L13S5) (not L15S11))
-(or (not L13S5) (not L17S13))
-(or (not L13S5) (not L15S12))
-(or (not L13S5) (not L20S14))
-(or (not L13S5) (not L20S15))
-(or (not L13S5) (not L21S16))
-(or (not L13S5) (not L4S1))
-(or (not L13S5) (not L5S2))
-(or (not L13S5) (not L7S4))
-(or (not L13S5) (not L5S3))
-(or (not L13S6) (not L13S7))
-(or (not L13S6) (not L14S8))
-(or (not L13S6) (not L14S9))
-(or (not L13S6) (not L15S10))
-(or (not L13S6) (not L15S11))
-(or (not L13S6) (not L17S13))
-(or (not L13S6) (not L15S12))
-(or (not L13S6) (not L20S14))
-(or (not L13S6) (not L20S15))
-(or (not L13S6) (not L21S16))
-(or (not L13S6) (not L4S1))
-(or (not L13S6) (not L5S2))
-(or (not L13S6) (not L7S4))
-(or (not L13S6) (not L5S3))
-(or (not L13S7) (not L14S8))
-(or (not L13S7) (not L14S9))
-(or (not L13S7) (not L15S10))
-(or (not L13S7) (not L15S11))
-(or (not L13S7) (not L17S13))
-(or (not L13S7) (not L15S12))
-(or (not L13S7) (not L20S14))
-(or (not L13S7) (not L20S15))
-(or (not L13S7) (not L21S16))
-(or (not L13S7) (not L4S1))
-(or (not L13S7) (not L5S2))
-(or (not L13S7) (not L7S4))
-(or (not L13S7) (not L5S3))
-(or (not L14S8) (not L14S9))
-(or (not L14S8) (not L15S10))
-(or (not L14S8) (not L15S11))
-(or (not L14S8) (not L17S13))
-(or (not L14S8) (not L15S12))
-(or (not L14S8) (not L20S14))
-(or (not L14S8) (not L20S15))
-(or (not L14S8) (not L21S16))
-(or (not L14S8) (not L4S1))
-(or (not L14S8) (not L5S2))
-(or (not L14S8) (not L7S4))
-(or (not L14S8) (not L5S3))
-(or (not L14S9) (not L15S10))
-(or (not L14S9) (not L15S11))
-(or (not L14S9) (not L17S13))
-(or (not L14S9) (not L15S12))
-(or (not L14S9) (not L20S14))
-(or (not L14S9) (not L20S15))
-(or (not L14S9) (not L21S16))
-(or (not L14S9) (not L4S1))
-(or (not L14S9) (not L5S2))
-(or (not L14S9) (not L7S4))
-(or (not L14S9) (not L5S3))
-(or (not L15S10) (not L15S11))
-(or (not L15S10) (not L17S13))
-(or (not L15S10) (not L15S12))
-(or (not L15S10) (not L20S14))
-(or (not L15S10) (not L20S15))
-(or (not L15S10) (not L21S16))
-(or (not L15S10) (not L4S1))
-(or (not L15S10) (not L5S2))
-(or (not L15S10) (not L7S4))
-(or (not L15S10) (not L5S3))
-(or (not L15S11) (not L17S13))
-(or (not L15S11) (not L15S12))
-(or (not L15S11) (not L20S14))
-(or (not L15S11) (not L20S15))
-(or (not L15S11) (not L21S16))
-(or (not L15S11) (not L4S1))
-(or (not L15S11) (not L5S2))
-(or (not L15S11) (not L7S4))
-(or (not L15S11) (not L5S3))
-(or (not L17S13) (not L15S12))
-(or (not L17S13) (not L20S14))
-(or (not L17S13) (not L20S15))
-(or (not L17S13) (not L21S16))
-(or (not L17S13) (not L4S1))
-(or (not L17S13) (not L5S2))
-(or (not L17S13) (not L7S4))
-(or (not L17S13) (not L5S3))
-(or (not L15S12) (not L20S14))
-(or (not L15S12) (not L20S15))
-(or (not L15S12) (not L21S16))
-(or (not L15S12) (not L4S1))
-(or (not L15S12) (not L5S2))
-(or (not L15S12) (not L7S4))
-(or (not L15S12) (not L5S3))
-(or (not L20S14) (not L20S15))
-(or (not L20S14) (not L21S16))
-(or (not L20S14) (not L4S1))
-(or (not L20S14) (not L5S2))
-(or (not L20S14) (not L7S4))
-(or (not L20S14) (not L5S3))
-(or (not L20S15) (not L21S16))
-(or (not L20S15) (not L4S1))
-(or (not L20S15) (not L5S2))
-(or (not L20S15) (not L7S4))
-(or (not L20S15) (not L5S3))
-(or (not L21S16) (not L4S1))
-(or (not L21S16) (not L5S2))
-(or (not L21S16) (not L7S4))
-(or (not L21S16) (not L5S3))
-(or (not L4S1) (not L5S2))
-(or (not L4S1) (not L7S4))
-(or (not L4S1) (not L5S3))
-(or (not L5S2) (not L7S4))
-(or (not L5S2) (not L5S3))
-(or (not L7S4) (not L5S3))
-)
-)
-; GLOBAL one-hot encoding assumptions
-(define-fun one_hot_global$next () Bool
-(and
-(or (not L11S0$next) (not L13S5$next))
-(or (not L11S0$next) (not L13S6$next))
-(or (not L11S0$next) (not L13S7$next))
-(or (not L11S0$next) (not L14S8$next))
-(or (not L11S0$next) (not L14S9$next))
-(or (not L11S0$next) (not L15S10$next))
-(or (not L11S0$next) (not L15S11$next))
-(or (not L11S0$next) (not L17S13$next))
-(or (not L11S0$next) (not L15S12$next))
-(or (not L11S0$next) (not L20S14$next))
-(or (not L11S0$next) (not L20S15$next))
-(or (not L11S0$next) (not L21S16$next))
-(or (not L11S0$next) (not L4S1$next))
-(or (not L11S0$next) (not L5S2$next))
-(or (not L11S0$next) (not L7S4$next))
-(or (not L11S0$next) (not L5S3$next))
-(or (not L13S5$next) (not L13S6$next))
-(or (not L13S5$next) (not L13S7$next))
-(or (not L13S5$next) (not L14S8$next))
-(or (not L13S5$next) (not L14S9$next))
-(or (not L13S5$next) (not L15S10$next))
-(or (not L13S5$next) (not L15S11$next))
-(or (not L13S5$next) (not L17S13$next))
-(or (not L13S5$next) (not L15S12$next))
-(or (not L13S5$next) (not L20S14$next))
-(or (not L13S5$next) (not L20S15$next))
-(or (not L13S5$next) (not L21S16$next))
-(or (not L13S5$next) (not L4S1$next))
-(or (not L13S5$next) (not L5S2$next))
-(or (not L13S5$next) (not L7S4$next))
-(or (not L13S5$next) (not L5S3$next))
-(or (not L13S6$next) (not L13S7$next))
-(or (not L13S6$next) (not L14S8$next))
-(or (not L13S6$next) (not L14S9$next))
-(or (not L13S6$next) (not L15S10$next))
-(or (not L13S6$next) (not L15S11$next))
-(or (not L13S6$next) (not L17S13$next))
-(or (not L13S6$next) (not L15S12$next))
-(or (not L13S6$next) (not L20S14$next))
-(or (not L13S6$next) (not L20S15$next))
-(or (not L13S6$next) (not L21S16$next))
-(or (not L13S6$next) (not L4S1$next))
-(or (not L13S6$next) (not L5S2$next))
-(or (not L13S6$next) (not L7S4$next))
-(or (not L13S6$next) (not L5S3$next))
-(or (not L13S7$next) (not L14S8$next))
-(or (not L13S7$next) (not L14S9$next))
-(or (not L13S7$next) (not L15S10$next))
-(or (not L13S7$next) (not L15S11$next))
-(or (not L13S7$next) (not L17S13$next))
-(or (not L13S7$next) (not L15S12$next))
-(or (not L13S7$next) (not L20S14$next))
-(or (not L13S7$next) (not L20S15$next))
-(or (not L13S7$next) (not L21S16$next))
-(or (not L13S7$next) (not L4S1$next))
-(or (not L13S7$next) (not L5S2$next))
-(or (not L13S7$next) (not L7S4$next))
-(or (not L13S7$next) (not L5S3$next))
-(or (not L14S8$next) (not L14S9$next))
-(or (not L14S8$next) (not L15S10$next))
-(or (not L14S8$next) (not L15S11$next))
-(or (not L14S8$next) (not L17S13$next))
-(or (not L14S8$next) (not L15S12$next))
-(or (not L14S8$next) (not L20S14$next))
-(or (not L14S8$next) (not L20S15$next))
-(or (not L14S8$next) (not L21S16$next))
-(or (not L14S8$next) (not L4S1$next))
-(or (not L14S8$next) (not L5S2$next))
-(or (not L14S8$next) (not L7S4$next))
-(or (not L14S8$next) (not L5S3$next))
-(or (not L14S9$next) (not L15S10$next))
-(or (not L14S9$next) (not L15S11$next))
-(or (not L14S9$next) (not L17S13$next))
-(or (not L14S9$next) (not L15S12$next))
-(or (not L14S9$next) (not L20S14$next))
-(or (not L14S9$next) (not L20S15$next))
-(or (not L14S9$next) (not L21S16$next))
-(or (not L14S9$next) (not L4S1$next))
-(or (not L14S9$next) (not L5S2$next))
-(or (not L14S9$next) (not L7S4$next))
-(or (not L14S9$next) (not L5S3$next))
-(or (not L15S10$next) (not L15S11$next))
-(or (not L15S10$next) (not L17S13$next))
-(or (not L15S10$next) (not L15S12$next))
-(or (not L15S10$next) (not L20S14$next))
-(or (not L15S10$next) (not L20S15$next))
-(or (not L15S10$next) (not L21S16$next))
-(or (not L15S10$next) (not L4S1$next))
-(or (not L15S10$next) (not L5S2$next))
-(or (not L15S10$next) (not L7S4$next))
-(or (not L15S10$next) (not L5S3$next))
-(or (not L15S11$next) (not L17S13$next))
-(or (not L15S11$next) (not L15S12$next))
-(or (not L15S11$next) (not L20S14$next))
-(or (not L15S11$next) (not L20S15$next))
-(or (not L15S11$next) (not L21S16$next))
-(or (not L15S11$next) (not L4S1$next))
-(or (not L15S11$next) (not L5S2$next))
-(or (not L15S11$next) (not L7S4$next))
-(or (not L15S11$next) (not L5S3$next))
-(or (not L17S13$next) (not L15S12$next))
-(or (not L17S13$next) (not L20S14$next))
-(or (not L17S13$next) (not L20S15$next))
-(or (not L17S13$next) (not L21S16$next))
-(or (not L17S13$next) (not L4S1$next))
-(or (not L17S13$next) (not L5S2$next))
-(or (not L17S13$next) (not L7S4$next))
-(or (not L17S13$next) (not L5S3$next))
-(or (not L15S12$next) (not L20S14$next))
-(or (not L15S12$next) (not L20S15$next))
-(or (not L15S12$next) (not L21S16$next))
-(or (not L15S12$next) (not L4S1$next))
-(or (not L15S12$next) (not L5S2$next))
-(or (not L15S12$next) (not L7S4$next))
-(or (not L15S12$next) (not L5S3$next))
-(or (not L20S14$next) (not L20S15$next))
-(or (not L20S14$next) (not L21S16$next))
-(or (not L20S14$next) (not L4S1$next))
-(or (not L20S14$next) (not L5S2$next))
-(or (not L20S14$next) (not L7S4$next))
-(or (not L20S14$next) (not L5S3$next))
-(or (not L20S15$next) (not L21S16$next))
-(or (not L20S15$next) (not L4S1$next))
-(or (not L20S15$next) (not L5S2$next))
-(or (not L20S15$next) (not L7S4$next))
-(or (not L20S15$next) (not L5S3$next))
-(or (not L21S16$next) (not L4S1$next))
-(or (not L21S16$next) (not L5S2$next))
-(or (not L21S16$next) (not L7S4$next))
-(or (not L21S16$next) (not L5S3$next))
-(or (not L4S1$next) (not L5S2$next))
-(or (not L4S1$next) (not L7S4$next))
-(or (not L4S1$next) (not L5S3$next))
-(or (not L5S2$next) (not L7S4$next))
-(or (not L5S2$next) (not L5S3$next))
-(or (not L7S4$next) (not L5S3$next))
-)
-)
-; With GLOBAL one-hotness the combined formula is:
-(define-fun .trans () Bool (! 
-(and 
-trel_equations 
-one_hot_global
-one_hot_global$next
-) 
-:trans true))
+(define-fun .data_slice_i_L17S5$next () Bool (!
+		(= i$next		(bvadd i (_ bv2 32)))
+:data_slice_i_L17S5$next true))
+
+
+(define-fun .data_slice_main_L20S8$next () Bool (!
+		(= main$next		(_ bv0 32))
+:data_slice_main_L20S8$next true))
+
+
+(define-fun .data_slice_main_L22S11$next () Bool (!
+		(= main$next		(_ bv0 32))
+:data_slice_main_L22S11$next true))
+
+
+(define-fun .preds_L12S0 () Bool (! L12S0
+
+:preds_L12S0
+false))
+
+(define-fun .preds_L13S1 () Bool (! L13S1
+
+:preds_L13S1
+L12S0))
+
+(define-fun .preds_L14S2 () Bool (! L14S2
+
+:preds_L14S2
+( 
+L13S1
+L14S6
+)))
+
+(define-fun .preds_L16S3 () Bool (! L16S3
+
+:preds_L16S3
+L14S2))
+
+(define-fun .preds_L16S4 () Bool (! L16S4
+
+:preds_L16S4
+L16S3))
+
+(define-fun .preds_L17S5 () Bool (! L17S5
+
+:preds_L17S5
+L16S3))
+
+(define-fun .preds_L21S9 () Bool (! L21S9
+
+:preds_L21S9
+L16S4))
+
+(define-fun .preds_L14S6 () Bool (! L14S6
+
+:preds_L14S6
+L17S5))
+
+(define-fun .preds_L14S7 () Bool (! L14S7
+
+:preds_L14S7
+L14S6))
+
+(define-fun .preds_L20S8 () Bool (! L20S8
+
+:preds_L20S8
+L14S7))
+
+(define-fun .preds_L21S10 () Bool (! L21S10
+
+:preds_L21S10
+L21S9))
+
+(define-fun .preds_L22S11 () Bool (! L22S11
+
+:preds_L22S11
+false))
+
 
 (define-fun .property () Bool (!
 	(not
 	(or
-	 L5S3
-	 L5S2
+	 L21S10
 	)) 
 :invar-property 0))

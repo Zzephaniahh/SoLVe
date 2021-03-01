@@ -1,76 +1,46 @@
 // raw_CFG
 digraph {
-	L11S0 -> L13S5 [label=""]
-	L11S0 [label=L11S0
+	L12S0 -> L13S1 [label=""]
+	L12S0 [label=L12S0
  color=green style=filled]
-	L11S0 [label=L11S0
+	L12S0 [label=L12S0
 ]
-	L13S5 -> L13S6 [label=""]
-	L13S5 [label=L13S5
-]
-	L13S6 -> L13S7 [label=""]
-	L13S6 [label="L13S6
-Unconstrained input: tmp
+	L13S1 -> L14S2 [label=""]
+	L13S1 [label="L13S1
+i = 0
 "]
-	L13S7 -> L14S8 [label=""]
-	L13S7 [label="L13S7
-n = tmp
+	L14S2 -> L16S3 [label=""]
+	L14S2 [label=L14S2
+]
+	L16S3 -> L16S4 [label="i>7"]
+	L16S3 -> L17S5 [label="!(i>7)"]
+	L16S3 [label=L16S3
+]
+	L16S4 -> L21S9 [label=""]
+	L16S4 [label=L16S4
+]
+	L17S5 -> L14S6 [label=""]
+	L17S5 [label="L17S5
+i = i+2
 "]
-	L14S8 -> L14S9 [label=""]
-	L14S8 [label="L14S8
-x = n
-"]
-	L14S9 -> L15S10 [label=""]
-	L14S9 [label="L14S9
-y = 0
-"]
-	L15S10 -> L15S11 [label=""]
-	L15S10 [label=L15S10
+	L21S9 -> L21S10 [label=""]
+	L21S9 [label=L21S9
 ]
-	L15S11 -> L17S13 [label="x>0"]
-	L15S11 -> L15S12 [label="!(x>0)"]
-	L15S11 [label=L15S11
+	L14S6 -> L14S2 [label="i<5"]
+	L14S6 -> L14S7 [label="!(i<5)"]
+	L14S6 [label=L14S6
 ]
-	L17S13 -> L15S10 [label=""]
-	L17S13 [label="L17S13
-x = x-1
-y = y+1
-"]
-	L15S12 -> L20S14 [label=""]
-	L15S12 [label=L15S12
+	L14S7 -> L20S8 [label=""]
+	L14S7 [label=L14S7
 ]
-	L20S14 -> L20S15 [label=""]
-	L20S14 [label=L20S14
-]
-	L20S15 -> WL20S15 [label=""]
-	L20S15 -> L4S1 [label=""]
-	L20S15 [label="L20S15
-__cil_tmp5 = y==n
-cond = __cil_tmp5
-"]
-	WL20S15 -> RL20S15 [label="(L7S4)"]
-	WL20S15 -> WL20S15 [label="!((L7S4))"]
-	WL20S15 [label=WL20S15
-]
-	RL20S15 -> L21S16 [label=""]
-	RL20S15 [label=RL20S15
-]
-	L21S16 [label="L21S16
+	L20S8 [label="L20S8
 main = 0
 "]
-	L4S1 -> L5S2 [label="cond!=0"]
-	L4S1 -> L7S4 [label="!(cond!=0)"]
-	L4S1 [label=L4S1
-]
-	L5S2 -> L5S3 [label=""]
-	L5S2 [label=L5S2
+	L21S10 [label=L21S10
  color=red style=filled]
-	L5S2 [label=L5S2
+	L21S10 [label=L21S10
 ]
-	L7S4 [label=L7S4
-]
-	L5S3 [label=L5S3
- color=red style=filled]
-	L5S3 [label=L5S3
-]
+	L22S11 [label="L22S11
+main = 0
+"]
 }

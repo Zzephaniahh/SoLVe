@@ -515,12 +515,12 @@ def get_file_CFG(file_name):
     process_cil_output(file_name)
     entry_function = full_func_dict["Main "]
     build_file_CFG(entry_function)
-    for bad_node_name in file_CFG.property_locations:                
-                bad_node = file_CFG.node_dict[bad_node_name]
-                for pred in bad_node.preds:
-                    pred_node = file_CFG.node_dict[pred]
-                    if len(pred_node.succs) == 1:
-                        file_CFG.property_locations.append(pred)
+    # for bad_node_name in file_CFG.property_locations:                FIXME to bubble up property node
+    #             bad_node = file_CFG.node_dict[bad_node_name]
+    #             for pred in bad_node.preds:
+    #                 pred_node = file_CFG.node_dict[pred]
+    #                 if len(pred_node.succs) == 1:
+    #                     file_CFG.property_locations.append(pred)
 
     return file_CFG
 

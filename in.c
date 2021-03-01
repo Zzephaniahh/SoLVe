@@ -14,7 +14,7 @@ int main () {
   do
   {
   if (i > 7) goto ERROR; // assertion failure
-  i = add(i);
+  i = i+2;
   }
   while(i<5);
   return 0;
@@ -23,8 +23,8 @@ int main () {
 }
 
 
-int add(int x)
-{
-  x = x + 1;
-  return x;
-}
+// int add(int x)
+// {
+//   x = x + 1;
+//   return x;
+// }

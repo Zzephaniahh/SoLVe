@@ -1,33 +1,20 @@
-FUNCTION CALL BEGIN: [Name: main] [(L11S0, L13S5, True)] 
-(L13S5, L13S6, True)
-(L13S6, L13S7, True)
-Input: [L13S6] [LHS: unsigned int 32 tmp] 
-(L13S7, L14S8, True)
-[unsigned int 32 n, {unsigned int 32 tmp, }, L13S7]
-(L14S8, L14S9, True)
-[unsigned int 32 x, {unsigned int 32 n, }, L14S8]
-(L14S9, L15S10, True)
-[unsigned int 32 y, {unsigned int 32 0U, }, L14S9]
-(L15S10, L15S11, True)
-(L15S11, L17S13, {int 32 x > 0U, unsigned int 32 x, unsigned int 32 0U, })
-(L15S11, L15S12, !{int 32 x > 0U, unsigned int 32 x, unsigned int 32 0U, })
-(L15S12, L20S14, True)
-(L17S13, L15S10, True)
-[unsigned int 32 x, {unsigned int 32 x - 1U, unsigned int 32 x, unsigned int 32 1U, }, L17S13]
-[unsigned int 32 y, {unsigned int 32 y + 1U, unsigned int 32 y, unsigned int 32 1U, }, L17S13]
-(L20S14, L20S15, True)
-(L20S15, L21S16, True)
-[int 32 __cil_tmp5, {int 32 y == n, unsigned int 32 y, unsigned int 32 n, }, L20S15]
-FUNCTION CALL BEGIN: [Name: __VERIFIER_assert] [Call Line: L20S15] fun [Name: __VERIFIER_assert]
-Param_assign: [int 32 cond, {int 32 __cil_tmp5}] 
-(L4S1, L5S2, {int 32 ! cond, int 32 cond, })
-(L4S1, L7S4, !{int 32 ! cond, int 32 cond, })
-(L5S2, L5S3, True)
-(L5S3, L5S3, True)
-Property: [!L5S3] 
-(L7S4, L7S4, True)
-Return: [void (int cond ) 8 __VERIFIER_assert, None, L7S4] 
-Call ends: __VERIFIER_assert
-(L21S16, L21S16, True)
-Return: [int  32 main, {int 32 0, }, L21S16]
+FUNCTION CALL BEGIN: [Name: main] [(L12S0, L13S1, True)] 
+(L13S1, L14S2, True)
+[int 32 i, {int 32 0, }, L13S1]
+(L14S2, L16S3, True)
+(L16S3, L16S4, {int 32 i > 7, int 32 i, int 32 7, })
+(L16S3, L17S5, !{int 32 i > 7, int 32 i, int 32 7, })
+(L16S4, L21S9, True)
+(L17S5, L14S6, True)
+[int 32 i, {int 32 i + 2, int 32 i, int 32 2, }, L17S5]
+(L14S6, L14S2, {int 32 i < 5, int 32 i, int 32 5, })
+(L14S6, L14S7, !{int 32 i < 5, int 32 i, int 32 5, })
+(L14S7, L20S8, True)
+(L20S8, L20S8, True)
+Return: [int  32 main, {int 32 0, }, L20S8]
+(L21S9, L21S10, True)
+(L21S10, L21S10, True)
+Property: [!L21S10] 
+(L22S11, L22S11, True)
+Return: [int  32 main, {int 32 0, }, L22S11]
 Call ends: main

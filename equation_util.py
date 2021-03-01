@@ -154,7 +154,7 @@ def write_line_transition(name, terms, next_state_string):
             next_state_string += " " + vmt_condition
     opening_brackets  = next_state_string.count("(")
     closing_brackets  = next_state_string.count(")")
-    for i in range(0, opening_brackets-closing_brackets-2): # close all ite calls -1 is to add the final closing bracket
+    for i in range(0, opening_brackets-closing_brackets-2): # close all ite calls -2 is to add the final closing bracket
         next_state_string += ")" 
     # else:
     #     if isinstance(condition.lhs, str): # boolean/wait case

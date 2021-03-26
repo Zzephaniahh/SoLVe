@@ -530,47 +530,65 @@ def build_VMT_CFG(implication_equation_dict, vmt_line_equation_dict, CFG): #one_
     import pdb
     indent = "\t"
     for node in CFG.node_dict.values():
-        data_assign_str = "" # may have multible variables in one data assignment
-        node_str = '(define-fun .node_' + node.node_numb + '$next () Bool (!\n' # one for each node
-        for data_assign in node.expressions:
-            # pdb.set_trace()
-            exp = data_assign.exp
-            assignment_variable = data_assign.lhs.name # variable getting assigned
-            # data_assign_str = "\t(=> " + line  + '$next'  # something like: (=> LiSj$next
-            data_assign_str += indent + '(= ' + assignment_variable + '$next'
-            exp = data_assign.exp
-            if exp.lhs == None: # this is an expression with a single term from something like: x = y;
-                if exp.rhs.name.isdigit(): # some digit ex: x = 9;
-                    data_assign_str += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
-                else: # this some variable like: x = y;
-                # lhs = data_assignment.lhs # this would be x and exp.rhs is y
-                    data_assign_str += indent + exp.rhs.name 
-
-            else:
-
-                if exp.rhs.name.isdigit(): # some digit ex: x = x + 9;
-                    exp.rhs.name = "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
-
-                if exp.lhs.name.isdigit(): # some digit ex: x = 9 + x;
-                    exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
-
-                data_assign_str += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ')'
-            # next_state_string += ')'
-            for i in range(0, data_assign_str.count('(') - data_assign_str.count(')')):
-                data_assign_str += ")"
-            data_assign_str += '\n' 
-        edge_str = "\n"
+        edge_cond_list = []
         for edge in node.edges:
+        # for succ_name in node.succs:
+            succ = CFG.node_dict[edge.dest] # get the node object for the destination
+            data_assign_str = "" # may have multible variables in one data assignment
+            for data_assign in succ.expressions:
+                # pdb.set_trace()
+                exp = data_assign.exp
+                assignment_variable = data_assign.lhs.name # variable getting assigned
+                # data_assign_str = "\t(=> " + line  + '$next'  # something like: (=> LiSj$next
+                data_assign_str += indent + '(= ' + assignment_variable + '$next'
+                exp = data_assign.exp
+                if exp.lhs == None: # this is an expression with a single term from something like: x = y;
+                    if exp.rhs.name.isdigit(): # some digit ex: x = 9;
+                        data_assign_str += indent + "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
+                    else: # this some variable like: x = y;
+                    # lhs = data_assignment.lhs # this would be x and exp.rhs is y
+                        data_assign_str += indent + exp.rhs.name 
+
+                else:
+
+                    if exp.rhs.name.isdigit(): # some digit ex: x = x + 9;
+                        exp.rhs.name = "(_ bv" + exp.rhs.name + " " + exp.rhs.size + ")"
+
+                    if exp.lhs.name.isdigit(): # some digit ex: x = 9 + x;
+                        exp.lhs.name = "(_ bv" + exp.lhs.name + " " + exp.lhs.size + ")"
+
+                    data_assign_str += indent + "("+ get_vmt_operator(exp.operator) + " " + exp.lhs.name + " " + exp.rhs.name + ')'
+                # next_state_string += ')'
+                for i in range(0, data_assign_str.count('(') - data_assign_str.count(')')):
+                    data_assign_str += ")"
+                data_assign_str += '\n' 
+                edge_cond_list.append(data_assign_str)
+                
+        
+            edge_str = "\n"
             condition_str = ""
             # pdb.set_trace()
             condition = edge.condition
-            next_line = edge.dest
             if (condition.lhs != ""): #and (len(eq.terms) == 1):
                 condition_str = "("+get_vmt_operator(condition.operator) + " " + condition.lhs.name + " " + get_vmt_data_type(condition.rhs.name) + ")"
                 if condition.negate:
                     condition_str =  "(not " + condition_str + ")" 
                 condition_str = indent + condition_str + '\n'
-            edge_str += data_assign_str + condition_str + indent + edge.dest + '\n\n'
+            if condition_str == data_assign_str == '':
+                edge_cond_list.append('true\n')
+            elif condition_str != "":
+                edge_cond_list.append(condition_str)
+            
+            # edge_str += data_assign_str + condition_str + '\n\n'
+
+            for i, cond_str in enumerate(edge_cond_list):
+                edge_str = '(define-fun .edge_' + edge.source + '$source'  "_" + edge.dest + '$dest_$edgecount=' + str(i) + ' () Bool (!\n'   # one for each node
+                edge_str += cond_str 
+            # pdb.set_trace()
+                for i in range(0, edge_str.count('(') - 2 - edge_str.count(')')):
+                    edge_str += ")"
+                edge_str += ":edge_" + edge.source + '$source'  "_" + edge.dest + '$dest_$edgecount='+ str(i) + " true))"
+                print(edge_str + '\n\n')
 
         #     edge_str = write_line_transition(eq.lhs.name, eq.terms, edge_str) 
         #     edge_str += "\n\t:trans_slice_" + eq.lhs.name + " true))"
@@ -578,15 +596,12 @@ def build_VMT_CFG(implication_equation_dict, vmt_line_equation_dict, CFG): #one_
 
         # node_str += edge_str
         # node_str  += ':node_' + node.node_numb + '$next' + " true))\n"
-        
-        node_str += edge_str
 
-        open_bracket_numb = node_str.count('(')
-        closing_bracket_numb = node_str.count(')')
-        for i in range(0, node_str.count('(') - 2 - node_str.count(')')):
-            node_str+= ")"
-        node_str += ":node_" + node.node_numb + "$next" + " true))"
-        print(node_str + '\n\n')
+        # node_str += edge_str
+
+        # open_bracket_numb = node_str.count('(')
+        # closing_bracket_numb = node_str.count(')')
+        
 
  
         
@@ -836,7 +851,7 @@ def get_equations(CFG, LOCAL):
         initial_state(line_variable_dict, CFG.file_entry_node)
         build_VMT_CFG(implication_equation_dict, vmt_line_equation_dict, CFG) #one_hot_cfg_driven_eq_dict,
 
-        build_transition_relation(implication_equation_dict, vmt_line_equation_dict, CFG) #one_hot_cfg_driven_eq_dict,
+        # build_transition_relation(implication_equation_dict, vmt_line_equation_dict, CFG) #one_hot_cfg_driven_eq_dict,
         build_transition_relation_total(implication_equation_dict, vmt_line_equation_dict, CFG)
         # build_pred_map(CFG)
         # if LOCAL:

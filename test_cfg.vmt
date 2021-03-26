@@ -1,0 +1,185 @@
+(declare-fun L12S0 () Bool)
+(declare-fun L12S0$next () Bool)
+(define-fun .L12S0 () Bool (! L12S0 :next L12S0$next))
+(define-fun .locL12S0 () Bool (! L12S0 :loc_var L12S0$next))
+(declare-fun L13S1 () Bool)
+(declare-fun L13S1$next () Bool)
+(define-fun .L13S1 () Bool (! L13S1 :next L13S1$next))
+(define-fun .locL13S1 () Bool (! L13S1 :loc_var L13S1$next))
+(declare-fun L14S2 () Bool)
+(declare-fun L14S2$next () Bool)
+(define-fun .L14S2 () Bool (! L14S2 :next L14S2$next))
+(define-fun .locL14S2 () Bool (! L14S2 :loc_var L14S2$next))
+(declare-fun L16S3 () Bool)
+(declare-fun L16S3$next () Bool)
+(define-fun .L16S3 () Bool (! L16S3 :next L16S3$next))
+(define-fun .locL16S3 () Bool (! L16S3 :loc_var L16S3$next))
+(declare-fun L16S4 () Bool)
+(declare-fun L16S4$next () Bool)
+(define-fun .L16S4 () Bool (! L16S4 :next L16S4$next))
+(define-fun .locL16S4 () Bool (! L16S4 :loc_var L16S4$next))
+(declare-fun L17S5 () Bool)
+(declare-fun L17S5$next () Bool)
+(define-fun .L17S5 () Bool (! L17S5 :next L17S5$next))
+(define-fun .locL17S5 () Bool (! L17S5 :loc_var L17S5$next))
+(declare-fun L21S9 () Bool)
+(declare-fun L21S9$next () Bool)
+(define-fun .L21S9 () Bool (! L21S9 :next L21S9$next))
+(define-fun .locL21S9 () Bool (! L21S9 :loc_var L21S9$next))
+(declare-fun L14S6 () Bool)
+(declare-fun L14S6$next () Bool)
+(define-fun .L14S6 () Bool (! L14S6 :next L14S6$next))
+(define-fun .locL14S6 () Bool (! L14S6 :loc_var L14S6$next))
+(declare-fun L14S7 () Bool)
+(declare-fun L14S7$next () Bool)
+(define-fun .L14S7 () Bool (! L14S7 :next L14S7$next))
+(define-fun .locL14S7 () Bool (! L14S7 :loc_var L14S7$next))
+(declare-fun L20S8 () Bool)
+(declare-fun L20S8$next () Bool)
+(define-fun .L20S8 () Bool (! L20S8 :next L20S8$next))
+(define-fun .locL20S8 () Bool (! L20S8 :loc_var L20S8$next))
+(declare-fun L21S10 () Bool)
+(declare-fun L21S10$next () Bool)
+(define-fun .L21S10 () Bool (! L21S10 :next L21S10$next))
+(define-fun .locL21S10 () Bool (! L21S10 :loc_var L21S10$next))
+(declare-fun L22S11 () Bool)
+(declare-fun L22S11$next () Bool)
+(define-fun .L22S11 () Bool (! L22S11 :next L22S11$next))
+(define-fun .locL22S11 () Bool (! L22S11 :loc_var L22S11$next))
+(declare-fun i () (_ BitVec 32))
+(declare-fun i$next () (_ BitVec 32))
+(define-fun .i () (_ BitVec 32) (! i :next i$next))
+(declare-fun main () (_ BitVec 32))
+(declare-fun main$next () (_ BitVec 32))
+(define-fun .main () (_ BitVec 32) (! main :next main$next))
+
+
+(define-fun .init () Bool (! 
+ 	(and
+		L12S0
+		(not L13S1)
+		(not L14S2)
+		(not L16S3)
+		(not L16S4)
+		(not L17S5)
+		(not L21S9)
+		(not L14S6)
+		(not L14S7)
+		(not L20S8)
+		(not L21S10)
+		(not L22S11)
+	)
+	:init true))
+
+
+(define-fun .edge_L12S0$source_L13S1$dest_$edgecount=0 () Bool (!
+	(= i$next	(_ bv0 32))
+:edge_L12S0$source_L13S1$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L13S1$source_L14S2$dest_$edgecount=0 () Bool (!
+true
+:edge_L13S1$source_L14S2$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L14S2$source_L16S3$dest_$edgecount=0 () Bool (!
+true
+:edge_L14S2$source_L16S3$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L16S3$source_L16S4$dest_$edgecount=0 () Bool (!
+	(bvugt i (_ bv7 32))
+:edge_L16S3$source_L16S4$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L16S3$source_L17S5$dest_$edgecount=0 () Bool (!
+	(bvugt i (_ bv7 32))
+:edge_L16S3$source_L17S5$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L16S3$source_L17S5$dest_$edgecount=1 () Bool (!
+	(= i$next	(bvadd i (_ bv2 32)))
+:edge_L16S3$source_L17S5$dest_$edgecount=1 true))
+
+
+(define-fun .edge_L16S3$source_L17S5$dest_$edgecount=2 () Bool (!
+	(not (bvugt i (_ bv7 32)))
+:edge_L16S3$source_L17S5$dest_$edgecount=2 true))
+
+
+(define-fun .edge_L16S4$source_L21S9$dest_$edgecount=0 () Bool (!
+true
+:edge_L16S4$source_L21S9$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L17S5$source_L14S6$dest_$edgecount=0 () Bool (!
+true
+:edge_L17S5$source_L14S6$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L21S9$source_L21S10$dest_$edgecount=0 () Bool (!
+true
+:edge_L21S9$source_L21S10$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L14S6$source_L14S2$dest_$edgecount=0 () Bool (!
+	(bvult i (_ bv5 32))
+:edge_L14S6$source_L14S2$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L14S6$source_L14S7$dest_$edgecount=0 () Bool (!
+	(bvult i (_ bv5 32))
+:edge_L14S6$source_L14S7$dest_$edgecount=0 true))
+
+
+(define-fun .edge_L14S6$source_L14S7$dest_$edgecount=1 () Bool (!
+	(not (bvult i (_ bv5 32)))
+:edge_L14S6$source_L14S7$dest_$edgecount=1 true))
+
+
+(define-fun .edge_L14S7$source_L20S8$dest_$edgecount=0 () Bool (!
+	(= main$next	(_ bv0 32))
+:edge_L14S7$source_L20S8$dest_$edgecount=0 true))
+
+
+
+
+(define-fun trel_equations () Bool (!  
+ 	(and
+	(= L12S0$next 			false)
+	(= L13S1$next 			L12S0)
+	(= L14S2$next 
+		(or  L13S1  (and L14S6 (bvult i (_ bv5 32)))))
+	(= L16S3$next 			L14S2)
+	(= L16S4$next 
+		(or  (and L16S3 (bvugt i (_ bv7 32)))))
+	(= L17S5$next 
+		(or  (and L16S3 (not (bvugt i (_ bv7 32))))))
+	(= L21S9$next 			L16S4)
+	(= L14S6$next 			L17S5)
+	(= L21S10$next 			L21S9)
+	(= L14S7$next 
+		(or  (and L14S6 (not (bvult i (_ bv5 32))))))
+	(= L20S8$next 			L14S7)
+	(= L22S11$next 			false)
+		(= i$next
+		(ite
+		 L12S0 		(_ bv0 32)
+		(ite
+		 (and L16S3 (not (bvugt i (_ bv7 32))))		(bvadd i (_ bv2 32))
+			i)))
+		(= main$next
+		(ite
+		 L14S7 		(_ bv0 32)
+			main))
+	) 
+	:trans true))
+
+
+
+(define-fun .property () Bool (!
+	(not
+	(or
+	 L21S10
+	)) 
+:invar-property 0))

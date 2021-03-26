@@ -585,3 +585,81 @@ def display_CFG(CFG_to_display_global, name):
 
     file_name =  name+".gv"
     graph.render(file_name, view=True)
+
+
+# new CFG used to print preds correctly for a new VMT encoding:
+def display_structural_CFG(CFG_to_display_global, name):
+    import pdb #  remove me after debug
+    
+
+    CFG_to_display = copy.deepcopy(CFG_to_display_global)
+    graph = Digraph(comment=name)
+    global func_call_list
+
+    for node_numb in CFG_to_display.node_dict:
+        lbl_str = node_numb + "\n"
+        node = CFG_to_display.node_dict[node_numb]
+        # graph.edge(edge.source, edge.dest, label = label)
+        succ_assignements = [] # list of lists of the form [node_name, assignments]
+        for succ_name in CFG_to_display.node_dict[node_numb].succs:
+            edge_label = "" # new edge label for expressions
+            succ = CFG_to_display.node_dict[succ_name] # get the node
+
+            for data_assignment in succ.expressions:
+                exp = data_assignment.exp
+                lhs = data_assignment.lhs
+
+                if exp.lhs == None:
+                    edge_label += lhs.name + "+" + ' := ' + exp.rhs.name
+                else:
+                    edge_label += lhs.name + "+" + ' := ' + exp.lhs.name  + exp.operator + exp.rhs.name
+        
+                edge_label = "\n" + edge_label 
+                succ_assignements.append([succ_name, edge_label])
+
+        for edge in node.edges:
+            assignment_label = ""
+            for succ, assignment in succ_assignements:
+                if edge.dest == succ:
+                    # pdb.set_trace()
+                    assignment_label = assignment
+            
+
+            # try:
+            if edge.condition.lhs == "": # if any of the fields are missing its an 'always' edge
+                edge_condition = ""
+            elif isinstance(edge.condition.lhs, str): # if it's a wait node, maybe make this more robust
+                edge_condition = edge.condition.lhs
+            else:
+                edge_condition = edge.condition.lhs.name + edge.condition.operator + edge.condition.rhs.name
+   
+            if edge.condition.negate == True:
+                edge_condition = "!(" + edge_condition + ")"
+            
+            graph.edge(edge.source, edge.dest, label = edge_condition + assignment_label)
+
+        if node_numb in CFG_to_display.input_variables:
+            for input_variable in CFG_to_display.input_variables[node_numb]:
+                lbl_str += "Unconstrained input: " + input_variable.name + "\n"
+
+      
+
+            # the [::-1] simply reverses the list so Lx is printed on top.
+            # for lbl in lbl_set:
+            #     if type(lbl) == type(variable("name", "type", "funct")):
+            #         lbl_str += str(lbl.type + " " + lbl.name)
+            #     else:
+            #         lbl_str += str(lbl)
+            # lbl_str += "\n"
+        if node.node_numb in file_CFG.property_locations:
+            graph.node(node.node_numb, label=lbl_str, color="red", style='filled')
+
+        if node.node_numb == CFG_to_display.file_entry_node:
+            graph.node(node.node_numb, label=lbl_str, color="green", style='filled')
+
+        graph.node(node.node_numb, label=lbl_str)
+
+    file_name =  name+".gv"
+    graph.render(file_name, view=True)
+
+

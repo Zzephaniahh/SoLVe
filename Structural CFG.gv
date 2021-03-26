@@ -1,0 +1,45 @@
+// Structural CFG
+digraph {
+	L12S0 -> L13S1 [label="
+i+ := 0"]
+	L12S0 [label=L12S0
+ color=green style=filled]
+	L12S0 [label=L12S0
+]
+	L13S1 -> L14S2 [label=""]
+	L13S1 [label=L13S1
+]
+	L14S2 -> L16S3 [label=""]
+	L14S2 [label=L14S2
+]
+	L16S3 -> L16S4 [label="i>7"]
+	L16S3 -> L17S5 [label="!(i>7)
+i+ := i+2"]
+	L16S3 [label=L16S3
+]
+	L16S4 -> L21S9 [label=""]
+	L16S4 [label=L16S4
+]
+	L17S5 -> L14S6 [label=""]
+	L17S5 [label=L17S5
+]
+	L21S9 -> L21S10 [label=""]
+	L21S9 [label=L21S9
+]
+	L14S6 -> L14S2 [label="i<5"]
+	L14S6 -> L14S7 [label="!(i<5)"]
+	L14S6 [label=L14S6
+]
+	L14S7 -> L20S8 [label="
+main+ := 0"]
+	L14S7 [label=L14S7
+]
+	L20S8 [label=L20S8
+]
+	L21S10 [label=L21S10
+ color=red style=filled]
+	L21S10 [label=L21S10
+]
+	L22S11 [label=L22S11
+]
+}

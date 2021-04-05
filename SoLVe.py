@@ -13,7 +13,7 @@ def main():
         LOCAL = True
     CFG = c_ut.get_file_CFG(file_name)
     # c_ut.display_CFG(CFG, "raw_CFG")
-    # c_ut.display_structural_CFG(CFG, "Structural CFG")
+    c_ut.display_structural_CFG(CFG, "Structural CFG")
     # e_ut.get_equations(CFG)
     # CFG = o_ut.remove_redundant_nodes(CFG)
     # CFG = o_ut.remove_isolated_nodes(CFG)

@@ -530,12 +530,16 @@ def build_VMT_CFG(implication_equation_dict, vmt_line_equation_dict, CFG): #one_
     import pdb
     indent = "\t"
     for node in CFG.node_dict.values():
-        edge_cond_list = []
+        
         for edge in node.edges:
+            edge_cond_list = []
         # for succ_name in node.succs:
             succ = CFG.node_dict[edge.dest] # get the node object for the destination
             data_assign_str = "" # may have multible variables in one data assignment
+
             for data_assign in succ.expressions:
+                # data_assign_str = "" # may have multible variables in one data assignment
+
                 # pdb.set_trace()
                 exp = data_assign.exp
                 assignment_variable = data_assign.lhs.name # variable getting assigned
@@ -578,17 +582,22 @@ def build_VMT_CFG(implication_equation_dict, vmt_line_equation_dict, CFG): #one_
                 edge_cond_list.append('true\n')
             elif condition_str != "":
                 edge_cond_list.append(condition_str)
+            edge_str = '(define-fun .edge_' + edge.source + '$source_' + edge.dest + '$dest () Bool (!\n'   # one for each node
             
             # edge_str += data_assign_str + condition_str + '\n\n'
+            if len(edge_cond_list) > 1 :
+                edge_str += VMT_And(edge_cond_list)
+            else:
+                edge_str += edge_cond_list[0]
 
-            for i, cond_str in enumerate(edge_cond_list):
-                edge_str = '(define-fun .edge_' + edge.source + '$source'  "_" + edge.dest + '$dest_$edgecount=' + str(i) + ' () Bool (!\n'   # one for each node
-                edge_str += cond_str 
+            # for i, cond_str in enumerate(edge_cond_list):
+
+            #     edge_str += cond_str 
             # pdb.set_trace()
-                for i in range(0, edge_str.count('(') - 2 - edge_str.count(')')):
-                    edge_str += ")"
-                edge_str += ":edge_" + edge.source + '$source'  "_" + edge.dest + '$dest_$edgecount='+ str(i) + " true))"
-                print(edge_str + '\n\n')
+            for i in range(0, edge_str.count('(') - 2 - edge_str.count(')')):
+                edge_str += ")"
+            edge_str += ":edge_" + edge.source + '$source'  "_" + edge.dest + '$dest true))'
+            print(edge_str + '\n\n')
 
         #     edge_str = write_line_transition(eq.lhs.name, eq.terms, edge_str) 
         #     edge_str += "\n\t:trans_slice_" + eq.lhs.name + " true))"

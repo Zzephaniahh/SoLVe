@@ -72,142 +72,95 @@
 	:init true))
 
 
+(define-fun .edge_L12S0$source_L13S1$dest () Bool (!
+	(= i$next	(_ bv0 32))
+:edge_L12S0$source_L13S1$dest true))
 
 
-(define-fun .trel_slice_L12S0$next () Bool (!
+(define-fun .edge_L13S1$source_L14S2$dest () Bool (!
+true
+:edge_L13S1$source_L14S2$dest true))
+
+
+(define-fun .edge_L14S2$source_L16S3$dest () Bool (!
+true
+:edge_L14S2$source_L16S3$dest true))
+
+
+(define-fun .edge_L16S3$source_L16S4$dest () Bool (!
+	(bvugt i (_ bv7 32))
+:edge_L16S3$source_L16S4$dest true))
+
+
+(define-fun .edge_L16S3$source_L17S5$dest () Bool (!
+(and 	(= i$next	(bvadd i (_ bv2 32)))
+ 	(not (bvugt i (_ bv7 32)))
+):edge_L16S3$source_L17S5$dest true))
+
+
+(define-fun .edge_L16S4$source_L21S9$dest () Bool (!
+true
+:edge_L16S4$source_L21S9$dest true))
+
+
+(define-fun .edge_L17S5$source_L14S6$dest () Bool (!
+true
+:edge_L17S5$source_L14S6$dest true))
+
+
+(define-fun .edge_L21S9$source_L21S10$dest () Bool (!
+true
+:edge_L21S9$source_L21S10$dest true))
+
+
+(define-fun .edge_L14S6$source_L14S2$dest () Bool (!
+	(bvult i (_ bv5 32))
+:edge_L14S6$source_L14S2$dest true))
+
+
+(define-fun .edge_L14S6$source_L14S7$dest () Bool (!
+	(not (bvult i (_ bv5 32)))
+:edge_L14S6$source_L14S7$dest true))
+
+
+(define-fun .edge_L14S7$source_L20S8$dest () Bool (!
+	(= main$next	(_ bv0 32))
+:edge_L14S7$source_L20S8$dest true))
+
+
+
+
+(define-fun trel_equations () Bool (!  
+ 	(and
 	(= L12S0$next 			false)
-	:trans_slice_L12S0$next true))
-
-(define-fun .trel_slice_L13S1$next () Bool (!
 	(= L13S1$next 			L12S0)
-	:trans_slice_L13S1$next true))
-
-(define-fun .trel_slice_L14S2$next () Bool (!
 	(= L14S2$next 
 		(or  L13S1  (and L14S6 (bvult i (_ bv5 32)))))
-	:trans_slice_L14S2$next true))
-
-(define-fun .trel_slice_L16S3$next () Bool (!
 	(= L16S3$next 			L14S2)
-	:trans_slice_L16S3$next true))
-
-(define-fun .trel_slice_L16S4$next () Bool (!
 	(= L16S4$next 
 		(or  (and L16S3 (bvugt i (_ bv7 32)))))
-	:trans_slice_L16S4$next true))
-
-(define-fun .trel_slice_L17S5$next () Bool (!
 	(= L17S5$next 
 		(or  (and L16S3 (not (bvugt i (_ bv7 32))))))
-	:trans_slice_L17S5$next true))
-
-(define-fun .trel_slice_L21S9$next () Bool (!
 	(= L21S9$next 			L16S4)
-	:trans_slice_L21S9$next true))
-
-(define-fun .trel_slice_L14S6$next () Bool (!
 	(= L14S6$next 			L17S5)
-	:trans_slice_L14S6$next true))
-
-(define-fun .trel_slice_L21S10$next () Bool (!
 	(= L21S10$next 			L21S9)
-	:trans_slice_L21S10$next true))
-
-(define-fun .trel_slice_L14S7$next () Bool (!
 	(= L14S7$next 
 		(or  (and L14S6 (not (bvult i (_ bv5 32))))))
-	:trans_slice_L14S7$next true))
-
-(define-fun .trel_slice_L20S8$next () Bool (!
 	(= L20S8$next 			L14S7)
-	:trans_slice_L20S8$next true))
-
-(define-fun .trel_slice_L22S11$next () Bool (!
 	(= L22S11$next 			false)
-	:trans_slice_L22S11$next true))
+		(= i$next
+		(ite
+		 L12S0 		(_ bv0 32)
+		(ite
+		 (and L16S3 (not (bvugt i (_ bv7 32))))		(bvadd i (_ bv2 32))
+			i)))
+		(= main$next
+		(ite
+		 L14S7 		(_ bv0 32)
+			main))
+	) 
+	:trans true))
 
-(define-fun .data_slice_i_L13S1$next () Bool (!
-		(= i$next		(_ bv0 32))
-:data_slice_i_L13S1$next true))
-
-
-(define-fun .data_slice_i_L17S5$next () Bool (!
-		(= i$next		(bvadd i (_ bv2 32)))
-:data_slice_i_L17S5$next true))
-
-
-(define-fun .data_slice_main_L20S8$next () Bool (!
-		(= main$next		(_ bv0 32))
-:data_slice_main_L20S8$next true))
-
-
-(define-fun .data_slice_main_L22S11$next () Bool (!
-		(= main$next		(_ bv0 32))
-:data_slice_main_L22S11$next true))
-
-
-(define-fun .preds_L12S0 () Bool (! L12S0
-
-:preds_L12S0
-false))
-
-(define-fun .preds_L13S1 () Bool (! L13S1
-
-:preds_L13S1
-L12S0))
-
-(define-fun .preds_L14S2 () Bool (! L14S2
-
-:preds_L14S2
-( 
-L13S1
-L14S6
-)))
-
-(define-fun .preds_L16S3 () Bool (! L16S3
-
-:preds_L16S3
-L14S2))
-
-(define-fun .preds_L16S4 () Bool (! L16S4
-
-:preds_L16S4
-L16S3))
-
-(define-fun .preds_L17S5 () Bool (! L17S5
-
-:preds_L17S5
-L16S3))
-
-(define-fun .preds_L21S9 () Bool (! L21S9
-
-:preds_L21S9
-L16S4))
-
-(define-fun .preds_L14S6 () Bool (! L14S6
-
-:preds_L14S6
-L17S5))
-
-(define-fun .preds_L14S7 () Bool (! L14S7
-
-:preds_L14S7
-L14S6))
-
-(define-fun .preds_L20S8 () Bool (! L20S8
-
-:preds_L20S8
-L14S7))
-
-(define-fun .preds_L21S10 () Bool (! L21S10
-
-:preds_L21S10
-L21S9))
-
-(define-fun .preds_L22S11 () Bool (! L22S11
-
-:preds_L22S11
-false))
 
 
 (define-fun .property () Bool (!
